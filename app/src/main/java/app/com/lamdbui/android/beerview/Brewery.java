@@ -1,5 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lamdbui on 4/25/17.
  */
@@ -8,22 +10,32 @@ public class Brewery {
 
     public static final String LOG_TAG = Brewery.class.getSimpleName();
 
-    private int mId;
+    @SerializedName("id")
+    private String mId;
+    @SerializedName("name")
     private String mName;
+    @SerializedName("streetAddress")
     private String mStreetAddress;
+    @SerializedName("locality")
     private String mLocality;
+    @SerializedName("region")
     private String mRegion;
+    @SerializedName("postalCode")
     private String mPostalCode;
+    @SerializedName("phone")
     private String mPhone;
+    @SerializedName("website")
     private String mWebsite;
+    @SerializedName("latitude")
     private double mLatitude;
+    @SerializedName("longitude")
     private double mLongitude;
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         mId = id;
     }
 
