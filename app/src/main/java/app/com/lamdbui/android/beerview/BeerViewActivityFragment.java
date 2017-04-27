@@ -55,9 +55,7 @@ public class BeerViewActivityFragment extends Fragment {
             public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                 // TODO: Maybe check for bad data?
                 mBreweries = response.body().getData();
-                if(mBreweryAdapter == null)
-                    mBreweryAdapter = new BreweryAdapter(mBreweries);
-                mBreweryRecyclerView.setAdapter(mBreweryAdapter);
+                updateUI();
             }
 
             @Override
@@ -76,6 +74,16 @@ public class BeerViewActivityFragment extends Fragment {
         mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
+    }
+
+    public void updateUI() {
+        if(mBreweryAdapter == null) {
+            mBreweryAdapter = new BreweryAdapter(mBreweries);
+            mBreweryRecyclerView.setAdapter(mBreweryAdapter);
+        }
+        else {
+            mBreweryAdapter.notifyDataSetChanged();
+        }
     }
 
     private class BreweryHolder extends RecyclerView.ViewHolder {
