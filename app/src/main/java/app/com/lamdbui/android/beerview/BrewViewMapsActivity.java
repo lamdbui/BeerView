@@ -47,14 +47,12 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mMap.addMarker(new MarkerOptions().position(socialKitchen).title("Social Kitchen"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
 
-        // Add a marker click listender
+        // Add a marker click listener
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                Intent intent = new Intent(BrewViewMapsActivity.this, BreweryActivity.class);
-                startActivity(intent);
-                //startActivity(new Intent(this, BreweryActivity.class));
+                startActivity(new Intent(BrewViewMapsActivity.this, BreweryActivity.class));
                 return true;
             }
         });

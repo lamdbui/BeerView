@@ -11,5 +11,13 @@ import retrofit2.http.Query;
 public interface BreweryDbInterface {
 
     @GET("locations")
-    Call<BreweryResponse> getBreweries(@Query("key") String apiKey, @Query("postalCode") String postalCode);
+    Call<BreweryResponse> getBreweries(
+            @Query("key") String apiKey,
+            @Query("postalCode") String postalCode);
+
+    @GET("search/geo/point")
+    Call<BreweryResponse> getBreweriesNearby(
+            @Query("key") String apiKey,
+            @Query("lat") double latitude,
+            @Query("lng") double longitude);
 }

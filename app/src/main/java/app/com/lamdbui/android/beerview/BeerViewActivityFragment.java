@@ -48,14 +48,28 @@ public class BeerViewActivityFragment extends Fragment {
 
         mBreweries = new ArrayList<>();
 
-        BreweryDbInterface breweryDbInterface =
+        BreweryDbInterface breweryDbService =
                 BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
-        Call<BreweryResponse> call = breweryDbInterface.getBreweries(API_KEY, "94122");
-        call.enqueue(new Callback<BreweryResponse>() {
+//        Call<BreweryResponse> call = breweryDbService.getBreweries(API_KEY, "94122");
+//        call.enqueue(new Callback<BreweryResponse>() {
+//            @Override
+//            public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+//                // TODO: Maybe check for bad data?
+//                mBreweries = response.body().getData();
+//                updateUI();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BreweryResponse> call, Throwable t) {
+//                Log.e(LOG_TAG, t.toString());
+//            }
+//        });
+
+        Call<BreweryResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
+        callBreweriesNearby.enqueue(new Callback<BreweryResponse>() {
             @Override
             public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                // TODO: Maybe check for bad data?
                 mBreweries = response.body().getData();
                 updateUI();
             }

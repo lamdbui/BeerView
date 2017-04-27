@@ -136,7 +136,8 @@ public class Brewery {
         builder.append("latitude: " + mLatitude + "\n");
         builder.append("longitude: " + mLongitude + "\n");
         builder.append("established: " + mBrewery.getEstablished() + "\n");
-        builder.append("image_medium_url" + mBrewery.getImages().getMediumUrl() + "\n");
+        if(mBrewery.getImages() != null)
+            builder.append("image_medium_url" + mBrewery.getImages().getMediumUrl() + "\n");
 
         return builder.toString();
     }
