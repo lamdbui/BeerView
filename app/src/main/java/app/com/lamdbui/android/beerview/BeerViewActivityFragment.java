@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public class BeerViewActivityFragment extends Fragment {
     private static final String LOG_TAG = BeerViewActivityFragment.class.getSimpleName();
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
-    @BindView(R.id.body_text)
-    TextView mBodyTextView;
+    @BindView(R.id.map_button)
+    Button mMapButton;
     @BindView(R.id.brewery_recycler_view)
     RecyclerView mBreweryRecyclerView;
 
@@ -70,6 +72,13 @@ public class BeerViewActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_beer_view, container, false);
         ButterKnife.bind(this, rootView);
+
+        mMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), BrewViewMapsActivity.class));
+            }
+        });
 
         mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
