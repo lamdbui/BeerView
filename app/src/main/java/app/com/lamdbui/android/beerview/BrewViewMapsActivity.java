@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class BrewViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -44,5 +46,17 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mMap.addMarker(new MarkerOptions().position(sunsetReservoir).title("Sunset Reservoir"));
         mMap.addMarker(new MarkerOptions().position(socialKitchen).title("Social Kitchen"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
+
+        // Add a marker click listender
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Intent intent = new Intent(BrewViewMapsActivity.this, BreweryActivity.class);
+                startActivity(intent);
+                //startActivity(new Intent(this, BreweryActivity.class));
+                return true;
+            }
+        });
     }
 }

@@ -44,6 +44,10 @@
             android:name=".BrewViewMapsActivity"
             android:label="@string/title_activity_brew_view_maps">
         </activity>
+        <activity
+            android:name=".BreweryActivity"
+            android:label="@string/title_activity_brewery">
+        </activity>
     </application>
 
 </manifest>
