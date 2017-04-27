@@ -39,8 +39,10 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mMap = googleMap;
 
         // Add a marker and move the camera
+        LatLng socialKitchen = new LatLng(37.763512, -122.466204);
         LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
         mMap.addMarker(new MarkerOptions().position(sunsetReservoir).title("Sunset Reservoir"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sunsetReservoir));
+        mMap.addMarker(new MarkerOptions().position(socialKitchen).title("Social Kitchen"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
     }
 }
