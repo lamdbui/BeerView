@@ -8,6 +8,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,18 +44,40 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         // Add a marker and move the camera
         LatLng socialKitchen = new LatLng(37.763512, -122.466204);
         LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
-        mMap.addMarker(new MarkerOptions().position(sunsetReservoir).title("Sunset Reservoir"));
-        mMap.addMarker(new MarkerOptions().position(socialKitchen).title("Social Kitchen"));
+        mMap.addMarker(new MarkerOptions()
+                .position(sunsetReservoir)
+                .title("Sunset Reservoir")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+        mMap.addMarker(new MarkerOptions()
+                .position(socialKitchen)
+                .title("Social Kitchen")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
 
         // Add a marker click listener
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
+//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//
+//                startActivity(new Intent(BrewViewMapsActivity.this, BreweryActivity.class));
+//                return true;
+//            }
+//        });
 
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
                 startActivity(new Intent(BrewViewMapsActivity.this, BreweryActivity.class));
-                return true;
             }
         });
+
+        // Set listeners for marker events
+//        mMap.setOnMarkerClickListener(this);
+//        mMap.setOnInfoWindowClickListener(this);
+//        mMap.setOnMarkerDragListener(this);
+//        mMap.setOnInfoWindowCloseListener(this);
+//        mMap.setOnInfoWindowLongClickListener(this);
+
+//
     }
 }
