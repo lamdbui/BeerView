@@ -9,7 +9,11 @@ import android.widget.TextView;
 
 public class BreweryActivity extends AppCompatActivity {
 
+    public static final String ARG_BREWERY = "brewery";
+
     private TextView mTextMessage;
+
+    private Brewery mBrewery;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -37,9 +41,12 @@ public class BreweryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brewery);
 
+        Bundle bundle = getIntent().getExtras();
+        mBrewery = bundle.getParcelable(ARG_BREWERY);
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mTextMessage.setText(mBrewery.toString());
     }
-
 }

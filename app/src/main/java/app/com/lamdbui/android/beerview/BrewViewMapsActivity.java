@@ -53,10 +53,11 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
 
         for(Brewery brewery : mBreweries) {
             LatLng location = new LatLng(brewery.getLatitude(), brewery.getLongitude());
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(brewery.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+            marker.setTag(brewery);
         }
 
         //LatLngBounds mapBounds = new LatLngBounds()
@@ -90,7 +91,15 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                startActivity(new Intent(BrewViewMapsActivity.this, BreweryActivity.class));
+                // get the Brewery object back
+                Brewery brewery = (Brewery) marker.getTag();
+
+                Intent intent = new Intent(BrewViewMapsActivity.this, BreweryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BreweryActivity.ARG_BREWERY, brewery);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
             }
         });
 
