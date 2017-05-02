@@ -91,7 +91,11 @@ public class BeerViewActivityFragment extends Fragment {
         mMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), BrewViewMapsActivity.class));
+                Intent intent = new Intent(getActivity(), BrewViewMapsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(BrewViewMapsActivity.ARG_BREWERIES, (ArrayList<Brewery>)mBreweries);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 

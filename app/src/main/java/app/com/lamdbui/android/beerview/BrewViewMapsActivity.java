@@ -10,12 +10,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 public class BrewViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    public static final String ARG_BREWERIES = "breweries";
+
     private GoogleMap mMap;
+
+    private List<Brewery> mBreweries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,9 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Bundle bundle = getIntent().getExtras();
+        mBreweries = bundle.getParcelableArrayList(ARG_BREWERIES);
     }
 
 
@@ -41,18 +51,31 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker and move the camera
-        LatLng socialKitchen = new LatLng(37.763512, -122.466204);
+        for(Brewery brewery : mBreweries) {
+            LatLng location = new LatLng(brewery.getLatitude(), brewery.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title(brewery.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+        }
+
+        //LatLngBounds mapBounds = new LatLngBounds()
+
         LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
-        mMap.addMarker(new MarkerOptions()
-                .position(sunsetReservoir)
-                .title("Sunset Reservoir")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
-        mMap.addMarker(new MarkerOptions()
-                .position(socialKitchen)
-                .title("Social Kitchen")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 12));
+
+        // Add a marker and move the camera
+//        LatLng socialKitchen = new LatLng(37.763512, -122.466204);
+//        LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
+//        mMap.addMarker(new MarkerOptions()
+//                .position(sunsetReservoir)
+//                .title("Sunset Reservoir")
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+//        mMap.addMarker(new MarkerOptions()
+//                .position(socialKitchen)
+//                .title("Social Kitchen")
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
 
         // Add a marker click listener
 //        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {

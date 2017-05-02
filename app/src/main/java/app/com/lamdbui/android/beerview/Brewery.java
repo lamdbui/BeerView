@@ -1,10 +1,13 @@
 package app.com.lamdbui.android.beerview;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lamdbui on 4/25/17.
  */
 
-public class Brewery {
+public class Brewery implements Parcelable {
 
     public static final String LOG_TAG = Brewery.class.getSimpleName();
 
@@ -36,6 +39,89 @@ public class Brewery {
     private String mLocationType;
     private String mLocationTypeDisplay;
     private String mCountryIsoCode;
+
+    public Brewery() {
+
+    }
+
+    private Brewery(Parcel in) {
+        mId = in.readString();
+        mName = in.readString();
+        mNameShort = in.readString();
+        mDescription = in.readString();
+        mWebsite = in.readString();
+        mHoursOfOperation = in.readString();
+        mEstablished = in.readInt();
+        mIsOrganic = (in.readInt() == 1) ? true : false;
+        mImagesIcon = in.readString();
+        mImagesMedium = in.readString();
+        mImagesLarge = in.readString();
+        mImagesSquareMedium = in.readString();
+        mImagesSquareLarge = in.readString();
+        mStreetAddress = in.readString();
+        mLocality = in.readString();
+        mRegion = in.readString();
+        mPostalCode = in.readString();
+        mPhone = in.readString();
+        mLatitude = in.readDouble();
+        mLongitude = in.readDouble();
+        mIsPrimary = (in.readInt() == 1) ? true : false;
+        mIsPlanning = (in.readInt() == 1) ? true : false;
+        mIsClosed = (in.readInt() == 1) ? true : false;
+        mOpenToPublic = (in.readInt() == 1) ? true : false;
+        mLocationType = in.readString();
+        mLocationTypeDisplay = in.readString();
+        mCountryIsoCode = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mId);
+        parcel.writeString(mName);
+        parcel.writeString(mNameShort);
+        parcel.writeString(mDescription);
+        parcel.writeString(mWebsite);
+        parcel.writeString(mHoursOfOperation);
+        parcel.writeInt(mEstablished);
+        parcel.writeInt(mIsOrganic ? 1 : 0);
+        parcel.writeString(mImagesIcon);
+        parcel.writeString(mImagesMedium);
+        parcel.writeString(mImagesLarge);
+        parcel.writeString(mImagesSquareMedium);
+        parcel.writeString(mImagesSquareLarge);
+        parcel.writeString(mStreetAddress);
+        parcel.writeString(mLocality);
+        parcel.writeString(mRegion);
+        parcel.writeString(mPostalCode);
+        parcel.writeString(mPhone);
+        parcel.writeDouble(mLatitude);
+        parcel.writeDouble(mLongitude);
+        parcel.writeInt(mIsPrimary ? 1 : 0);
+        parcel.writeInt(mIsPlanning ? 1 : 0);
+        parcel.writeInt(mIsClosed ? 1 : 0);
+        parcel.writeInt(mOpenToPublic ? 1 : 0);
+        parcel.writeString(mLocationType);
+        parcel.writeString(mLocationTypeDisplay);
+        parcel.writeString(mCountryIsoCode);
+    }
+
+    public static final Parcelable.Creator<Brewery> CREATOR =
+            new Parcelable.Creator<Brewery>() {
+                @Override
+                public Brewery createFromParcel(Parcel parcel) {
+                    return new Brewery(parcel);
+                }
+
+                @Override
+                public Brewery[] newArray(int size) {
+                    return new Brewery[size];
+                }
+            };
 
     public String getId() {
         return mId;

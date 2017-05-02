@@ -13,31 +13,35 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "breweries.db";
 
-//    @SerializedName("id")
 //    private String mId;
-//    @SerializedName("name")
 //    private String mName;
-//    @SerializedName("streetAddress")
-//    private String mStreetAddress;
-//    @SerializedName("locality")
-//    private String mLocality;
-//    @SerializedName("region")
-//    private String mRegion;
-//    @SerializedName("postalCode")
-//    private String mPostalCode;
-//    @SerializedName("phone")
-//    private String mPhone;
-//    @SerializedName("website")
+//    private String mNameShort;
+//    private String mDescription;
 //    private String mWebsite;
-//    @SerializedName("latitude")
+//    private String mHoursOfOperation;
+//    private int mEstablished;
+//    private boolean mIsOrganic;
+//    private String mImagesIcon;
+//    private String mImagesMedium;
+//    private String mImagesLarge;
+//    private String mImagesSquareMedium;
+//    private String mImagesSquareLarge;
+//    private String mStreetAddress;
+//    private String mLocality;
+//    private String mRegion;
+//    private String mPostalCode;
+//    private String mPhone;
 //    private double mLatitude;
-//    @SerializedName("longitude")
 //    private double mLongitude;
-//    //    @SerializedName("brewery/established")
-////    private String mEstablished;
-//    @SerializedName("brewery")
-//    private JsonBrewery mBrewery;
+//    private boolean mIsPrimary;
+//    private boolean mIsPlanning;
+//    private boolean mIsClosed;
+//    private boolean mOpenToPublic;
+//    private String mLocationType;
+//    private String mLocationTypeDisplay;
+//    private String mCountryIsoCode;
 
+    //final String SQL_CREATE_BREWERY_TABLE = "CREATE TABLE "
 
     public BreweryDbHelper(Context context, SQLiteDatabase.CursorFactory factory) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
