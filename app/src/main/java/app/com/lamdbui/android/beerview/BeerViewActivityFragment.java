@@ -70,7 +70,8 @@ public class BeerViewActivityFragment extends Fragment {
         callBreweriesNearby.enqueue(new Callback<BreweryResponse>() {
             @Override
             public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                mBreweries = response.body().getData();
+                //mBreweries = response.body().getData();
+                mBreweries = response.body().getBreweries();
                 updateUI();
             }
 

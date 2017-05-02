@@ -1,7 +1,5 @@
 package app.com.lamdbui.android.beerview;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by lamdbui on 4/25/17.
  */
@@ -10,30 +8,34 @@ public class Brewery {
 
     public static final String LOG_TAG = Brewery.class.getSimpleName();
 
-    @SerializedName("id")
     private String mId;
-    @SerializedName("name")
     private String mName;
-    @SerializedName("streetAddress")
-    private String mStreetAddress;
-    @SerializedName("locality")
-    private String mLocality;
-    @SerializedName("region")
-    private String mRegion;
-    @SerializedName("postalCode")
-    private String mPostalCode;
-    @SerializedName("phone")
-    private String mPhone;
-    @SerializedName("website")
+    private String mNameShort;
+    private String mDescription;
     private String mWebsite;
-    @SerializedName("latitude")
+    // TODO: Do some conversion that makes more sense than a String here
+    private String mHoursOfOperation;
+    private int mEstablished;
+    private boolean mIsOrganic;
+    private String mImagesIcon;
+    private String mImagesMedium;
+    private String mImagesLarge;
+    private String mImagesSquareMedium;
+    private String mImagesSquareLarge;
+    private String mStreetAddress;
+    private String mLocality;
+    private String mRegion;
+    private String mPostalCode;
+    private String mPhone;
     private double mLatitude;
-    @SerializedName("longitude")
     private double mLongitude;
-//    @SerializedName("brewery/established")
-//    private String mEstablished;
-    @SerializedName("brewery")
-    private JsonBrewery mBrewery;
+    private boolean mIsPrimary;
+    private boolean mIsPlanning;
+    private boolean mIsClosed;
+    private boolean mOpenToPublic;
+    private String mLocationType;
+    private String mLocationTypeDisplay;
+    private String mCountryIsoCode;
 
     public String getId() {
         return mId;
@@ -49,6 +51,94 @@ public class Brewery {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getNameShort() {
+        return mNameShort;
+    }
+
+    public void setNameShort(String nameShort) {
+        mNameShort = nameShort;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public String getWebsite() {
+        return mWebsite;
+    }
+
+    public void setWebsite(String website) {
+        mWebsite = website;
+    }
+
+    public String getHoursOfOperation() {
+        return mHoursOfOperation;
+    }
+
+    public void setHoursOfOperation(String hoursOfOperation) {
+        mHoursOfOperation = hoursOfOperation;
+    }
+
+    public int getEstablished() {
+        return mEstablished;
+    }
+
+    public void setEstablished(int established) {
+        mEstablished = established;
+    }
+
+    public boolean isOrganic() {
+        return mIsOrganic;
+    }
+
+    public void setOrganic(boolean organic) {
+        mIsOrganic = organic;
+    }
+
+    public String getImagesIcon() {
+        return mImagesIcon;
+    }
+
+    public void setImagesIcon(String imagesIcon) {
+        mImagesIcon = imagesIcon;
+    }
+
+    public String getImagesMedium() {
+        return mImagesMedium;
+    }
+
+    public void setImagesMedium(String imagesMedium) {
+        mImagesMedium = imagesMedium;
+    }
+
+    public String getImagesLarge() {
+        return mImagesLarge;
+    }
+
+    public void setImagesLarge(String imagesLarge) {
+        mImagesLarge = imagesLarge;
+    }
+
+    public String getImagesSquareMedium() {
+        return mImagesSquareMedium;
+    }
+
+    public void setImagesSquareMedium(String imagesSquareMedium) {
+        mImagesSquareMedium = imagesSquareMedium;
+    }
+
+    public String getImagesSquareLarge() {
+        return mImagesSquareLarge;
+    }
+
+    public void setImagesSquareLarge(String imagesSquareLarge) {
+        mImagesSquareLarge = imagesSquareLarge;
     }
 
     public String getStreetAddress() {
@@ -91,14 +181,6 @@ public class Brewery {
         mPhone = phone;
     }
 
-    public String getWebsite() {
-        return mWebsite;
-    }
-
-    public void setWebsite(String website) {
-        mWebsite = website;
-    }
-
     public double getLatitude() {
         return mLatitude;
     }
@@ -115,12 +197,60 @@ public class Brewery {
         mLongitude = longitude;
     }
 
-    public JsonBrewery getBrewery() {
-        return mBrewery;
+    public boolean isPrimary() {
+        return mIsPrimary;
     }
 
-    public void setBrewery(JsonBrewery brewery) {
-        mBrewery = brewery;
+    public void setPrimary(boolean primary) {
+        mIsPrimary = primary;
+    }
+
+    public boolean isPlanning() {
+        return mIsPlanning;
+    }
+
+    public void setPlanning(boolean planning) {
+        mIsPlanning = planning;
+    }
+
+    public boolean isClosed() {
+        return mIsClosed;
+    }
+
+    public void setClosed(boolean closed) {
+        mIsClosed = closed;
+    }
+
+    public boolean isOpenToPublic() {
+        return mOpenToPublic;
+    }
+
+    public void setOpenToPublic(boolean openToPublic) {
+        mOpenToPublic = openToPublic;
+    }
+
+    public String getLocationType() {
+        return mLocationType;
+    }
+
+    public void setLocationType(String locationType) {
+        mLocationType = locationType;
+    }
+
+    public String getLocationTypeDisplay() {
+        return mLocationTypeDisplay;
+    }
+
+    public void setLocationTypeDisplay(String locationTypeDisplay) {
+        mLocationTypeDisplay = locationTypeDisplay;
+    }
+
+    public String getCountryIsoCode() {
+        return mCountryIsoCode;
+    }
+
+    public void setCountryIsoCode(String countryIsoCode) {
+        mCountryIsoCode = countryIsoCode;
     }
 
     public String toString() {
@@ -135,136 +265,9 @@ public class Brewery {
         builder.append("website: " + mWebsite + "\n");
         builder.append("latitude: " + mLatitude + "\n");
         builder.append("longitude: " + mLongitude + "\n");
-        builder.append("established: " + mBrewery.getEstablished() + "\n");
-        if(mBrewery.getImages() != null)
-            builder.append("image_medium_url" + mBrewery.getImages().getMediumUrl() + "\n");
+        builder.append("established: " + mEstablished + "\n");
+        builder.append("image_icon: " + mImagesIcon + "\n");
 
         return builder.toString();
-    }
-
-    private class JsonBrewery {
-        @SerializedName("id")
-        private String mId;
-        @SerializedName("name")
-        private String mName;
-        @SerializedName("nameShortDisplay")
-        private String mNameShortDisplay;
-        @SerializedName("website")
-        private String mWebsite;
-        @SerializedName("established")
-        private String mEstablished;
-        @SerializedName("isOrganic")
-        private String mIsOrganic;
-        @SerializedName("images")
-        private JsonBreweryImages mImages;
-
-        public String getEstablished() {
-            return mEstablished;
-        }
-
-        public void setEstablished(String established) {
-            mEstablished = established;
-        }
-
-        public String getId() {
-            return mId;
-        }
-
-        public void setId(String id) {
-            mId = id;
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public void setName(String name) {
-            mName = name;
-        }
-
-        public String getNameShortDisplay() {
-            return mNameShortDisplay;
-        }
-
-        public void setNameShortDisplay(String nameShortDisplay) {
-            mNameShortDisplay = nameShortDisplay;
-        }
-
-        public String getWebsite() {
-            return mWebsite;
-        }
-
-        public void setWebsite(String website) {
-            mWebsite = website;
-        }
-
-        public String getIsOrganic() {
-            return mIsOrganic;
-        }
-
-        public void setIsOrganic(String isOrganic) {
-            mIsOrganic = isOrganic;
-        }
-
-        public JsonBreweryImages getImages() {
-            return mImages;
-        }
-
-        public void setImages(JsonBreweryImages images) {
-            mImages = images;
-        }
-
-        private class JsonBreweryImages {
-            @SerializedName("icon")
-            private String mIconUrl;
-            @SerializedName("medium")
-            private String mMediumUrl;
-            @SerializedName("large")
-            private String mLargeUrl;
-            @SerializedName("squareMedium")
-            private String mSquareMediumUrl;
-            @SerializedName("squareLarge")
-            private String mSquareLargeUrl;
-
-            public String getIconUrl() {
-                return mIconUrl;
-            }
-
-            public void setIconUrl(String iconUrl) {
-                mIconUrl = iconUrl;
-            }
-
-            public String getMediumUrl() {
-                return mMediumUrl;
-            }
-
-            public void setMediumUrl(String mediumUrl) {
-                mMediumUrl = mediumUrl;
-            }
-
-            public String getLargeUrl() {
-                return mLargeUrl;
-            }
-
-            public void setLargeUrl(String largeUrl) {
-                mLargeUrl = largeUrl;
-            }
-
-            public String getSquareMediumUrl() {
-                return mSquareMediumUrl;
-            }
-
-            public void setSquareMediumUrl(String squareMediumUrl) {
-                mSquareMediumUrl = squareMediumUrl;
-            }
-
-            public String getSquareLargeUrl() {
-                return mSquareLargeUrl;
-            }
-
-            public void setSquareLargeUrl(String squareLargeUrl) {
-                mSquareLargeUrl = squareLargeUrl;
-            }
-        }
     }
 }
