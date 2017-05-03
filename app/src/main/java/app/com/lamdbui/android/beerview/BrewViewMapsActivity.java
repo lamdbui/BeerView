@@ -1,8 +1,13 @@
 package app.com.lamdbui.android.beerview;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,10 +20,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
+import java.util.jar.Manifest;
 
 public class BrewViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static final String ARG_BREWERIES = "breweries";
+    public static final int PERMISSION_LOCATION_FINE = 1;
 
     private GoogleMap mMap;
 
@@ -51,6 +58,21 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // TODO: Fix issue with location only showing after reloading the Application
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            //mMap.setMyLocationEnabled(true);
+            // show the explanation?
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast.makeText(this, "Request for location to determine nearest Breweries", Toast.LENGTH_LONG).show();
+            }
+
+            ActivityCompat.requestPermissions(this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_FINE);
+        }
+        else {
+            mMap.setMyLocationEnabled(true);
+        }
+
         for(Brewery brewery : mBreweries) {
             LatLng location = new LatLng(brewery.getLatitude(), brewery.getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
@@ -64,29 +86,6 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
 
         LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 12));
-
-        // Add a marker and move the camera
-//        LatLng socialKitchen = new LatLng(37.763512, -122.466204);
-//        LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
-//        mMap.addMarker(new MarkerOptions()
-//                .position(sunsetReservoir)
-//                .title("Sunset Reservoir")
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
-//        mMap.addMarker(new MarkerOptions()
-//                .position(socialKitchen)
-//                .title("Social Kitchen")
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 14));
-
-        // Add a marker click listener
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//
-//                startActivity(new Intent(BrewViewMapsActivity.this, BreweryActivity.class));
-//                return true;
-//            }
-//        });
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -111,5 +110,27 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
 //        mMap.setOnInfoWindowLongClickListener(this);
 
 //
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_LOCATION_FINE:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //mMap.setMyLocationEnabled(true);
+                    try {
+                        mMap.setMyLocationEnabled(true);
+                    }
+                    catch(SecurityException e) {
+                        // print error here
+                    }
+                }
+                else {
+                    // permission not granted
+                }
+                break;
+                //}
+        }
     }
 }
