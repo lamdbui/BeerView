@@ -66,6 +66,20 @@ public class BeerViewActivityFragment extends Fragment {
 //            }
 //        });
 
+        Call<BeerResponse> callBeerById = breweryDbService.getBeer("9UG4pg", API_KEY);
+        callBeerById.enqueue(new Callback<BeerResponse>() {
+            @Override
+            public void onResponse(Call<BeerResponse> call, Response<BeerResponse> response) {
+                Beer plinyTheYounger = response.body().getBeer();
+                int m = 4;
+            }
+
+            @Override
+            public void onFailure(Call<BeerResponse> call, Throwable t) {
+
+            }
+        });
+
         Call<BreweryResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
         callBreweriesNearby.enqueue(new Callback<BreweryResponse>() {
             @Override
