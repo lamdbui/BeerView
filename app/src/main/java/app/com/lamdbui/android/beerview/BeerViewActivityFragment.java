@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.data.BreweryContract;
+import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -71,6 +74,7 @@ public class BeerViewActivityFragment extends Fragment {
         callBeerById.enqueue(new Callback<BeerResponse>() {
             @Override
             public void onResponse(Call<BeerResponse> call, Response<BeerResponse> response) {
+                // TODO: Use real data here
                 Beer plinyTheYounger = response.body().getBeer();
                 int m = 4;
             }
@@ -85,8 +89,17 @@ public class BeerViewActivityFragment extends Fragment {
         callBreweriesNearby.enqueue(new Callback<BreweryResponse>() {
             @Override
             public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                //mBreweries = response.body().getData();
                 mBreweries = response.body().getBreweries();
+
+                // Add breweries to the database
+                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
+                for(int i = 0; i < mBreweries.size(); i++) {
+                    breweryValues[i] = BreweryDbUtils.convertBreweryToContentValues(mBreweries.get(i));
+                }
+
+                getContext().getContentResolver().bulkInsert(
+                        BreweryContract.BreweryTable.CONTENT_URI,
+                        breweryValues);
                 updateUI();
             }
 

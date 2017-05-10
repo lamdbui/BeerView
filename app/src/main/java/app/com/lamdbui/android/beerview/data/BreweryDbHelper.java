@@ -16,8 +16,8 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "brewery.db";
 
-    public BreweryDbHelper(Context context, SQLiteDatabase.CursorFactory factory) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public BreweryDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -81,7 +81,9 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
                 + BreweryTable.COLS.OPEN_TO_PUBLIC + " INTEGER, "
                 + BreweryTable.COLS.LOCATION_TYPE + " TEXT, "
                 + BreweryTable.COLS.LOCATION_TYPE_DISPLAY + " TEXT, "
-                + BreweryTable.COLS.COUNTRY_ISO_CODE + " TEXT "
+                + BreweryTable.COLS.COUNTRY_ISO_CODE + " TEXT, "
+                // additional association fields
+                + BreweryTable.COLS.FAVORITE + " TEXT "
                 + ");";
 
         sqLiteDatabase.execSQL(SQL_CREATE_BREWERY_TABLE);

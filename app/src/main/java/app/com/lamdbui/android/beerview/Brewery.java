@@ -40,6 +40,9 @@ public class Brewery implements Parcelable {
     private String mLocationTypeDisplay;
     private String mCountryIsoCode;
 
+    // additional fields
+    private boolean mIsFavorite;
+
     public Brewery() {
 
     }
@@ -72,6 +75,7 @@ public class Brewery implements Parcelable {
         mLocationType = in.readString();
         mLocationTypeDisplay = in.readString();
         mCountryIsoCode = in.readString();
+        mIsFavorite = (in.readInt() == 1) ? true : false;
     }
 
     @Override
@@ -108,6 +112,7 @@ public class Brewery implements Parcelable {
         parcel.writeString(mLocationType);
         parcel.writeString(mLocationTypeDisplay);
         parcel.writeString(mCountryIsoCode);
+        parcel.writeInt(mIsFavorite ? 1 : 0);
     }
 
     public static final Parcelable.Creator<Brewery> CREATOR =
@@ -337,6 +342,14 @@ public class Brewery implements Parcelable {
 
     public void setCountryIsoCode(String countryIsoCode) {
         mCountryIsoCode = countryIsoCode;
+    }
+
+    public boolean isFavorite() {
+        return mIsFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        mIsFavorite = favorite;
     }
 
     public String toString() {

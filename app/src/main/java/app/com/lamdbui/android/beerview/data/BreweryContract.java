@@ -18,6 +18,9 @@ public class BreweryContract {
     // possible paths
     public static final String PATH_BREWERY = "brewery";
 
+    // possible subpaths
+    public static final String SUBPATH_FAVOITES = "favorites";
+
     // class that defines the Brewery Table Schema
     public static final class BreweryTable implements BaseColumns {
 
@@ -32,6 +35,9 @@ public class BreweryContract {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BREWERY;
 
         public static final class COLS {
+
+            // extra field to identify associations
+            public static final String FAVORITE = "favorite";
 
             // from the Brewery class
             public static final String ID = "id";
