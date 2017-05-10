@@ -49,6 +49,11 @@
             android:name=".BreweryActivity"
             android:label="@string/title_activity_brewery">
         </activity>
+        
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.BreweryProvider"
+            android:exported="false" />
     </application>
 
 </manifest>
