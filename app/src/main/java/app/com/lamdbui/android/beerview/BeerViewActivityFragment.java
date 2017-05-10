@@ -2,6 +2,7 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -100,6 +101,30 @@ public class BeerViewActivityFragment extends Fragment {
                 getContext().getContentResolver().bulkInsert(
                         BreweryContract.BreweryTable.CONTENT_URI,
                         breweryValues);
+
+                // *** TEST CODE - get them back
+                Cursor cursorResults = getContext().getContentResolver().query(
+                        BreweryContract.BreweryTable.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+                if(cursorResults != null && cursorResults.getCount() > 0) {
+                    cursorResults.moveToFirst();
+
+                    List<Brewery> cursorBreweries = new ArrayList<Brewery>();
+
+                    while(!cursorResults.isAfterLast()) {
+
+                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
+
+                        cursorResults.moveToNext();
+                    }
+
+                    // TODO: Remove - for debug only
+                    int m = 4;
+                    m = 5;
+                }
                 updateUI();
             }
 

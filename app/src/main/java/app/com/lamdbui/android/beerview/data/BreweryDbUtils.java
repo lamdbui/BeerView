@@ -1,6 +1,7 @@
 package app.com.lamdbui.android.beerview.data;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import app.com.lamdbui.android.beerview.Brewery;
 
@@ -78,5 +79,50 @@ public class BreweryDbUtils {
 //        public static final String COUNTRY_ISO_CODE = "country_iso_code";
 
         return breweryValues;
+    }
+
+    public static Brewery convertCursorToBrewery(Cursor c) {
+
+        Brewery brewery = new Brewery();
+
+        //int favorite = c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.FAVORITE));
+        brewery.setFavorite(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.FAVORITE))));
+
+        brewery.setId(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.ID)));
+        brewery.setName(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.NAME)));
+        brewery.setNameShort(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.NAME_SHORT)));
+        brewery.setDescription(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.DESCRIPTION)));
+        brewery.setWebsite(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.WEBSITE)));
+        brewery.setHoursOfOperation(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.HOURS_OF_OPERATION)));
+        brewery.setEstablished(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.ESTABLISHED)));
+        //int organic = c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_ORGANIC));
+        brewery.setOrganic(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_ORGANIC))));
+        brewery.setImagesIcon(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IMAGES_ICON)));
+        brewery.setImagesMedium(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IMAGES_MEDIUM)));
+        brewery.setImagesLarge(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IMAGES_LARGE)));
+        brewery.setImagesSquareMedium(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IMAGES_SQUARE_MEDIUM)));
+        brewery.setImagesSquareLarge(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IMAGES_SQUARE_LARGE)));
+        brewery.setStreetAddress(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.ADDRESS)));
+        brewery.setLocality(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LOCALITY)));
+        brewery.setRegion(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.REGION)));
+        brewery.setPostalCode(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.POSTAL_CODE)));
+        brewery.setPhone(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.PHONE)));
+        brewery.setLatitude(c.getDouble(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LATITUDE)));
+        brewery.setLongitude(c.getDouble(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LONGITUDE)));
+        //int primary = c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_PRIMARY));
+        brewery.setPrimary(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_PRIMARY))));
+        brewery.setPlanning(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_PLANNING))));
+        brewery.setClosed(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.IS_CLOSED))));
+        brewery.setOpenToPublic(convertIntToBoolean(c.getInt(c.getColumnIndex(BreweryContract.BreweryTable.COLS.OPEN_TO_PUBLIC))));
+        brewery.setLocationType(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LOCATION_TYPE)));
+        brewery.setLocationTypeDisplay(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LOCATION_TYPE_DISPLAY)));
+        brewery.setCountryIsoCode(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.COUNTRY_ISO_CODE)));
+
+        return brewery;
+    }
+
+    // This assumes true(1) and false(0)
+    private static boolean convertIntToBoolean(int i) {
+        return (i == 1) ? true : false;
     }
 }
