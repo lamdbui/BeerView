@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.stetho.Stetho;
+
 public class BeerViewActivity extends AppCompatActivity {
 
     @Override
@@ -26,6 +28,9 @@ public class BeerViewActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // initialize extra libraries
+        Stetho.initializeWithDefaults(this);
     }
 
     @Override
