@@ -1,6 +1,7 @@
 package app.com.lamdbui.android.beerview.data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -60,6 +61,10 @@ public class BreweryContract {
             public static final String LOCATION_TYPE = "location_type";
             public static final String LOCATION_TYPE_DISPLAY = "location_tyoe_display";
             public static final String COUNTRY_ISO_CODE = "country_iso_code";
+        }
+
+        public static Uri buildBreweryUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 }

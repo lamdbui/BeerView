@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +129,8 @@ public class BeerViewActivityFragment extends Fragment {
         }
     }
 
-    private class BreweryHolder extends RecyclerView.ViewHolder {
+    private class BreweryHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
 
         private TextView mBodyTextView;
 
@@ -138,11 +140,18 @@ public class BeerViewActivityFragment extends Fragment {
             super(itemView);
 
             mBodyTextView = (TextView) itemView.findViewById(R.id.list_item_brewery_body_text);
+            mBodyTextView.setOnClickListener(this);
         }
 
         public void bind(Brewery brewery) {
             mBrewery = brewery;
             mBodyTextView.setText(mBrewery.toString());
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = BreweryActivity.newIntent(getActivity(), mBrewery);
+            startActivity(intent);
         }
     }
 

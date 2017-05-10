@@ -93,10 +93,7 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
                 // get the Brewery object back
                 Brewery brewery = (Brewery) marker.getTag();
 
-                Intent intent = new Intent(BrewViewMapsActivity.this, BreweryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BreweryActivity.ARG_BREWERY, brewery);
-                intent.putExtras(bundle);
+                Intent intent = BreweryActivity.newIntent(BrewViewMapsActivity.this, brewery);
 
                 startActivity(intent);
             }

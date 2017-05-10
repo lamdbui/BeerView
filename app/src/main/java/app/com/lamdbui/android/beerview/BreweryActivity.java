@@ -1,5 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -35,6 +37,15 @@ public class BreweryActivity extends AppCompatActivity {
         }
 
     };
+
+    public static Intent newIntent(Context context, Brewery brewery) {
+        Intent intent = new Intent(context, BreweryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BreweryActivity.ARG_BREWERY, brewery);
+        intent.putExtras(bundle);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
