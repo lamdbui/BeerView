@@ -17,9 +17,52 @@ public class BreweryContract {
 
     // possible paths
     public static final String PATH_BREWERY = "brewery";
+    public static final String PATH_BEER = "beer";
 
     // possible subpaths
     public static final String SUBPATH_FAVOITES = "favorites";
+
+    // class that defines the Beer Table Schema
+    public static final class BeerTable implements BaseColumns {
+
+        public static final String TABLE_NAME = "beer";
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_BEER).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BEER;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BEER;
+
+        public static final class COLS {
+
+            // extra field to identify associations
+            public static final String FAVORITE = "favorite";
+
+            // from the Beer class
+            public static final String ID = "id";
+            public static final String NAME = "name";
+            public static final String NAME_DISPLAY = "name_display";
+            public static final String DESCRIPTION = "description";
+            public static final String ABV = "abv";
+            public static final String GLASSWARE_ID = "glassware_id";
+            public static final String SRM_ID = "srm_id";
+            public static final String AVAILABLE_ID = "available_id";
+            public static final String STYLE_ID = "style_id";
+            public static final String IS_ORGANIC = "is_organic";
+            public static final String SERVING_TEMPERATURE = "serving_temperature";
+            public static final String SERVING_TEMPERATURE_DISPLAY = "serving_temperature_display";
+            public static final String ORIGINAL_GRAVITY = "orginal_gravity";
+            public static final String LABELS_ICON = "labels_icon";
+            public static final String LABELS_MEDIUM = "labels_medium";
+            public static final String LABELS_LARGE = "labels_large";
+        }
+
+        public static Uri buildBeerUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
 
     // class that defines the Brewery Table Schema
     public static final class BreweryTable implements BaseColumns {
@@ -65,7 +108,7 @@ public class BreweryContract {
             public static final String IS_CLOSED = "is_closed";
             public static final String OPEN_TO_PUBLIC = "open_to_public";
             public static final String LOCATION_TYPE = "location_type";
-            public static final String LOCATION_TYPE_DISPLAY = "location_tyoe_display";
+            public static final String LOCATION_TYPE_DISPLAY = "location_type_display";
             public static final String COUNTRY_ISO_CODE = "country_iso_code";
         }
 

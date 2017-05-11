@@ -4,8 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import app.com.lamdbui.android.beerview.Brewery;
+import app.com.lamdbui.android.beerview.Beer;
 import app.com.lamdbui.android.beerview.data.BreweryContract.BreweryTable;
+import app.com.lamdbui.android.beerview.data.BreweryContract.BeerTable;
 
 /**
  * Created by lamdbui on 5/2/17.
@@ -87,6 +88,32 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
                 + ");";
 
         sqLiteDatabase.execSQL(SQL_CREATE_BREWERY_TABLE);
+
+        // Create table for the Beer
+        final String SQL_CREATE_BEER_TABLE = "CREATE TABLE "
+                + BeerTable.TABLE_NAME + " ("
+                + BeerTable._ID + " TEXT PRIMARY KEY, "
+                + BeerTable.COLS.ID + " TEXT UNIQUE NOT NULL, "
+                + BeerTable.COLS.NAME + " TEXT NOT NULL, "
+                + BeerTable.COLS.NAME_DISPLAY + " TEXT, "
+                + BeerTable.COLS.DESCRIPTION + " TEXT, "
+                + BeerTable.COLS.ABV + " REAL, "
+                + BeerTable.COLS.GLASSWARE_ID + " INTEGER, "
+                + BeerTable.COLS.SRM_ID + " INTEGER, "
+                + BeerTable.COLS.AVAILABLE_ID + " INTEGER, "
+                + BeerTable.COLS.STYLE_ID + " INTEGER, "
+                + BeerTable.COLS.IS_ORGANIC + " INTEGER, "
+                + BeerTable.COLS.SERVING_TEMPERATURE + " TEXT, "
+                + BeerTable.COLS.SERVING_TEMPERATURE_DISPLAY + " TEXT, "
+                + BeerTable.COLS.ORIGINAL_GRAVITY + " REAL, "
+                + BeerTable.COLS.LABELS_ICON + " TEXT, "
+                + BeerTable.COLS.LABELS_MEDIUM + " TEXT, "
+                + BeerTable.COLS.LABELS_LARGE + " TEXT, "
+                // additional association fields
+                + BeerTable.COLS.FAVORITE + " TEXT "
+                + ");";
+
+        sqLiteDatabase.execSQL(SQL_CREATE_BEER_TABLE);
     }
 
     @Override
