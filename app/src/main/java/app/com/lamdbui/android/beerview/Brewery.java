@@ -367,6 +367,9 @@ public class Brewery implements Parcelable {
         builder.append("established: " + mEstablished + "\n");
         builder.append("image_icon: " + mImagesIcon + "\n");
 
+        // additional fields
+        builder.append("favorite: " + (mIsFavorite ? "Y" : "N") + "\n");
+
         return builder.toString();
     }
 }

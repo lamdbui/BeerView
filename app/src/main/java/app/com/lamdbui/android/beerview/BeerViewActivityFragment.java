@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +33,8 @@ import retrofit2.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BeerViewActivityFragment extends Fragment {
+public class BeerViewActivityFragment extends Fragment
+    implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = BeerViewActivityFragment.class.getSimpleName();
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
@@ -126,7 +130,6 @@ public class BeerViewActivityFragment extends Fragment {
 
                     // TODO: Remove - for debug only
                     int m = 4;
-                    m = 5;
                 }
                 updateUI();
             }
@@ -171,6 +174,46 @@ public class BeerViewActivityFragment extends Fragment {
         else {
             mBreweryAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        //return null;
+
+        CursorLoader loader = new CursorLoader(
+                getActivity(),
+                BreweryContract.BreweryTable.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data != null && data.getCount() > 0) {
+            data.moveToFirst();
+            List<Brewery> cursorBreweries = new ArrayList<Brewery>();
+
+            while(!data.isAfterLast()) {
+
+                cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(data));
+
+                data.moveToNext();
+            }
+
+            mBreweries = cursorBreweries;
+            mBreweryAdapter.setBreweries(mBreweries);
+            mBreweryAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     private class BreweryHolder extends RecyclerView.ViewHolder
