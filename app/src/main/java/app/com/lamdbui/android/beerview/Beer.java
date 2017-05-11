@@ -86,6 +86,29 @@ public class Beer implements Parcelable {
         }
     };
 
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("id: " + mId + "\n");
+        builder.append("name: " + mName + "\n");
+        builder.append("nameDisplay: " + mNameDisplay + "\n");
+        builder.append("description: " + mDescription + "\n");
+        builder.append("abv: " + mAbv + "\n");
+        builder.append("glassware_id: " + mGlasswareId + "\n");
+        builder.append("srmId: " + mSrmId + "\n");
+        builder.append("availableId: " + mAvailableId + "\n");
+        builder.append("styleId: " + mStyleId + "\n");
+        builder.append("isOrganic: " + ((mIsOrganic) ? "Y" : "N") + "\n");
+        builder.append("servingTemperature: " + mServingTemperature + "\n");
+        builder.append("servingTemperatureDisplay: " + mServingTemperatureDisplay + "\n");
+        builder.append("originalGravity: " + mOriginalGravity + "\n");
+        builder.append("labelsIcon: " + mLabelsIcon + "\n");
+        builder.append("labelsMedium: " + mLabelsMedium + "\n");
+        builder.append("labelsLarge: " + mLabelsLarge + "\n");
+
+        return builder.toString();
+    }
+
     public String getId() {
         return mId;
     }

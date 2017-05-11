@@ -37,12 +37,15 @@ public class BeerViewActivityFragment extends Fragment {
 
     @BindView(R.id.map_button)
     Button mMapButton;
+    @BindView(R.id.show_beer_button)
+    Button mShowBeerButton;
     @BindView(R.id.brewery_recycler_view)
     RecyclerView mBreweryRecyclerView;
 
     private BreweryAdapter mBreweryAdapter;
 
     private List<Brewery> mBreweries;
+    private Beer mBeer;
 
     public BeerViewActivityFragment() {
     }
@@ -76,8 +79,8 @@ public class BeerViewActivityFragment extends Fragment {
             @Override
             public void onResponse(Call<BeerResponse> call, Response<BeerResponse> response) {
                 // TODO: Use real data here
-                Beer plinyTheYounger = response.body().getBeer();
-                int m = 4;
+                // Pliny the Younger
+                mBeer = response.body().getBeer();
             }
 
             @Override
@@ -144,11 +147,14 @@ public class BeerViewActivityFragment extends Fragment {
         mMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), BrewViewMapsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(BrewViewMapsActivity.ARG_BREWERIES, (ArrayList<Brewery>)mBreweries);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                startActivity(BrewViewMapsActivity.newIntent(getActivity(), mBreweries));
+            }
+        });
+
+        mShowBeerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
             }
         });
 

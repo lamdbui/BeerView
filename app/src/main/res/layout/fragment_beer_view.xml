@@ -14,6 +14,12 @@
         android:layout_height="wrap_content"
         android:text="GO TO MAP"/>
 
+    <Button
+        android:id="@+id/show_beer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SHOW BEER"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/brewery_recycler_view"
         android:layout_width="wrap_content"

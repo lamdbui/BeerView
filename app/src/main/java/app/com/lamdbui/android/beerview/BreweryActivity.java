@@ -56,8 +56,9 @@ public class BreweryActivity extends AppCompatActivity {
         mBrewery = bundle.getParcelable(ARG_BREWERY);
 
         mTextMessage = (TextView) findViewById(R.id.message);
+        mTextMessage.setText(mBrewery.toString());
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        mTextMessage.setText(mBrewery.toString());
     }
 }

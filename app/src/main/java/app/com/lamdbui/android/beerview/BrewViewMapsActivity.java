@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.Manifest;
 
@@ -30,6 +32,15 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
     private GoogleMap mMap;
 
     private List<Brewery> mBreweries;
+
+    public static Intent newIntent(Context context, List<Brewery> breweries) {
+        Intent intent = new Intent(context, BrewViewMapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(BrewViewMapsActivity.ARG_BREWERIES, (ArrayList<Brewery>)breweries);
+        intent.putExtras(bundle);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
