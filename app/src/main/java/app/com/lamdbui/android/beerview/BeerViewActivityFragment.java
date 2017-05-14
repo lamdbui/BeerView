@@ -39,6 +39,8 @@ public class BeerViewActivityFragment extends Fragment
     private static final String LOG_TAG = BeerViewActivityFragment.class.getSimpleName();
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
+    private static final int LOADER_BREWERY = 0;
+
     @BindView(R.id.map_button)
     Button mMapButton;
     @BindView(R.id.show_beer_button)
@@ -131,6 +133,7 @@ public class BeerViewActivityFragment extends Fragment
                     // TODO: Remove - for debug only
                     int m = 4;
                 }
+
                 updateUI();
             }
 
@@ -139,6 +142,9 @@ public class BeerViewActivityFragment extends Fragment
                 Log.e(LOG_TAG, t.toString());
             }
         });
+
+        // init our Loader
+        getLoaderManager().initLoader(LOADER_BREWERY, null, this);
     }
 
     @Override

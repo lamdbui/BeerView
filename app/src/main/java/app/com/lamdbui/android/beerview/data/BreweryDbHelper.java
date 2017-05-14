@@ -24,34 +24,6 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-//        public static final String ID = "id";
-//        public static final String NAME = "name";
-//        public static final String NAME_SHORT = "name_short";
-//        public static final String DESCRIPTION = "description";
-//        public static final String WEBSITE = "website";
-//        public static final String HOURS_OF_OPERATION = "hours_of_operation";
-//        public static final String ESTABLISHED = "established";
-//        public static final String IS_ORGANIC = "is_organic";
-//        public static final String IMAGES_ICON = "images_icon";
-//        public static final String IMAGES_MEDIUM = "images_medium";
-//        public static final String IMAGES_LARGE = "images_large";
-//        public static final String IMAGES_SQUARE_MEDIUM = "images_square_medium";
-//        public static final String IMAGES_SQUARE_LARGE = "images_square_large";
-//        public static final String ADDRESS = "address";
-//        public static final String LOCALITY = "locality";
-//        public static final String REGION = "region";
-//        public static final String POSTAL_CODE = "postal_code";
-//        public static final String PHONE = "phone";
-//        public static final String LATITUDE = "latitude";
-//        public static final String LONGITUDE = "longitude";
-//        public static final String IS_PRIMARY = "is_primary";
-//        public static final String IS_PLANNING = "is_planning";
-//        public static final String IS_CLOSED = "is_closed";
-//        public static final String OPEN_TO_PUBLIC = "open_to_public";
-//        public static final String LOCATION_TYPE = "location_type";
-//        public static final String LOCATION_TYPE_DISPLAY = "location_tyoe_display";
-//        public static final String COUNTRY_ISO_CODE = "country_iso_code";
-
         // Create the table for the Breweries
         final String SQL_CREATE_BREWERY_TABLE = "CREATE TABLE "
                 + BreweryTable.TABLE_NAME + " ("
