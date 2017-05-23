@@ -18,11 +18,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/BeerMapper.Theme">
         <activity
             android:name=".BeerViewActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/BeerMapper.Theme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -56,6 +56,11 @@
             android:exported="false"/>
 
         <activity android:name=".BeerDetailActivity">
+        </activity>
+        <activity
+            android:name=".BeerDetailActivity2"
+            android:label="@string/title_activity_beer_detail2"
+            android:theme="@style/BeerMapper.Theme.NoActionBar">
         </activity>
     </application>
 

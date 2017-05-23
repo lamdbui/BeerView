@@ -45,6 +45,8 @@ public class BeerViewActivityFragment extends Fragment
     Button mMapButton;
     @BindView(R.id.show_beer_button)
     Button mShowBeerButton;
+    @BindView(R.id.show_beer_button2)
+    Button mShowBeerButton2;
     @BindView(R.id.brewery_recycler_view)
     RecyclerView mBreweryRecyclerView;
 
@@ -167,6 +169,13 @@ public class BeerViewActivityFragment extends Fragment
             }
         });
 
+        mShowBeerButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(BeerDetailActivity2.newIntent(getActivity(), mBeer));
+            }
+        });
+
         mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
@@ -212,8 +221,9 @@ public class BeerViewActivityFragment extends Fragment
             }
 
             mBreweries = cursorBreweries;
-            mBreweryAdapter.setBreweries(mBreweries);
-            mBreweryAdapter.notifyDataSetChanged();
+            updateUI();
+            //mBreweryAdapter.setBreweries(mBreweries);
+            //mBreweryAdapter.notifyDataSetChanged();
         }
     }
 
