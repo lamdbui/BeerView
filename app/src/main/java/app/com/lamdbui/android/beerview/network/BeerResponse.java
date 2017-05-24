@@ -50,7 +50,7 @@ public class BeerResponse {
         @SerializedName("originalGravity")
         private String mOriginalGravity;
         @SerializedName("breweries")
-        private List<BreweryResponse> mBreweryResponses;
+        private List<BreweryResponse.BreweryData> mBreweryResponses;
         //private List<Brewery> mBreweries;
         //private List<BreweryLocationResponse.BreweryLocationData> mBreweries;
         @SerializedName("style")
@@ -108,7 +108,7 @@ public class BeerResponse {
 
         List<Brewery> breweries = new ArrayList<>();
 
-        for(BreweryResponse brewery : jsonData.mBreweryResponses) {
+        for(BreweryResponse.BreweryData brewery : jsonData.mBreweryResponses) {
             breweries.add(brewery.convertResponseToBrewery());
         }
         beer.setBreweries(breweries);

@@ -24,7 +24,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.google.android.gms.maps.MapView
-                android:id="@+id/brewery_map"
+                android:id="@+id/brewery_detail_map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 

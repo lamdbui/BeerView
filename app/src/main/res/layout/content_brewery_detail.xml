@@ -23,6 +23,14 @@
             style="@style/AppTheme.TextAppearance.Large"
             android:text="Russian RBC"/>
         <TextView
+            android:id="@+id/brewery_detail_established"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"
+            android:text="XXXX"/>
+        <TextView
             android:id="@+id/brewery_detail_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +47,15 @@
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
             android:text="(555)123-4567"/>
+
+        <TextView
+            android:id="@+id/brewery_detail_website"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"
+            android:text="http://www.russianriverbrewing.com"/>
 
         <TextView
             android:layout_width="match_parent"

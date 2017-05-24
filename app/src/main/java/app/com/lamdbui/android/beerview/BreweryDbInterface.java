@@ -2,6 +2,7 @@ package app.com.lamdbui.android.beerview;
 
 import app.com.lamdbui.android.beerview.network.BeerResponse;
 import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
+import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -23,6 +24,12 @@ public interface BreweryDbInterface {
             @Query("key") String apiKey,
             @Query("lat") double latitude,
             @Query("lng") double longitude);
+
+    @GET("brewery/{id}")
+    Call<BreweryResponse> getBrewery(
+            @Path("id") String id,
+            @Query("key") String apiKey,
+            @Query("withLocations") String yesOrNo);
 
     @GET("beer/{id}")
     Call<BeerResponse> getBeer(

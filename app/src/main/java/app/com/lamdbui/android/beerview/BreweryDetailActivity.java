@@ -8,24 +8,50 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class BreweryDetailActivity extends AppCompatActivity
     implements OnMapReadyCallback {
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private static final String ARG_BREWERY = "brewery";
 
-    private MapView mBreweryMapView;
+    @BindView(R.id.brewery_detail_map)
+    MapView mBreweryMapView;
+    @BindView(R.id.brewery_detail_name)
+    TextView mBreweryNameTextView;
+    @BindView(R.id.brewery_detail_established)
+    TextView mBreweryEstablishedTextView;
+    @BindView(R.id.brewery_detail_address)
+    TextView mBreweryAddressTextView;
+    @BindView(R.id.brewery_detail_phone)
+    TextView mBreweryPhoneTextView;
+    @BindView(R.id.brewery_detail_website)
+    TextView mBreweryWebsiteTextView;
+    @BindView(R.id.brewery_detail_description)
+    TextView mBreweryDescriptionTextView;
 
-    public static Intent newIntent(Context context) {
-        return new Intent(context, BreweryDetailActivity.class);
+    private Brewery mBrewery;
+
+    public static Intent newIntent(Context context, Brewery brewery) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_BREWERY, brewery);
+        Intent intent = new Intent(context, BreweryDetailActivity.class);
+        intent.putExtras(args);
+        return intent;
     }
 
     @Override
@@ -48,9 +74,15 @@ public class BreweryDetailActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-        mBreweryMapView = (MapView) findViewById(R.id.brewery_map);
+
+        mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
+
+        ButterKnife.bind(this);
+
         mBreweryMapView.onCreate(mapViewBundle);
         mBreweryMapView.getMapAsync(this);
+
+        updateUI();
     }
 
     @Override
@@ -86,7 +118,12 @@ public class BreweryDetailActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        // TODO: Remove the static location here and set zoom level
+        LatLng breweryLocation = new LatLng(38.4414632, -122.7117124);
+        CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
+        map.moveCamera(breweryMapPosition);
+        map.addMarker(new MarkerOptions().position(breweryLocation).title(mBrewery.getName()));
     }
 
     @Override
@@ -105,5 +142,14 @@ public class BreweryDetailActivity extends AppCompatActivity
     public void onLowMemory() {
         super.onLowMemory();
         mBreweryMapView.onLowMemory();
+    }
+
+    public void updateUI() {
+        mBreweryNameTextView.setText(mBrewery.getName());
+        mBreweryEstablishedTextView.setText(Integer.toString(mBrewery.getEstablished()));
+        //mBreweryAddressTextView.setText(mBrewery.get)
+        mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
+        mBreweryDescriptionTextView.setText(mBrewery.getDescription());
+        // TODO: Add address stuff from the Locations
     }
 }

@@ -25,6 +25,7 @@ import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.network.BeerResponse;
 import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
+import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -57,6 +58,7 @@ public class BeerViewActivityFragment extends Fragment
 
     private List<BreweryLocation> mBreweries;
     private Beer mBeer;
+    private Brewery mBrewery;
 
     public BeerViewActivityFragment() {
     }
@@ -100,6 +102,19 @@ public class BeerViewActivityFragment extends Fragment
             }
         });
 
+        Call<BreweryResponse> callBreweryById = breweryDbService.getBrewery("BSsTGw", API_KEY, "Y");
+        callBreweryById.enqueue(new Callback<BreweryResponse>() {
+            @Override
+            public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                mBrewery = response.body().getBrewery();
+            }
+
+            @Override
+            public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+            }
+        });
+
         Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
         callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
             @Override
@@ -134,9 +149,6 @@ public class BeerViewActivityFragment extends Fragment
 
                         cursorResults.moveToNext();
                     }
-
-                    // TODO: Remove - for debug only
-                    int m = 4;
                 }
 
                 updateUI();
@@ -182,7 +194,7 @@ public class BeerViewActivityFragment extends Fragment
         mShowBrewery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(BreweryDetailActivity.newIntent(getActivity()));
+                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery));
             }
         });
 
