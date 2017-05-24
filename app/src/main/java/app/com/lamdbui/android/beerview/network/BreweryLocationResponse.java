@@ -1,15 +1,17 @@
-package app.com.lamdbui.android.beerview;
+package app.com.lamdbui.android.beerview.network;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.BreweryLocation;
+
 /**
  * Created by lamdbui on 4/26/17.
  */
 
-public class BreweryResponse {
+public class BreweryLocationResponse {
 
     @SerializedName("currentPage")
     private int mCurrentPage;
@@ -18,7 +20,7 @@ public class BreweryResponse {
     @SerializedName("totalResults")
     private int mTotalResults;
     @SerializedName("data")
-    private List<BreweryData> mData;
+    private List<BreweryLocationData> mData;
 
     public int getCurrentPage() {
         return mCurrentPage;
@@ -44,62 +46,62 @@ public class BreweryResponse {
         mTotalResults = totalResults;
     }
 
-    public List<BreweryData> getData() {
+    public List<BreweryLocationData> getData() {
         return mData;
     }
 
-    public void setData(List<BreweryData> data) {
+    public void setData(List<BreweryLocationData> data) {
         mData = data;
     }
 
-    // convert our response to a flattened Brewery object
-    public Brewery convertResponseToBrewery(BreweryData data) {
-        Brewery brewery = new Brewery();
+    // convert our response to a flattened BreweryLocation object
+    public BreweryLocation convertResponseToBreweryLocation(BreweryLocationData data) {
+        BreweryLocation breweryLocation = new BreweryLocation();
 
-        brewery.setId(data.getBrewery().getId());
-        brewery.setName(data.getBrewery().getName());
-        brewery.setNameShort(data.getBrewery().getNameShortDisplay());
-        brewery.setDescription(data.getBrewery().getDescription());
-        brewery.setWebsite(data.getBrewery().getWebsite());
+        breweryLocation.setId(data.getBrewery().getId());
+        breweryLocation.setName(data.getBrewery().getName());
+        breweryLocation.setNameShort(data.getBrewery().getNameShortDisplay());
+        breweryLocation.setDescription(data.getBrewery().getDescription());
+        breweryLocation.setWebsite(data.getBrewery().getWebsite());
         if(data.getBrewery().getEstablished() != null)
-            brewery.setEstablished(Integer.parseInt(data.getBrewery().getEstablished()));
-        brewery.setOrganic((data.getBrewery().getIsOrganic().equals("Y")) ? true : false);
+            breweryLocation.setEstablished(Integer.parseInt(data.getBrewery().getEstablished()));
+        breweryLocation.setOrganic((data.getBrewery().getIsOrganic().equals("Y")) ? true : false);
         if(data.getBrewery().getImages() != null) {
-            brewery.setImagesIcon(data.getBrewery().getImages().getIconUrl());
-            brewery.setImagesMedium(data.getBrewery().getImages().getMediumUrl());
-            brewery.setImagesLarge(data.getBrewery().getImages().getLargeUrl());
-            brewery.setImagesSquareMedium(data.getBrewery().getImages().getSquareMediumUrl());
-            brewery.setImagesSquareLarge(data.getBrewery().getImages().getSquareLargeUrl());
+            breweryLocation.setImagesIcon(data.getBrewery().getImages().getIconUrl());
+            breweryLocation.setImagesMedium(data.getBrewery().getImages().getMediumUrl());
+            breweryLocation.setImagesLarge(data.getBrewery().getImages().getLargeUrl());
+            breweryLocation.setImagesSquareMedium(data.getBrewery().getImages().getSquareMediumUrl());
+            breweryLocation.setImagesSquareLarge(data.getBrewery().getImages().getSquareLargeUrl());
         }
-        brewery.setStreetAddress(data.getStreetAddress());
-        brewery.setHoursOfOperation(data.getHoursOfOperation());
-        brewery.setLocality(data.getLocality());
-        brewery.setRegion(data.getRegion());
-        brewery.setPostalCode(data.getPostalCode());
-        brewery.setPhone(data.getPhone());
-        brewery.setLatitude(data.getLatitude());
-        brewery.setLongitude(data.getLongitude());
-        brewery.setPrimary((data.getIsPrimary().equals("Y")) ? true : false);
-        brewery.setPlanning((data.getInPlanning().equals("Y")) ? true : false);
-        brewery.setClosed((data.getIsClosed().equals("Y")) ? true : false);
-        brewery.setOpenToPublic((data.getOpenToPublic().equals("Y")) ? true : false);
-        brewery.setLocationType(data.getLocationType());
-        brewery.setLocationTypeDisplay(data.getLocationTypeDisplay());
-        brewery.setCountryIsoCode(data.getCountryIsoCode());
+        breweryLocation.setStreetAddress(data.getStreetAddress());
+        breweryLocation.setHoursOfOperation(data.getHoursOfOperation());
+        breweryLocation.setLocality(data.getLocality());
+        breweryLocation.setRegion(data.getRegion());
+        breweryLocation.setPostalCode(data.getPostalCode());
+        breweryLocation.setPhone(data.getPhone());
+        breweryLocation.setLatitude(data.getLatitude());
+        breweryLocation.setLongitude(data.getLongitude());
+        breweryLocation.setPrimary((data.getIsPrimary().equals("Y")) ? true : false);
+        breweryLocation.setPlanning((data.getInPlanning().equals("Y")) ? true : false);
+        breweryLocation.setClosed((data.getIsClosed().equals("Y")) ? true : false);
+        breweryLocation.setOpenToPublic((data.getOpenToPublic().equals("Y")) ? true : false);
+        breweryLocation.setLocationType(data.getLocationType());
+        breweryLocation.setLocationTypeDisplay(data.getLocationTypeDisplay());
+        breweryLocation.setCountryIsoCode(data.getCountryIsoCode());
 
-        return brewery;
+        return breweryLocation;
     }
-    public List<Brewery> getBreweries() {
-        List<Brewery> breweries = new ArrayList<>();
+    public List<BreweryLocation> getBreweries() {
+        List<BreweryLocation> breweries = new ArrayList<>();
 
-        for(BreweryData data : mData) {
-            breweries.add(convertResponseToBrewery(data));
+        for(BreweryLocationData data : mData) {
+            breweries.add(convertResponseToBreweryLocation(data));
         }
 
         return breweries;
     }
 
-    private class BreweryData {
+    public class BreweryLocationData {
         @SerializedName("id")
         private String mId;
         @SerializedName("name")
@@ -136,8 +138,35 @@ public class BreweryResponse {
         private String mLocationTypeDisplay;
         @SerializedName("countryIsoCode")
         private String mCountryIsoCode;
+        // Do we need this one?
         @SerializedName("brewery")
         private JsonBreweryData mBrewery;
+
+        // convert our response to a flattened BreweryLocation object
+        public BreweryLocation convertToBreweryLocation() {
+            BreweryLocation breweryLocation = new BreweryLocation();
+
+            breweryLocation.setId(mId);
+            breweryLocation.setName(mName);
+            breweryLocation.setStreetAddress(mStreetAddress);
+            breweryLocation.setLocality(mLocality);
+            breweryLocation.setRegion(mRegion);
+            breweryLocation.setPostalCode(mPostalCode);
+            breweryLocation.setPhone(mPhone);
+            breweryLocation.setWebsite(mWebsite);
+            breweryLocation.setHoursOfOperation(mHoursOfOperation);
+            breweryLocation.setLatitude(mLatitude);
+            breweryLocation.setLongitude(mLongitude);
+            breweryLocation.setPrimary(mIsPrimary.equals("Y") ? true : false);
+            breweryLocation.setPlanning(mInPlanning.equals("Y") ? true : false);
+            breweryLocation.setClosed(mIsClosed.equals("Y") ? true : false);
+            breweryLocation.setOpenToPublic(mOpenToPublic.equals("Y") ? true : false);
+            breweryLocation.setLocationType(mLocationType);
+            breweryLocation.setLocationTypeDisplay(mLocationTypeDisplay);
+            breweryLocation.setCountryIsoCode(mCountryIsoCode);
+
+            return breweryLocation;
+        }
 
         public String getId() {
             return mId;
@@ -292,7 +321,7 @@ public class BreweryResponse {
         }
     }
 
-    private class JsonBreweryData {
+    public class JsonBreweryData {
         @SerializedName("id")
         private String mId;
         @SerializedName("name")
@@ -385,7 +414,7 @@ public class BreweryResponse {
             mImages = images;
         }
 
-        private class JsonBreweryImages {
+        public class JsonBreweryImages {
             @SerializedName("icon")
             private String mIconUrl;
             @SerializedName("medium")

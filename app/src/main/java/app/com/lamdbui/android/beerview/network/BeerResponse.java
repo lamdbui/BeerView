@@ -1,6 +1,13 @@
-package app.com.lamdbui.android.beerview;
+package app.com.lamdbui.android.beerview.network;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import app.com.lamdbui.android.beerview.Beer;
+import app.com.lamdbui.android.beerview.Brewery;
+import app.com.lamdbui.android.beerview.BreweryLocation;
 
 /**
  * Created by lamdbui on 5/8/17.
@@ -42,6 +49,9 @@ public class BeerResponse {
         private String mServingTemperatureDisplay;
         @SerializedName("originalGravity")
         private String mOriginalGravity;
+        @SerializedName("breweries")
+        private List<BreweryResponse> mBreweries;
+        //private List<BreweryLocationResponse.BreweryLocationData> mBreweries;
     }
 
     private class JsonBeerLabels {
@@ -75,6 +85,13 @@ public class BeerResponse {
         beer.setLabelsIcon(jsonData.mLabels.mIcon);
         beer.setLabelsMedium(jsonData.mLabels.mIcon);
         beer.setLabelsLarge(jsonData.mLabels.mLarge);
+
+//        List<Brewery> breweries = new ArrayList<>();
+//
+//        for(BreweryResponse brewery : jsonData.mBreweries) {
+//            breweryLocations.add(brewery.convertResponseToBrewery());
+//        }
+//        beer.setBreweries(breweryLocations);
 
         return beer;
     }

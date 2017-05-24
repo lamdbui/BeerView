@@ -15,7 +15,7 @@ public class BreweryActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
-    private Brewery mBrewery;
+    private BreweryLocation mBreweryLocation;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -38,10 +38,10 @@ public class BreweryActivity extends AppCompatActivity {
 
     };
 
-    public static Intent newIntent(Context context, Brewery brewery) {
+    public static Intent newIntent(Context context, BreweryLocation breweryLocation) {
         Intent intent = new Intent(context, BreweryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BreweryActivity.ARG_BREWERY, brewery);
+        bundle.putParcelable(BreweryActivity.ARG_BREWERY, breweryLocation);
         intent.putExtras(bundle);
 
         return intent;
@@ -53,10 +53,10 @@ public class BreweryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_brewery);
 
         Bundle bundle = getIntent().getExtras();
-        mBrewery = bundle.getParcelable(ARG_BREWERY);
+        mBreweryLocation = bundle.getParcelable(ARG_BREWERY);
 
         mTextMessage = (TextView) findViewById(R.id.message);
-        mTextMessage.setText(mBrewery.toString());
+        mTextMessage.setText(mBreweryLocation.toString());
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

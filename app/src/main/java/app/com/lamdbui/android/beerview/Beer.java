@@ -3,6 +3,9 @@ package app.com.lamdbui.android.beerview;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by lamdbui on 5/8/17.
  */
@@ -25,6 +28,7 @@ public class Beer implements Parcelable {
     private String mLabelsIcon;
     private String mLabelsMedium;
     private String mLabelsLarge;
+    private List<BreweryLocation> mBreweries;
 
     public Beer() {
 
@@ -47,6 +51,8 @@ public class Beer implements Parcelable {
         mLabelsIcon = in.readString();
         mLabelsMedium = in.readString();
         mLabelsLarge = in.readString();
+        mBreweries = new ArrayList<BreweryLocation>();
+        in.readTypedList(mBreweries, BreweryLocation.CREATOR);
     }
 
     @Override
@@ -72,6 +78,7 @@ public class Beer implements Parcelable {
         parcel.writeString(mLabelsIcon);
         parcel.writeString(mLabelsMedium);
         parcel.writeString(mLabelsLarge);
+        parcel.writeTypedList(mBreweries);
     }
 
     public static final Creator<Beer> CREATOR = new Parcelable.Creator<Beer>() {
@@ -105,6 +112,7 @@ public class Beer implements Parcelable {
         builder.append("labelsIcon: " + mLabelsIcon + "\n");
         builder.append("labelsMedium: " + mLabelsMedium + "\n");
         builder.append("labelsLarge: " + mLabelsLarge + "\n");
+        builder.append("breweries: " + mBreweries.size() + "\n");
 
         return builder.toString();
     }
@@ -235,5 +243,13 @@ public class Beer implements Parcelable {
 
     public void setLabelsLarge(String labelsLarge) {
         mLabelsLarge = labelsLarge;
+    }
+
+    public List<BreweryLocation> getBreweries() {
+        return mBreweries;
+    }
+
+    public void setBreweries(List<BreweryLocation> breweries) {
+        mBreweries = breweries;
     }
 }

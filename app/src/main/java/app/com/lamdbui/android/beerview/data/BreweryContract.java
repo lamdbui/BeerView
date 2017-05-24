@@ -64,7 +64,7 @@ public class BreweryContract {
         }
     }
 
-    // class that defines the Brewery Table Schema
+    // class that defines the BreweryLocation Table Schema
     public static final class BreweryTable implements BaseColumns {
 
         public static final String TABLE_NAME = "brewery";
@@ -82,7 +82,7 @@ public class BreweryContract {
             // extra field to identify associations
             public static final String FAVORITE = "favorite";
 
-            // from the Brewery class
+            // from the BreweryLocation class
             public static final String ID = "id";
             public static final String NAME = "name";
             public static final String NAME_SHORT = "name_short";

@@ -17,13 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
+import app.com.lamdbui.android.beerview.network.BeerResponse;
+import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -52,7 +53,7 @@ public class BeerViewActivityFragment extends Fragment
 
     private BreweryAdapter mBreweryAdapter;
 
-    private List<Brewery> mBreweries;
+    private List<BreweryLocation> mBreweries;
     private Beer mBeer;
 
     public BeerViewActivityFragment() {
@@ -67,22 +68,22 @@ public class BeerViewActivityFragment extends Fragment
         BreweryDbInterface breweryDbService =
                 BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
-//        Call<BreweryResponse> call = breweryDbService.getBreweries(API_KEY, "94122");
-//        call.enqueue(new Callback<BreweryResponse>() {
+//        Call<BreweryLocationResponse> call = breweryDbService.getBreweries(API_KEY, "94122");
+//        call.enqueue(new Callback<BreweryLocationResponse>() {
 //            @Override
-//            public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+//            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
 //                // TODO: Maybe check for bad data?
 //                mBreweries = response.body().getData();
 //                updateUI();
 //            }
 //
 //            @Override
-//            public void onFailure(Call<BreweryResponse> call, Throwable t) {
+//            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
 //                Log.e(LOG_TAG, t.toString());
 //            }
 //        });
 
-        Call<BeerResponse> callBeerById = breweryDbService.getBeer("9UG4pg", API_KEY);
+        Call<BeerResponse> callBeerById = breweryDbService.getBeer("9UG4pg", API_KEY, "Y");
         callBeerById.enqueue(new Callback<BeerResponse>() {
             @Override
             public void onResponse(Call<BeerResponse> call, Response<BeerResponse> response) {
@@ -97,10 +98,10 @@ public class BeerViewActivityFragment extends Fragment
             }
         });
 
-        Call<BreweryResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
-        callBreweriesNearby.enqueue(new Callback<BreweryResponse>() {
+        Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
+        callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
             @Override
-            public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
                 mBreweries = response.body().getBreweries();
 
                 // Add breweries to the database
@@ -123,7 +124,7 @@ public class BeerViewActivityFragment extends Fragment
                 if(cursorResults != null && cursorResults.getCount() > 0) {
                     cursorResults.moveToFirst();
 
-                    List<Brewery> cursorBreweries = new ArrayList<Brewery>();
+                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
 
                     while(!cursorResults.isAfterLast()) {
 
@@ -140,7 +141,7 @@ public class BeerViewActivityFragment extends Fragment
             }
 
             @Override
-            public void onFailure(Call<BreweryResponse> call, Throwable t) {
+            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
                 Log.e(LOG_TAG, t.toString());
             }
         });
@@ -211,7 +212,7 @@ public class BeerViewActivityFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data != null && data.getCount() > 0) {
             data.moveToFirst();
-            List<Brewery> cursorBreweries = new ArrayList<Brewery>();
+            List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
 
             while(!data.isAfterLast()) {
 
@@ -237,7 +238,7 @@ public class BeerViewActivityFragment extends Fragment
 
         private TextView mBodyTextView;
 
-        private Brewery mBrewery;
+        private BreweryLocation mBreweryLocation;
 
         public BreweryHolder(View itemView) {
             super(itemView);
@@ -246,23 +247,23 @@ public class BeerViewActivityFragment extends Fragment
             mBodyTextView.setOnClickListener(this);
         }
 
-        public void bind(Brewery brewery) {
-            mBrewery = brewery;
-            mBodyTextView.setText(mBrewery.toString());
+        public void bind(BreweryLocation breweryLocation) {
+            mBreweryLocation = breweryLocation;
+            mBodyTextView.setText(mBreweryLocation.toString());
         }
 
         @Override
         public void onClick(View view) {
-            Intent intent = BreweryActivity.newIntent(getActivity(), mBrewery);
+            Intent intent = BreweryActivity.newIntent(getActivity(), mBreweryLocation);
             startActivity(intent);
         }
     }
 
     private class BreweryAdapter extends RecyclerView.Adapter<BreweryHolder> {
 
-        private List<Brewery> mBreweries;
+        private List<BreweryLocation> mBreweries;
 
-        public BreweryAdapter(List<Brewery> breweries) {
+        public BreweryAdapter(List<BreweryLocation> breweries) {
             mBreweries = breweries;
         }
 
@@ -276,8 +277,8 @@ public class BeerViewActivityFragment extends Fragment
 
         @Override
         public void onBindViewHolder(BreweryHolder holder, int position) {
-            Brewery brewery = mBreweries.get(position);
-            holder.bind(brewery);
+            BreweryLocation breweryLocation = mBreweries.get(position);
+            holder.bind(breweryLocation);
         }
 
         @Override
@@ -285,7 +286,7 @@ public class BeerViewActivityFragment extends Fragment
             return mBreweries.size();
         }
 
-        public void setBreweries(List<Brewery> breweries) {
+        public void setBreweries(List<BreweryLocation> breweries) {
             mBreweries = breweries;
         }
     }

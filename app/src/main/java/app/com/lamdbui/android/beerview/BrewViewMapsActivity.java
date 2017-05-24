@@ -16,13 +16,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Manifest;
 
 public class BrewViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,12 +29,12 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
 
     private GoogleMap mMap;
 
-    private List<Brewery> mBreweries;
+    private List<BreweryLocation> mBreweries;
 
-    public static Intent newIntent(Context context, List<Brewery> breweries) {
+    public static Intent newIntent(Context context, List<BreweryLocation> breweries) {
         Intent intent = new Intent(context, BrewViewMapsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(BrewViewMapsActivity.ARG_BREWERIES, (ArrayList<Brewery>)breweries);
+        bundle.putParcelableArrayList(BrewViewMapsActivity.ARG_BREWERIES, (ArrayList<BreweryLocation>)breweries);
         intent.putExtras(bundle);
 
         return intent;
@@ -84,13 +82,13 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
             mMap.setMyLocationEnabled(true);
         }
 
-        for(Brewery brewery : mBreweries) {
-            LatLng location = new LatLng(brewery.getLatitude(), brewery.getLongitude());
+        for(BreweryLocation breweryLocation : mBreweries) {
+            LatLng location = new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title(brewery.getName())
+                    .title(breweryLocation.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
-            marker.setTag(brewery);
+            marker.setTag(breweryLocation);
         }
 
         //LatLngBounds mapBounds = new LatLngBounds()
@@ -101,10 +99,10 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                // get the Brewery object back
-                Brewery brewery = (Brewery) marker.getTag();
+                // get the BreweryLocation object back
+                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
-                Intent intent = BreweryActivity.newIntent(BrewViewMapsActivity.this, brewery);
+                Intent intent = BreweryActivity.newIntent(BrewViewMapsActivity.this, breweryLocation);
 
                 startActivity(intent);
             }

@@ -10,15 +10,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import app.com.lamdbui.android.beerview.Brewery;
-
 /**
  * Created by lamdbui on 5/9/17.
  */
 
 public class BreweryProvider extends ContentProvider {
 
-    // Brewery Content
+    // BreweryLocation Content
     public static final int BREWERY = 100;
     public static final int BREWERY_FAVORITES = 101;
 
@@ -35,7 +33,7 @@ public class BreweryProvider extends ContentProvider {
         final String authority = BreweryContract.CONTENT_AUTHORITY;
 
         // add our URI paths
-        // Brewery
+        // BreweryLocation
         matcher.addURI(authority,
                 BreweryContract.PATH_BREWERY,
                 BREWERY);

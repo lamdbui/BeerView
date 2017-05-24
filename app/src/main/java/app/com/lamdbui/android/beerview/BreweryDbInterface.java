@@ -1,5 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
+import app.com.lamdbui.android.beerview.network.BeerResponse;
+import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -12,12 +14,12 @@ import retrofit2.http.Query;
 public interface BreweryDbInterface {
 
     @GET("locations")
-    Call<BreweryResponse> getBreweries(
+    Call<BreweryLocationResponse> getBreweries(
             @Query("key") String apiKey,
             @Query("postalCode") String postalCode);
 
     @GET("search/geo/point")
-    Call<BreweryResponse> getBreweriesNearby(
+    Call<BreweryLocationResponse> getBreweriesNearby(
             @Query("key") String apiKey,
             @Query("lat") double latitude,
             @Query("lng") double longitude);
@@ -25,5 +27,6 @@ public interface BreweryDbInterface {
     @GET("beer/{id}")
     Call<BeerResponse> getBeer(
             @Path("id") String id,
-            @Query("key") String apiKey);
+            @Query("key") String apiKey,
+            @Query("withBreweries") String yesOrNo);
 }
