@@ -53,6 +53,8 @@ public class BeerResponse {
         private List<BreweryResponse> mBreweryResponses;
         //private List<Brewery> mBreweries;
         //private List<BreweryLocationResponse.BreweryLocationData> mBreweries;
+        @SerializedName("style")
+        private JsonBeerStyle mBeerStyle;
     }
 
     private class JsonBeerLabels {
@@ -62,6 +64,19 @@ public class BeerResponse {
         private String mMedium;
         @SerializedName("large")
         private String mLarge;
+    }
+
+    private class JsonBeerStyle {
+        @SerializedName("id")
+        private String mId;
+        @SerializedName("categoryId")
+        private String mCategoryId;
+        @SerializedName("name")
+        private String mName;
+        @SerializedName("shortName")
+        private String mShortName;
+        @SerializedName("description")
+        private String mDescription;
     }
 
     public Beer convertResponseToBeer(BeerResponse response) {
@@ -86,6 +101,10 @@ public class BeerResponse {
         beer.setLabelsIcon(jsonData.mLabels.mIcon);
         beer.setLabelsMedium(jsonData.mLabels.mIcon);
         beer.setLabelsLarge(jsonData.mLabels.mLarge);
+        beer.setBeerStyleId(Integer.parseInt(jsonData.mBeerStyle.mId));
+        beer.setBeerStyleName(jsonData.mBeerStyle.mName);
+        beer.setBeerStyleShortName(jsonData.mBeerStyle.mShortName);
+        beer.setBeerStyleDescription(jsonData.mBeerStyle.mDescription);
 
         List<Brewery> breweries = new ArrayList<>();
 

@@ -28,7 +28,12 @@ public class Beer implements Parcelable {
     private String mLabelsIcon;
     private String mLabelsMedium;
     private String mLabelsLarge;
+    private int mBeerStyleId;
+    private String mBeerStyleName;
+    private String mBeerStyleShortName;
+    private String mBeerStyleDescription;
     private List<Brewery> mBreweries;
+
 
     public Beer() {
 
@@ -51,6 +56,10 @@ public class Beer implements Parcelable {
         mLabelsIcon = in.readString();
         mLabelsMedium = in.readString();
         mLabelsLarge = in.readString();
+        mBeerStyleId = in.readInt();
+        mBeerStyleName = in.readString();
+        mBeerStyleShortName = in.readString();
+        mBeerStyleDescription = in.readString();
         mBreweries = new ArrayList<Brewery>();
         in.readTypedList(mBreweries, Brewery.CREATOR);
     }
@@ -78,6 +87,10 @@ public class Beer implements Parcelable {
         parcel.writeString(mLabelsIcon);
         parcel.writeString(mLabelsMedium);
         parcel.writeString(mLabelsLarge);
+        parcel.writeInt(mBeerStyleId);
+        parcel.writeString(mBeerStyleName);
+        parcel.writeString(mBeerStyleShortName);
+        parcel.writeString(mBeerStyleDescription);
         parcel.writeTypedList(mBreweries);
     }
 
@@ -112,6 +125,10 @@ public class Beer implements Parcelable {
         builder.append("labelsIcon: " + mLabelsIcon + "\n");
         builder.append("labelsMedium: " + mLabelsMedium + "\n");
         builder.append("labelsLarge: " + mLabelsLarge + "\n");
+        builder.append("beerStyleId: " + mBeerStyleId + "\n");
+        builder.append("beerStyleName: " + mBeerStyleName + "\n");
+        builder.append("beerStyleShortName: " + mBeerStyleShortName + "\n");
+        builder.append("beerStyleDescription: " + mBeerStyleDescription + "\n");
         builder.append("breweries: " + ((mBreweries != null) ? mBreweries.size() : 0) + "\n");
 
         return builder.toString();
@@ -243,6 +260,38 @@ public class Beer implements Parcelable {
 
     public void setLabelsLarge(String labelsLarge) {
         mLabelsLarge = labelsLarge;
+    }
+
+    public int getBeerStyleId() {
+        return mBeerStyleId;
+    }
+
+    public void setBeerStyleId(int beerStyleId) {
+        mBeerStyleId = beerStyleId;
+    }
+
+    public String getBeerStyleName() {
+        return mBeerStyleName;
+    }
+
+    public void setBeerStyleName(String beerStyleName) {
+        mBeerStyleName = beerStyleName;
+    }
+
+    public String getBeerStyleShortName() {
+        return mBeerStyleShortName;
+    }
+
+    public void setBeerStyleShortName(String beerStyleShortName) {
+        mBeerStyleShortName = beerStyleShortName;
+    }
+
+    public String getBeerStyleDescription() {
+        return mBeerStyleDescription;
+    }
+
+    public void setBeerStyleDescription(String beerStyleDescription) {
+        mBeerStyleDescription = beerStyleDescription;
     }
 
     public List<Brewery> getBreweries() {

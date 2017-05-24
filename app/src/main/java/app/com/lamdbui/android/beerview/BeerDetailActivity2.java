@@ -23,6 +23,8 @@ public class BeerDetailActivity2 extends AppCompatActivity {
     TextView mBeerNameTextView;
     @BindView(R.id.beer_detail_brewery)
     TextView mBeerBreweryTextView;
+    @BindView(R.id.beer_detail_abv)
+    TextView mBeerAbvTextView;
     @BindView(R.id.beer_detail_type)
     TextView mBeerTypeTextView;
     @BindView(R.id.beer_detail_ibu)
@@ -74,6 +76,8 @@ public class BeerDetailActivity2 extends AppCompatActivity {
         mBeerNameTextView.setText(mBeer.getNameDisplay());
         Brewery brewery = mBeer.getBreweries().get(0);
         mBeerBreweryTextView.setText(brewery.getName());
+        mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + "% ABV");
+        mBeerTypeTextView.setText(mBeer.getBeerStyleName());
         //mBeerTypeTextView.setText(mBeer.get)
         //mBeerIBUTextView.setText(mBeer.get)
         mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));

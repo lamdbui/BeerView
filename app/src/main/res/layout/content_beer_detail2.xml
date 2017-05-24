@@ -33,6 +33,14 @@
             android:text="Russian River Brewing"/>
 
         <TextView
+            android:id="@+id/beer_detail_abv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"/>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
