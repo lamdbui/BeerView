@@ -22,6 +22,16 @@
             android:layout_marginRight="@dimen/text_margin"
             style="@style/AppTheme.TextAppearance.Large"
             android:text="Russian RBC"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"
+            android:textStyle="bold"
+            android:text="DETAILS"/>
+
         <TextView
             android:id="@+id/brewery_detail_established"
             android:layout_width="match_parent"
@@ -31,13 +41,20 @@
             style="?android:textAppearanceSmall"
             android:text="XXXX"/>
         <TextView
-            android:id="@+id/brewery_detail_address"
+            android:id="@+id/brewery_detail_address_line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
             android:text="1234 I CAN HAZ"/>
+        <TextView
+            android:id="@+id/brewery_detail_address_line2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"/>
 
         <TextView
             android:id="@+id/brewery_detail_phone"
@@ -46,6 +63,7 @@
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
+            android:autoLink="phone"
             android:text="(555)123-4567"/>
 
         <TextView
@@ -54,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:autoLink="web"
             style="?android:textAppearanceSmall"
             android:text="http://www.russianriverbrewing.com"/>
 

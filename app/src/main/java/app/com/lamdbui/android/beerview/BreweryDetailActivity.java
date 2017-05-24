@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,8 +37,10 @@ public class BreweryDetailActivity extends AppCompatActivity
     TextView mBreweryNameTextView;
     @BindView(R.id.brewery_detail_established)
     TextView mBreweryEstablishedTextView;
-    @BindView(R.id.brewery_detail_address)
-    TextView mBreweryAddressTextView;
+    @BindView(R.id.brewery_detail_address_line1)
+    TextView mBreweryAddressLine1TextView;
+    @BindView(R.id.brewery_detail_address_line2)
+    TextView mBreweryAddressLine2TextView;
     @BindView(R.id.brewery_detail_phone)
     TextView mBreweryPhoneTextView;
     @BindView(R.id.brewery_detail_website)
@@ -60,6 +64,7 @@ public class BreweryDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_brewery_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +129,9 @@ public class BreweryDetailActivity extends AppCompatActivity
         CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
         map.moveCamera(breweryMapPosition);
         map.addMarker(new MarkerOptions().position(breweryLocation).title(mBrewery.getName()));
+
+        // disable the little map navigation toolbar
+        map.getUiSettings().setMapToolbarEnabled(false);
     }
 
     @Override
@@ -146,10 +154,28 @@ public class BreweryDetailActivity extends AppCompatActivity
 
     public void updateUI() {
         mBreweryNameTextView.setText(mBrewery.getName());
-        mBreweryEstablishedTextView.setText(Integer.toString(mBrewery.getEstablished()));
-        //mBreweryAddressTextView.setText(mBrewery.get)
+        mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
+
+        BreweryLocation mainBreweryLocation = getMainBreweryLocation();
+        mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
+        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
+                + mainBreweryLocation.getRegion() + " "
+                + mainBreweryLocation.getPostalCode());
+        mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
         mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
         mBreweryDescriptionTextView.setText(mBrewery.getDescription());
-        // TODO: Add address stuff from the Locations
+    }
+
+    public BreweryLocation getMainBreweryLocation() {
+        if(mBrewery != null) {
+
+            List<BreweryLocation> breweryLocations = mBrewery.getLocations();
+
+            // we assume that the first location is the main location for the Brewery
+            if(breweryLocations.size() > 0) {
+                return breweryLocations.get(0);
+            }
+        }
+        return null;
     }
 }
