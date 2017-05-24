@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BeerResponse;
 import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
@@ -30,6 +31,12 @@ public interface BreweryDbInterface {
             @Path("id") String id,
             @Query("key") String apiKey,
             @Query("withLocations") String yesOrNo);
+
+    @GET("brewery/{id}/beers")
+    Call<BeerListResponse> getBeersAtBrewery(
+            @Path("id") String id,
+            @Query("key") String apiKey,
+            @Query("withBreweries") String yesOrNo);
 
     @GET("beer/{id}")
     Call<BeerResponse> getBeer(

@@ -19,7 +19,7 @@ public class BeerResponse {
     private String mMessage;
     @SerializedName("data")
     private BeerData mData;
-
+/*
     private class BeerData {
         @SerializedName("id")
         private String mId;
@@ -51,8 +51,6 @@ public class BeerResponse {
         private String mOriginalGravity;
         @SerializedName("breweries")
         private List<BreweryResponse.BreweryData> mBreweryResponses;
-        //private List<Brewery> mBreweries;
-        //private List<BreweryLocationResponse.BreweryLocationData> mBreweries;
         @SerializedName("style")
         private JsonBeerStyle mBeerStyle;
     }
@@ -77,8 +75,9 @@ public class BeerResponse {
         private String mShortName;
         @SerializedName("description")
         private String mDescription;
-    }
+    }*/
 
+/*
     public Beer convertResponseToBeer(BeerResponse response) {
 
         BeerData jsonData = response.mData;
@@ -114,9 +113,9 @@ public class BeerResponse {
         beer.setBreweries(breweries);
 
         return beer;
-    }
+    }*/
 
     public Beer getBeer() {
-        return convertResponseToBeer(this);
+        return mData.convertDataToBeer();
     }
 }

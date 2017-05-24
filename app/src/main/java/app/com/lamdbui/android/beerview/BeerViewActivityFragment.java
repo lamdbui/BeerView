@@ -23,6 +23,7 @@ import java.util.List;
 
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
+import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BeerResponse;
 import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
@@ -59,6 +60,7 @@ public class BeerViewActivityFragment extends Fragment
     private List<BreweryLocation> mBreweries;
     private Beer mBeer;
     private Brewery mBrewery;
+    private List<Beer> mBreweryBeers;
 
     public BeerViewActivityFragment() {
     }
@@ -68,6 +70,7 @@ public class BeerViewActivityFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         mBreweries = new ArrayList<>();
+        mBreweryBeers = new ArrayList<>();
 
         BreweryDbInterface breweryDbService =
                 BreweryDbClient.getClient().create(BreweryDbInterface.class);
@@ -86,6 +89,18 @@ public class BeerViewActivityFragment extends Fragment
 //                Log.e(LOG_TAG, t.toString());
 //            }
 //        });
+
+        Call<BeerListResponse> callBeersAtBrewery = breweryDbService.getBeersAtBrewery("BSsTGw", API_KEY, "Y");
+        callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+            @Override
+            public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                mBreweryBeers = response.body().getBeerList();
+            }
+
+            @Override
+            public void onFailure(Call<BeerListResponse> call, Throwable t) {
+            }
+        });
 
         Call<BeerResponse> callBeerById = breweryDbService.getBeer("9UG4pg", API_KEY, "Y");
         callBeerById.enqueue(new Callback<BeerResponse>() {
