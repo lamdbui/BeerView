@@ -28,7 +28,7 @@ public class Beer implements Parcelable {
     private String mLabelsIcon;
     private String mLabelsMedium;
     private String mLabelsLarge;
-    private List<BreweryLocation> mBreweries;
+    private List<Brewery> mBreweries;
 
     public Beer() {
 
@@ -51,8 +51,8 @@ public class Beer implements Parcelable {
         mLabelsIcon = in.readString();
         mLabelsMedium = in.readString();
         mLabelsLarge = in.readString();
-        mBreweries = new ArrayList<BreweryLocation>();
-        in.readTypedList(mBreweries, BreweryLocation.CREATOR);
+        mBreweries = new ArrayList<Brewery>();
+        in.readTypedList(mBreweries, Brewery.CREATOR);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Beer implements Parcelable {
         builder.append("labelsIcon: " + mLabelsIcon + "\n");
         builder.append("labelsMedium: " + mLabelsMedium + "\n");
         builder.append("labelsLarge: " + mLabelsLarge + "\n");
-        builder.append("breweries: " + mBreweries.size() + "\n");
+        builder.append("breweries: " + ((mBreweries != null) ? mBreweries.size() : 0) + "\n");
 
         return builder.toString();
     }
@@ -245,11 +245,11 @@ public class Beer implements Parcelable {
         mLabelsLarge = labelsLarge;
     }
 
-    public List<BreweryLocation> getBreweries() {
+    public List<Brewery> getBreweries() {
         return mBreweries;
     }
 
-    public void setBreweries(List<BreweryLocation> breweries) {
+    public void setBreweries(List<Brewery> breweries) {
         mBreweries = breweries;
     }
 }

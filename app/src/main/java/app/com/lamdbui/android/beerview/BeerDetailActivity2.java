@@ -72,7 +72,8 @@ public class BeerDetailActivity2 extends AppCompatActivity {
 
     private void updateUI() {
         mBeerNameTextView.setText(mBeer.getNameDisplay());
-        //mBeerBreweryTextView.setText(mBeer.)
+        Brewery brewery = mBeer.getBreweries().get(0);
+        mBeerBreweryTextView.setText(brewery.getName());
         //mBeerTypeTextView.setText(mBeer.get)
         //mBeerIBUTextView.setText(mBeer.get)
         mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
