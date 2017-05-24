@@ -25,4 +25,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="BeerMapper.Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="BeerMapper.Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
 </resources>

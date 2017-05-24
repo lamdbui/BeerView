@@ -62,6 +62,11 @@
             android:label="@string/title_activity_beer_detail2"
             android:theme="@style/BeerMapper.Theme.NoActionBar">
         </activity>
+        <activity
+            android:name=".BreweryDetailActivity"
+            android:label="@string/title_activity_brewery_detail"
+            android:theme="@style/BeerMapper.Theme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
