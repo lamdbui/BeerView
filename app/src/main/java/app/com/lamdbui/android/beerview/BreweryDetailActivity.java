@@ -2,12 +2,14 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -22,11 +24,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BreweryDetailActivity extends AppCompatActivity
-    implements OnMapReadyCallback {
+    implements OnMapReadyCallback, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String ARG_BREWERY = "brewery";
@@ -47,6 +50,8 @@ public class BreweryDetailActivity extends AppCompatActivity
     TextView mBreweryWebsiteTextView;
     @BindView(R.id.brewery_detail_description)
     TextView mBreweryDescriptionTextView;
+    @BindView(R.id.brewery_detail_image)
+    ImageView mBreweryImageView;
 
     private Brewery mBrewery;
 
@@ -56,6 +61,13 @@ public class BreweryDetailActivity extends AppCompatActivity
         Intent intent = new Intent(context, BreweryDetailActivity.class);
         intent.putExtras(args);
         return intent;
+    }
+
+    // interface from FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener
+    @Override
+    public void completedFetchUrlImageTask(Bitmap bitmap) {
+        if(bitmap != null)
+            mBreweryImageView.setImageBitmap(bitmap);
     }
 
     @Override
@@ -74,6 +86,10 @@ public class BreweryDetailActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+        // initiate our background tasks
+        FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
+        urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/brewery/BSsTGw/upload_ozwafH-squareMedium.png");
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
