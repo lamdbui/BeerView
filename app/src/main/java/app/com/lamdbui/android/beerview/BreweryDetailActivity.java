@@ -7,21 +7,24 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
@@ -33,6 +36,7 @@ public class BreweryDetailActivity extends AppCompatActivity
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String ARG_BREWERY = "brewery";
+    private static final String ARG_BREWERY_BEERS = "brewery_beers";
 
     @BindView(R.id.brewery_detail_map)
     MapView mBreweryMapView;
@@ -52,12 +56,27 @@ public class BreweryDetailActivity extends AppCompatActivity
     TextView mBreweryDescriptionTextView;
     @BindView(R.id.brewery_detail_image)
     ImageView mBreweryImageView;
+    @BindView(R.id.brewery_beers_recycler_view)
+    RecyclerView mBreweryBeersRecyclerView;
 
+    // used for displaying beers in the recyclerview
+    private BeerAdapter mBeerAdapter;
+
+    private List<Beer> mBreweryBeers;
     private Brewery mBrewery;
 
     public static Intent newIntent(Context context, Brewery brewery) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_BREWERY, brewery);
+        Intent intent = new Intent(context, BreweryDetailActivity.class);
+        intent.putExtras(args);
+        return intent;
+    }
+
+    public static Intent newIntent(Context context, Brewery brewery, List<Beer> breweryBeers) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_BREWERY, brewery);
+        args.putParcelableArrayList(ARG_BREWERY_BEERS, (ArrayList<Beer>)breweryBeers);
         Intent intent = new Intent(context, BreweryDetailActivity.class);
         intent.putExtras(args);
         return intent;
@@ -97,8 +116,14 @@ public class BreweryDetailActivity extends AppCompatActivity
         }
 
         mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
+        mBreweryBeers = new ArrayList<>();
+        //test
+        mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
 
         ButterKnife.bind(this);
+
+        // configure our recyclerview to be horizontal scrolling
+        mBreweryBeersRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         mBreweryMapView.onCreate(mapViewBundle);
         mBreweryMapView.getMapAsync(this);
@@ -180,7 +205,21 @@ public class BreweryDetailActivity extends AppCompatActivity
         mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
         mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
         mBreweryDescriptionTextView.setText(mBrewery.getDescription());
+
+        // handle the data for the beers at a particular brewery
+        if(mBeerAdapter == null) {
+            mBeerAdapter = new BeerAdapter(mBreweryBeers);
+            mBreweryBeersRecyclerView.setAdapter(mBeerAdapter);
+        }
+        else {
+            mBeerAdapter.notifyDataSetChanged();
+        }
     }
+
+//    public void setBreweryBeers(List<Beer> beers) {
+//        mBreweryBeers = beers;
+//        updateUI();
+//    }
 
     public BreweryLocation getMainBreweryLocation() {
         if(mBrewery != null) {
@@ -193,5 +232,62 @@ public class BreweryDetailActivity extends AppCompatActivity
             }
         }
         return null;
+    }
+
+    private class BeerHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+
+        private TextView mBeerNameTextView;
+
+        private Beer mBeer;
+
+        public BeerHolder(View itemView) {
+            super(itemView);
+
+            mBeerNameTextView = (TextView) itemView.findViewById(R.id.list_item_beer_name);
+            mBeerNameTextView.setOnClickListener(this);
+        }
+
+        public void bind(Beer beer) {
+            mBeer = beer;
+            mBeerNameTextView.setText(mBeer.getName());
+        }
+
+        @Override
+        public void onClick(View view) {
+            startActivity(BeerDetailActivity.newIntent(getApplicationContext(), mBeer));
+        }
+    }
+
+    private class BeerAdapter extends RecyclerView.Adapter<BeerHolder> {
+
+        List<Beer> mBeers;
+
+        public BeerAdapter(List<Beer> beers) {
+            mBeers = beers;
+        }
+
+        @Override
+        public BeerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            View view = inflater.inflate(R.layout.list_item_beer, parent, false);
+
+            return new BeerHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(BeerHolder holder, int position) {
+            Beer beer = mBeers.get(position);
+            holder.bind(beer);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mBeers.size();
+        }
+
+        public void setBeers(List<Beer> beers) {
+            mBeers = beers;
+        }
     }
 }

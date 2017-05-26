@@ -23,6 +23,7 @@
             android:layout_marginRight="@dimen/text_margin"
             style="@style/AppTheme.TextAppearance.Large"
             android:text="Pliny the Elder"/>
+
         <TextView
             android:id="@+id/beer_detail_brewery"
             android:layout_width="match_parent"
@@ -31,6 +32,11 @@
             android:layout_marginRight="@dimen/text_margin"
             style="@style/AppTheme.TextAppearance.Medium"
             android:text="Russian River Brewing"/>
+
+        <ImageView
+            android:id="@+id/beer_detail_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/beer_detail_abv"

@@ -2,27 +2,35 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BeerDetailActivity2 extends AppCompatActivity {
+public class BeerDetailActivity2 extends AppCompatActivity
+    implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
     public static final String ARG_BEER = "beer";
 
+    @BindView(R.id.toolbar_photo)
+    ImageView mToolbarImageView;
     @BindView(R.id.beer_detail_name)
     TextView mBeerNameTextView;
     @BindView(R.id.beer_detail_brewery)
     TextView mBeerBreweryTextView;
+    @BindView(R.id.beer_detail_image)
+    ImageView mBeerImageView;
     @BindView(R.id.beer_detail_abv)
     TextView mBeerAbvTextView;
     @BindView(R.id.beer_detail_type)
@@ -45,6 +53,15 @@ public class BeerDetailActivity2 extends AppCompatActivity {
         return intent;
     }
 
+    // interface from FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener
+    @Override
+    public void completedFetchUrlImageTask(Bitmap bitmap) {
+        if(bitmap != null) {
+            //mToolbarImageView.setImageBitmap(bitmap);
+            mBeerImageView.setImageBitmap(bitmap);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +71,14 @@ public class BeerDetailActivity2 extends AppCompatActivity {
 
         mBeer = getIntent().getParcelableExtra(ARG_BEER);
 
+        // initiate our background tasks
+        FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
+        urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/beer/9UG4pg/upload_CN8EwR-medium.png");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setTitle("Pliny the Elder");
         toolbar.setTitle(mBeer.getNameDisplay());
         setSupportActionBar(toolbar);
-        //toolbar.setSubtitle("Russian River Brewing");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -209,11 +209,14 @@ public class BeerViewActivityFragment extends Fragment
         mShowBrewery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery));
+                //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery));
+                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers));
             }
         });
 
         mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // test horizontal scrolling
+        //mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         return rootView;
     }

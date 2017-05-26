@@ -24,14 +24,14 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <FrameLayout
-                android:id="@+id/photo_container"
+                android:id="@+id/toolbar_photo_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:background="@android:color/transparent">
                 <!--suppress AndroidLintContentDescription -->
                 <ImageView
-                    android:id="@+id/photo"
+                    android:id="@+id/toolbar_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
