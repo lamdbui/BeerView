@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
@@ -87,6 +88,7 @@ public class BreweryDetailActivity extends AppCompatActivity
     public void completedFetchUrlImageTask(Bitmap bitmap) {
         if(bitmap != null)
             mBreweryImageView.setImageBitmap(bitmap);
+            //view.setImageBitmap(bitmap);
     }
 
     @Override
@@ -216,9 +218,17 @@ public class BreweryDetailActivity extends AppCompatActivity
         }
     }
 
-//    public void setBreweryBeers(List<Beer> beers) {
-//        mBreweryBeers = beers;
-//        updateUI();
+//    public HashMap<String, Bitmap> fetchBeerIcons() {
+//
+//        HashMap<String, Bitmap> beerIconBitmaps = new HashMap<>();
+//
+//        for(Beer beer : mBreweryBeers) {
+//            // initiate our background tasks
+//            if(beer.getLabelsIcon() != null && !beer.getLabelsIcon().equals("")) {
+//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+//                beerIconTask.execute(beer.getLabelsIcon());
+//            }
+//        }
 //    }
 
     public BreweryLocation getMainBreweryLocation() {
@@ -235,9 +245,10 @@ public class BreweryDetailActivity extends AppCompatActivity
     }
 
     private class BeerHolder extends RecyclerView.ViewHolder
-        implements View.OnClickListener {
+        implements View.OnClickListener, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
         private TextView mBeerNameTextView;
+        private ImageView mBeerIconImageView;
 
         private Beer mBeer;
 
@@ -246,16 +257,28 @@ public class BreweryDetailActivity extends AppCompatActivity
 
             mBeerNameTextView = (TextView) itemView.findViewById(R.id.list_item_beer_name);
             mBeerNameTextView.setOnClickListener(this);
+
+            mBeerIconImageView = (ImageView) itemView.findViewById(R.id.list_item_beer_icon);
         }
 
         public void bind(Beer beer) {
             mBeer = beer;
             mBeerNameTextView.setText(mBeer.getName());
+
+            // fetch the icon
+            FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+            beerIconTask.execute(mBeer.getLabelsIcon());
+        }
+
+        @Override
+        public void completedFetchUrlImageTask(Bitmap bitmap) {
+            if(bitmap != null)
+                mBeerIconImageView.setImageBitmap(bitmap);
         }
 
         @Override
         public void onClick(View view) {
-            startActivity(BeerDetailActivity.newIntent(getApplicationContext(), mBeer));
+            startActivity(BeerDetailActivity2.newIntent(getApplicationContext(), mBeer));
         }
     }
 

@@ -103,6 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:textStyle="bold"
             android:text="BEERS"/>
 
         <android.support.v7.widget.RecyclerView
@@ -111,7 +112,7 @@
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
 
-        <HorizontalScrollView
+        <!--HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -155,7 +156,7 @@
 
             </LinearLayout>
 
-        </HorizontalScrollView>
+        </HorizontalScrollView-->
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
