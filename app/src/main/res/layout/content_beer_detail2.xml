@@ -97,6 +97,4 @@
             android:text="@string/large_text"/>
 
     </LinearLayout>
-
-
 </android.support.v4.widget.NestedScrollView>

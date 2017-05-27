@@ -90,7 +90,7 @@ public class BeerData {
             beer.setOriginalGravity(Double.parseDouble(mOriginalGravity));
         if(mLabels != null) {
             beer.setLabelsIcon(mLabels.mIcon);
-            beer.setLabelsMedium(mLabels.mIcon);
+            beer.setLabelsMedium(mLabels.mMedium);
             beer.setLabelsLarge(mLabels.mLarge);
         }
         if(mBeerStyle != null) {

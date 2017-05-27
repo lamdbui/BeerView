@@ -104,7 +104,7 @@
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
             android:textStyle="bold"
-            android:text="BEERS"/>
+            android:text="BEERS AT THIS BREWERY"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/brewery_beers_recycler_view"

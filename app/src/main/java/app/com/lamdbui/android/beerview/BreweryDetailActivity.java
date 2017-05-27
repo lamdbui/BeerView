@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -247,6 +248,7 @@ public class BreweryDetailActivity extends AppCompatActivity
     private class BeerHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
+        private CardView mBeerCardView;
         private TextView mBeerNameTextView;
         private ImageView mBeerIconImageView;
 
@@ -255,8 +257,11 @@ public class BreweryDetailActivity extends AppCompatActivity
         public BeerHolder(View itemView) {
             super(itemView);
 
+            mBeerCardView = (CardView) itemView.findViewById(R.id.beer_card);
+            mBeerCardView.setOnClickListener(this);
+
             mBeerNameTextView = (TextView) itemView.findViewById(R.id.list_item_beer_name);
-            mBeerNameTextView.setOnClickListener(this);
+            //mBeerNameTextView.setOnClickListener(this);
 
             mBeerIconImageView = (ImageView) itemView.findViewById(R.id.list_item_beer_icon);
         }

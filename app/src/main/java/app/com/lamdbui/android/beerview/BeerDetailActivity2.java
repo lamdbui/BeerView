@@ -73,7 +73,8 @@ public class BeerDetailActivity2 extends AppCompatActivity
 
         // initiate our background tasks
         FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
-        urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/beer/9UG4pg/upload_CN8EwR-medium.png");
+        //urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/beer/9UG4pg/upload_CN8EwR-medium.png");
+        urlImageTask.execute(mBeer.getLabelsMedium());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mBeer.getNameDisplay());
@@ -101,6 +102,7 @@ public class BeerDetailActivity2 extends AppCompatActivity
         //mBeerTypeTextView.setText(mBeer.get)
         //mBeerIBUTextView.setText(mBeer.get)
         mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
-        mBeerDescriptionTextView.setText(mBeer.getDescription());
+        mBeerDescriptionTextView.setText(
+                (mBeer.getDescription() == null) ? getString(R.string.info_none) : mBeer.getDescription());
     }
 }
