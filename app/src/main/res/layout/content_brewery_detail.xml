@@ -23,63 +23,77 @@
             style="@style/AppTheme.TextAppearance.Large"
             android:text="Russian RBC"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
-            android:textStyle="bold"
-            android:text="DETAILS"/>
-
-        <TextView
-            android:id="@+id/brewery_detail_established"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
-            android:text="XXXX"/>
-        <TextView
-            android:id="@+id/brewery_detail_address_line1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
-            android:text="1234 I CAN HAZ"/>
-        <TextView
-            android:id="@+id/brewery_detail_address_line2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"/>
-
-        <TextView
-            android:id="@+id/brewery_detail_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
-            android:autoLink="phone"
-            android:text="(555)123-4567"/>
-
-        <TextView
-            android:id="@+id/brewery_detail_website"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:autoLink="web"
-            style="?android:textAppearanceSmall"
-            android:text="http://www.russianriverbrewing.com"/>
-
-        <ImageView
-            android:id="@+id/brewery_detail_image"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/brewery_detail_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/brewery_detail_image"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    style="?android:textAppearanceSmall"
+                    android:textStyle="bold"
+                    android:text="DETAILS"/>
+
+                <TextView
+                    android:id="@+id/brewery_detail_established"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    style="?android:textAppearanceSmall"
+                    android:text="XXXX"/>
+                <TextView
+                    android:id="@+id/brewery_detail_address_line1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    style="?android:textAppearanceSmall"
+                    android:text="1234 I CAN HAZ"/>
+                <TextView
+                    android:id="@+id/brewery_detail_address_line2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    style="?android:textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/brewery_detail_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    style="?android:textAppearanceSmall"
+                    android:autoLink="phone"
+                    android:text="(555)123-4567"/>
+
+                <TextView
+                    android:id="@+id/brewery_detail_website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginRight="@dimen/text_margin"
+                    android:autoLink="web"
+                    style="?android:textAppearanceSmall"
+                    android:text="http://www.russianriverbrewing.com"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -111,52 +125,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
-
-        <!--HorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button1"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button2"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button3"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button4"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button5"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button6"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button7"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button8"/>
-
-            </LinearLayout>
-
-        </HorizontalScrollView-->
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
