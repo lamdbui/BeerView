@@ -11,14 +11,19 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BeerNavigationActivity extends AppCompatActivity
     implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private static final String ARG_BEER = "beer";
+    private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
 
     private TextView mTextMessage;
 
     private Beer mBeer;
+    private List<BreweryLocation> mBreweryLocations;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -41,10 +46,11 @@ public class BeerNavigationActivity extends AppCompatActivity
 //
 //    };
 
-    public static Intent newIntent(Context context, Beer beer) {
+    public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_BEER, beer);
+        bundle.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList) breweryLocations);
         intent.putExtras(bundle);
 
         return intent;
@@ -59,7 +65,11 @@ public class BeerNavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_navigation);
 
-        mBeer = (Beer) getIntent().getParcelableExtra(ARG_BEER);
+        mBeer = getIntent().getParcelableExtra(ARG_BEER);
+        mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
+
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -73,11 +83,17 @@ public class BeerNavigationActivity extends AppCompatActivity
 
         switch(item.getItemId()) {
             case R.id.navigation_home:
-                fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
+                fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+                //getSupportActionBar().setTitle("LOLWUT");
+                //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
+                getSupportActionBar().hide();
                 break;
             case R.id.navigation_map:
+                fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+                getSupportActionBar().hide();
                 break;
             case R.id.navigation_more:
+                fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
                 break;
         }
 

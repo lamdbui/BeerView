@@ -76,6 +76,11 @@ public class BeerDetailActivityFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 //        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
 //        AppCompatActivity activity = (AppCompatActivity) getActivity();
 //        activity.setSupportActionBar(toolbar);

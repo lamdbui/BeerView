@@ -220,7 +220,7 @@ public class BeerViewActivityFragment extends Fragment
             @Override
             public void onClick(View view) {
                 //startActivity(new Intent(getActivity(), BeerNavigationActivity.class));
-                startActivity(BeerNavigationActivity.newIntent(getActivity(), mBeer));
+                startActivity(BeerNavigationActivity.newIntent(getActivity(), mBeer, mBreweries));
             }
         });
 
