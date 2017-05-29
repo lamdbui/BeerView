@@ -52,6 +52,8 @@ public class BeerViewActivityFragment extends Fragment
     Button mShowBeerButton2;
     @BindView(R.id.show_brewery)
     Button mShowBrewery;
+    @BindView(R.id.show_navigation_home)
+    Button mShowNavigationHome;
     @BindView(R.id.brewery_recycler_view)
     RecyclerView mBreweryRecyclerView;
 
@@ -211,6 +213,13 @@ public class BeerViewActivityFragment extends Fragment
             public void onClick(View view) {
                 //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery));
                 startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers));
+            }
+        });
+
+        mShowNavigationHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), BeerHomeActivity.class));
             }
         });
 

@@ -6,8 +6,8 @@
     <string name="title_activity_brew_view_maps">BrewView</string>
     <string name="title_activity_brewery">BreweryActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_map">Map</string>
+    <string name="title_more">More</string>
     <string name="title_activity_beer_detail2">BeerDetailActivity2</string>
     <string name="info_none">None</string>
     <string name="large_text">
@@ -100,4 +100,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_brewery_detail">BreweryDetailActivity</string>
+    <string name="title_activity_beer_home">BeerHomeActivity</string>
 </resources>

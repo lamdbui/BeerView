@@ -32,6 +32,12 @@
         android:layout_height="wrap_content"
         android:text="SHOW BREWERY"/>
 
+    <Button
+        android:id="@+id/show_navigation_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NAVIGATION HOME"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/brewery_recycler_view"
         android:layout_width="wrap_content"
