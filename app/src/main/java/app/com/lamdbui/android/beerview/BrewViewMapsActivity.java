@@ -8,6 +8,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,14 +29,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class BrewViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static final String ARG_BREWERIES = "breweries";
     public static final int PERMISSION_LOCATION_FINE = 1;
 
+    @BindView(R.id.map_brewery_recyclerview)
+    RecyclerView mBreweryRecyclerView;
+
+    private BreweryAdapter mBreweryAdapter;
+
     private GoogleMap mMap;
 
-    private List<BreweryLocation> mBreweries;
+    private List<BreweryLocation> mBreweryLocations;
 
     public static Intent newIntent(Context context, List<BreweryLocation> breweries) {
         Intent intent = new Intent(context, BrewViewMapsActivity.class);
@@ -50,7 +65,19 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         mapFragment.getMapAsync(this);
 
         Bundle bundle = getIntent().getExtras();
-        mBreweries = bundle.getParcelableArrayList(ARG_BREWERIES);
+        mBreweryLocations = bundle.getParcelableArrayList(ARG_BREWERIES);
+
+        ButterKnife.bind(this);
+
+        mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        if(mBreweryAdapter == null) {
+            mBreweryAdapter = new BreweryAdapter(mBreweryLocations);
+            mBreweryRecyclerView.setAdapter(mBreweryAdapter);
+        }
+        else {
+            mBreweryAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -82,7 +109,7 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
             mMap.setMyLocationEnabled(true);
         }
 
-        for(BreweryLocation breweryLocation : mBreweries) {
+        for(BreweryLocation breweryLocation : mBreweryLocations) {
             LatLng location = new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
@@ -137,6 +164,56 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
                 }
                 break;
                 //}
+        }
+    }
+
+    private class BreweryLocationHolder extends RecyclerView.ViewHolder {
+
+        private ImageView mBreweryImage;
+        private TextView mBreweryName;
+
+        private BreweryLocation mBreweryLocation;
+
+        public BreweryLocationHolder(View itemView) {
+            super(itemView);
+
+            mBreweryImage = (ImageView) itemView.findViewById(R.id.map_brewery_image);
+            mBreweryName = (TextView) itemView.findViewById(R.id.map_brewery_name);
+        }
+
+        public void bind(BreweryLocation brewery) {
+            mBreweryLocation = brewery;
+
+            mBreweryName.setText(mBreweryLocation.getName());
+            mBreweryImage.setImageResource(R.drawable.beer_icon_32);
+        }
+    }
+
+    private class BreweryAdapter extends RecyclerView.Adapter<BreweryLocationHolder> {
+
+        List<BreweryLocation> mBreweryLocations;
+
+        public BreweryAdapter(List<BreweryLocation> breweryLocations) {
+            mBreweryLocations = breweryLocations;
+        }
+
+        @Override
+        public BreweryLocationHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            View view = inflater.inflate(R.layout.list_item_map_brewery, parent, false);
+
+            return new BreweryLocationHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(BreweryLocationHolder holder, int position) {
+            BreweryLocation brewery = BrewViewMapsActivity.this.mBreweryLocations.get(position);
+            holder.bind(brewery);
+        }
+
+        @Override
+        public int getItemCount() {
+            return BrewViewMapsActivity.this.mBreweryLocations.size();
         }
     }
 }
