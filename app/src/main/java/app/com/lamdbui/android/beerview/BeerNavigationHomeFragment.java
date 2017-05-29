@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -86,7 +88,8 @@ public class BeerNavigationHomeFragment extends Fragment {
         mBreweryLocations = breweryLocations;
     }
 
-    private class BreweryLocationViewHolder extends RecyclerView.ViewHolder {
+    private class BreweryLocationViewHolder extends RecyclerView.ViewHolder
+            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
         private ImageView mBreweryImageView;
         private TextView mBreweryNameTextView;
@@ -103,6 +106,16 @@ public class BeerNavigationHomeFragment extends Fragment {
         public void bind(BreweryLocation location) {
             mBreweryLocation = location;
             mBreweryNameTextView.setText(mBreweryLocation.getName());
+
+            // fetch the icon
+            FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+            beerIconTask.execute(mBreweryLocation.getImagesIcon());
+        }
+
+        @Override
+        public void completedFetchUrlImageTask(Bitmap bitmap) {
+            if(bitmap != null)
+                mBreweryImageView.setImageBitmap(bitmap);
         }
     }
 
