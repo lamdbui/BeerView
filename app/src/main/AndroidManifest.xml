@@ -55,8 +55,6 @@
             android:authorities="@string/content_authority"
             android:exported="false"/>
 
-        <activity android:name=".BeerDetailActivity">
-        </activity>
         <activity
             android:name=".BeerDetailActivity2"
             android:label="@string/title_activity_beer_detail2"
@@ -68,8 +66,9 @@
             android:theme="@style/BeerMapper.Theme.NoActionBar">
         </activity>
         <activity
-            android:name=".BeerHomeActivity"
-            android:label="@string/title_activity_beer_home">
+            android:name=".BeerNavigationActivity"
+            android:label="@string/title_activity_beer_home"
+            android:theme="@style/BeerMapper.Theme.NoActionBar">
         </activity>
     </application>
 
