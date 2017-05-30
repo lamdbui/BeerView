@@ -38,6 +38,8 @@ public class BreweryDetailActivity extends AppCompatActivity
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String ARG_BREWERY = "brewery";
     private static final String ARG_BREWERY_BEERS = "brewery_beers";
+    // use this if there's a particular LOCATION_ID that should be used for location
+    private static final String ARG_BREWERY_PREFERRED_LOCATION_ID = "preferred_location_id";
 
     @BindView(R.id.brewery_detail_map)
     MapView mBreweryMapView;
@@ -63,8 +65,10 @@ public class BreweryDetailActivity extends AppCompatActivity
     // used for displaying beers in the recyclerview
     private BeerAdapter mBeerAdapter;
 
+    // passed in arguments
     private List<Beer> mBreweryBeers;
     private Brewery mBrewery;
+    private String mPreferredLocationId;
 
     public static Intent newIntent(Context context, Brewery brewery) {
         Bundle args = new Bundle();
@@ -78,6 +82,17 @@ public class BreweryDetailActivity extends AppCompatActivity
         Bundle args = new Bundle();
         args.putParcelable(ARG_BREWERY, brewery);
         args.putParcelableArrayList(ARG_BREWERY_BEERS, (ArrayList<Beer>)breweryBeers);
+        Intent intent = new Intent(context, BreweryDetailActivity.class);
+        intent.putExtras(args);
+        return intent;
+    }
+
+    public static Intent newIntent(Context context, Brewery brewery, List<Beer> breweryBeers,
+                                   String preferredLocationId) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_BREWERY, brewery);
+        args.putParcelableArrayList(ARG_BREWERY_BEERS, (ArrayList<Beer>)breweryBeers);
+        args.putString(ARG_BREWERY_PREFERRED_LOCATION_ID, preferredLocationId);
         Intent intent = new Intent(context, BreweryDetailActivity.class);
         intent.putExtras(args);
         return intent;
@@ -114,6 +129,11 @@ public class BreweryDetailActivity extends AppCompatActivity
         mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
         if(mBreweryBeers == null)
             mBreweryBeers = new ArrayList<>();
+
+        if(getIntent().hasExtra(ARG_BREWERY_PREFERRED_LOCATION_ID))
+            mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
+        else
+            mPreferredLocationId = null;
 
         // initiate our background tasks
         FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
@@ -174,7 +194,10 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         // TODO: Remove the static location here and set zoom level
         LatLng breweryLocation = new LatLng(38.4414632, -122.7117124);
-        //LatLng breweryLocation = new LatLng(mBrewery)
+        if(mPreferredLocationId != null) {
+            BreweryLocation preferredLocation = getBreweryLocationById(mPreferredLocationId);
+            breweryLocation = new LatLng(preferredLocation.getLatitude(), preferredLocation.getLongitude());
+        }
         CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
         map.moveCamera(breweryMapPosition);
         map.addMarker(new MarkerOptions().position(breweryLocation).title(mBrewery.getName()));
@@ -224,18 +247,20 @@ public class BreweryDetailActivity extends AppCompatActivity
         }
     }
 
-//    public HashMap<String, Bitmap> fetchBeerIcons() {
-//
-//        HashMap<String, Bitmap> beerIconBitmaps = new HashMap<>();
-//
-//        for(Beer beer : mBreweryBeers) {
-//            // initiate our background tasks
-//            if(beer.getLabelsIcon() != null && !beer.getLabelsIcon().equals("")) {
-//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-//                beerIconTask.execute(beer.getLabelsIcon());
-//            }
-//        }
-//    }
+    public BreweryLocation getBreweryLocationById(String id) {
+        if(mBrewery != null) {
+            List<BreweryLocation> breweryLocations = mBrewery.getLocations();
+
+            for(BreweryLocation location : breweryLocations) {
+                if(location.getId().equals(id)) {
+                    return location;
+                }
+            }
+        }
+
+        // didn't find it (shouldn't happen)
+        return null;
+    }
 
     public BreweryLocation getMainBreweryLocation() {
         if(mBrewery != null) {

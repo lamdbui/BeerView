@@ -58,7 +58,8 @@ public class BreweryLocationResponse {
     public BreweryLocation convertResponseToBreweryLocation(BreweryLocationData data) {
         BreweryLocation breweryLocation = new BreweryLocation();
 
-        breweryLocation.setId(data.getBrewery().getId());
+        //breweryLocation.setId(data.getBrewery().getId());
+        breweryLocation.setId(data.getId());
         breweryLocation.setName(data.getBrewery().getName());
         breweryLocation.setNameShort(data.getBrewery().getNameShortDisplay());
         breweryLocation.setDescription(data.getBrewery().getDescription());
