@@ -6,6 +6,50 @@
     android:layout_height="400dp"
     android:fitsSystemWindows="true">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="vertical"
+        android:background="@android:color/darker_gray">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/white"
+            android:gravity="bottom|center_horizontal"
+            android:text="SAN FRANCISCO"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@android:style/TextAppearance.Large"
+            android:gravity="top|center_horizontal"
+            android:textColor="@android:color/white"
+            android:text="CALIFORNIA"/>
+
+    </LinearLayout>
+
+    <!--TextView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        style="@android:style/TextAppearance.Large"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:text="SAN FRANCISCO"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        style="@android:style/TextAppearance.Large"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:text="CALIFORNIA"/-->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
