@@ -108,19 +108,24 @@ public class BreweryDetailActivity extends AppCompatActivity
             }
         });
 
+        mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
+        //mBreweryBeers = new ArrayList<>();
+        //test
+        mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
+        if(mBreweryBeers == null)
+            mBreweryBeers = new ArrayList<>();
+
         // initiate our background tasks
         FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
-        urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/brewery/BSsTGw/upload_ozwafH-squareMedium.png");
+        //urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/brewery/BSsTGw/upload_ozwafH-squareMedium.png");
+        // TODO: Use stock default image or no image, if URL not available
+        if(mBrewery.getImagesMedium() != null)
+            urlImageTask.execute(mBrewery.getImagesMedium());
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-
-        mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
-        mBreweryBeers = new ArrayList<>();
-        //test
-        mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
 
         ButterKnife.bind(this);
 
@@ -169,6 +174,7 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         // TODO: Remove the static location here and set zoom level
         LatLng breweryLocation = new LatLng(38.4414632, -122.7117124);
+        //LatLng breweryLocation = new LatLng(mBrewery)
         CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
         map.moveCamera(breweryMapPosition);
         map.addMarker(new MarkerOptions().position(breweryLocation).title(mBrewery.getName()));
@@ -291,6 +297,8 @@ public class BreweryDetailActivity extends AppCompatActivity
         List<Beer> mBeers;
 
         public BeerAdapter(List<Beer> beers) {
+
+            //mBeers = new ArrayList<>();
             mBeers = beers;
         }
 

@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview.network;
 
+import com.google.gson.InstanceCreator;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -48,8 +49,9 @@ public class BreweryResponse {
             brewery.setNameShortDisplay(mNameShortDisplay);
             brewery.setDescription(mDescription);
             brewery.setWebsite(mWebsite);
-            //if(mEstablished != null)
-            brewery.setEstablished((mEstablished != null) ? Integer.parseInt(mEstablished) : null);
+            if(mEstablished != null)
+                brewery.setEstablished(Integer.parseInt(mEstablished));
+            //brewery.setEstablished((mEstablished != null) ? Integer.parseInt(mEstablished) : null);
             brewery.setOrganic(mIsOrganic.equals("Y") ? true : false);
             if(mImages != null) {
                 brewery.setImagesIcon(mImages.getIconUrl());

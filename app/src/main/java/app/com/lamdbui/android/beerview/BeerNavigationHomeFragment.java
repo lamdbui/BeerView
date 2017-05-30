@@ -19,9 +19,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.network.BeerListResponse;
+import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by lamdbui on 5/29/17.
@@ -31,12 +36,16 @@ public class BeerNavigationHomeFragment extends Fragment {
 
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
 
+    private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
+
     @BindView(R.id.home_breweries_recyclerview)
     RecyclerView mHomeBreweriesRecyclerView;
 
     private BreweryLocationAdapter mBreweryLocationAdapter;
 
     private List<BreweryLocation> mBreweryLocations;
+
+    private BreweryDbInterface mBreweryDbService;
 
     public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations) {
         Bundle args = new Bundle();
@@ -54,6 +63,8 @@ public class BeerNavigationHomeFragment extends Fragment {
         mBreweryLocations = new ArrayList<>();
 
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
+
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
     }
 
     @Nullable
@@ -99,8 +110,14 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         private BreweryLocation mBreweryLocation;
 
+        private Brewery mBrewery;
+        private List<Beer> mBreweryBeers;
+
         public BreweryLocationViewHolder(View itemView) {
             super(itemView);
+
+            mBrewery = null;
+            mBreweryBeers = null;
 
             mBreweryLocationCardView = (CardView) itemView.findViewById(R.id.list_item_brewery_location_cardview);
             mBreweryLocationCardView.setOnClickListener(this);
@@ -127,6 +144,34 @@ public class BeerNavigationHomeFragment extends Fragment {
         public void onClick(View view) {
             // TODO: link to the Brewery
             Toast.makeText(getActivity(), "id: " + mBreweryLocation.getBreweryId(), Toast.LENGTH_LONG).show();
+
+            Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
+            callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                @Override
+                public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                    mBrewery = response.body().getBrewery();
+                }
+
+                @Override
+                public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+                }
+            });
+
+            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
+            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+                @Override
+                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                    // we could possibly get no beers available
+                    if(response.body().getData() != null)
+                        mBreweryBeers = response.body().getBeerList();
+                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers));
+                }
+
+                @Override
+                public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                }
+            });
         }
     }
 

@@ -18,6 +18,22 @@ public class BeerListResponse {
     @SerializedName("data")
     private List<BeerData> mData;
 
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public void setMessage(String message) {
+        mMessage = message;
+    }
+
+    public List<BeerData> getData() {
+        return mData;
+    }
+
+    public void setData(List<BeerData> data) {
+        mData = data;
+    }
+
     public List<Beer> getBeerList() {
         List<Beer> beers = new ArrayList<>();
 

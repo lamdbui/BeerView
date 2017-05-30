@@ -78,7 +78,8 @@ public class BeerData {
         beer.setName(mName);
         beer.setNameDisplay(mNameDisplay);
         beer.setDescription(mDescription);
-        beer.setAbv(Double.parseDouble(mAbv));
+        if(mAbv != null)
+            beer.setAbv(Double.parseDouble(mAbv));
         beer.setGlasswareId(mGlasswareId);
         beer.setSrmId(mSrmId);
         beer.setAvailableId(mAvailableId);
