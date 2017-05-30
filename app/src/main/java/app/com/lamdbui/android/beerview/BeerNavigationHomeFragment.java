@@ -7,16 +7,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.Brewery;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
@@ -32,16 +35,22 @@ import retrofit2.Response;
 
 public class BeerNavigationHomeFragment extends Fragment {
 
+    private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
+
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
 
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
     @BindView(R.id.home_breweries_recyclerview)
     RecyclerView mHomeBreweriesRecyclerView;
+    @BindView(R.id.home_beers_recyclerview)
+    RecyclerView mHomeBeersRecyclerView;
 
     private BreweryLocationAdapter mBreweryLocationAdapter;
+    private BeerAdapter mBreweryBeersAdapter;
 
     private List<BreweryLocation> mBreweryLocations;
+    private List<Beer> mBreweryBeers;
 
     private BreweryDbInterface mBreweryDbService;
 
@@ -59,6 +68,7 @@ public class BeerNavigationHomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mBreweryLocations = new ArrayList<>();
+        mBreweryBeers = new ArrayList<>();
 
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
 
@@ -74,13 +84,44 @@ public class BeerNavigationHomeFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
+        for(BreweryLocation breweryLocation : mBreweryLocations) {
+            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+                @Override
+                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                    List<Beer> beersAtBrewery = response.body().getBeerList();
+                    if(beersAtBrewery != null) {
+                        mBreweryBeers.addAll(beersAtBrewery);
+                        mBreweryBeersAdapter.setBeers(mBreweryBeers);
+                        mBreweryBeersAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                    Log.e(LOG_TAG, "Error fetching beers from brewery");
+                }
+            });
+        }
+
+
+        // TODO: Move into updateUI()
         if(mBreweryLocationAdapter == null) {
             mBreweryLocationAdapter = new BreweryLocationAdapter(mBreweryLocations);
             mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
         }
         else {
             mBreweryLocationAdapter.notifyDataSetChanged();
+        }
+
+        if(mBreweryBeersAdapter == null) {
+            mBreweryBeersAdapter = new BeerAdapter(mBreweryBeers);
+            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
+        }
+        else {
+            mBreweryBeersAdapter.notifyDataSetChanged();
         }
 
         return view;
@@ -120,7 +161,8 @@ public class BeerNavigationHomeFragment extends Fragment {
 
             // fetch the icon
             FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            beerIconTask.execute(mBreweryLocation.getImagesIcon());
+            if(mBreweryLocation.getImagesIcon() != null)
+                beerIconTask.execute(mBreweryLocation.getImagesIcon());
         }
 
         @Override
@@ -131,8 +173,6 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            // TODO: link to the Brewery
-            Toast.makeText(getActivity(), "id: " + mBreweryLocation.getBreweryId(), Toast.LENGTH_LONG).show();
 
             Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
             callBreweryById.enqueue(new Callback<BreweryResponse>() {
@@ -189,6 +229,85 @@ public class BeerNavigationHomeFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mBreweryLocations.size();
+        }
+    }
+
+    private class BeerHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
+
+        private CardView mBeerCardView;
+        private TextView mBeerNameTextView;
+        private ImageView mBeerIconImageView;
+
+        private Beer mBeer;
+
+        public BeerHolder(View itemView) {
+            super(itemView);
+
+            mBeerCardView = (CardView) itemView.findViewById(R.id.beer_card);
+            mBeerCardView.setOnClickListener(this);
+
+            mBeerNameTextView = (TextView) itemView.findViewById(R.id.list_item_beer_name);
+
+            mBeerIconImageView = (ImageView) itemView.findViewById(R.id.list_item_beer_icon);
+        }
+
+        public void bind(Beer beer) {
+            mBeer = beer;
+            mBeerNameTextView.setText(mBeer.getName());
+
+            // fetch the icon
+            if(mBeer.getLabelsIcon() != null) {
+                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+                beerIconTask.execute(mBeer.getLabelsIcon());
+            }
+            else
+                mBeerIconImageView.setImageResource(R.drawable.beer_icon_32);
+        }
+
+        @Override
+        public void completedFetchUrlImageTask(Bitmap bitmap) {
+            if(bitmap != null)
+                mBeerIconImageView.setImageBitmap(bitmap);
+        }
+
+        @Override
+        public void onClick(View view) {
+            startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
+        }
+    }
+
+    private class BeerAdapter extends RecyclerView.Adapter<BeerHolder> {
+
+        List<Beer> mBeers;
+
+        public BeerAdapter(List<Beer> beers) {
+
+            //mBeers = new ArrayList<>();
+            mBeers = beers;
+        }
+
+        @Override
+        public BeerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.list_item_beer, parent, false);
+
+            return new BeerHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(BeerHolder holder, int position) {
+            Beer beer = mBeers.get(position);
+            holder.bind(beer);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mBeers.size();
+        }
+
+        public void setBeers(List<Beer> beers) {
+            mBeers = beers;
         }
     }
 }

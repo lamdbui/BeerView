@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +74,8 @@ public class BeerDetailActivity extends AppCompatActivity
         // initiate our background tasks
         FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
         //urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/beer/9UG4pg/upload_CN8EwR-medium.png");
-        urlImageTask.execute(mBeer.getLabelsMedium());
+        if(mBeer.getLabelsMedium() != null)
+            urlImageTask.execute(mBeer.getLabelsMedium());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mBeer.getNameDisplay());

@@ -8,11 +8,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
 public class BeerNavigationActivity extends AppCompatActivity
     implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -24,27 +26,6 @@ public class BeerNavigationActivity extends AppCompatActivity
 
     private Beer mBeer;
     private List<BreweryLocation> mBreweryLocations;
-
-//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-//
-//        @Override
-//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//            switch (item.getItemId()) {
-//                case R.id.navigation_home:
-//                    mTextMessage.setText(R.string.title_home);
-//                    return true;
-//                case R.id.navigation_map:
-//                    mTextMessage.setText(R.string.title_map);
-//                    return true;
-//                case R.id.navigation_more:
-//                    mTextMessage.setText(R.string.title_more);
-//                    return true;
-//            }
-//            return false;
-//        }
-//
-//    };
 
     public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
@@ -86,11 +67,13 @@ public class BeerNavigationActivity extends AppCompatActivity
                 fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
                 //getSupportActionBar().setTitle("LOLWUT");
                 //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
-                getSupportActionBar().hide();
+                if(getSupportActionBar() != null)
+                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_map:
                 fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
-                getSupportActionBar().hide();
+                if(getSupportActionBar() != null)
+                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_more:
                 fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();

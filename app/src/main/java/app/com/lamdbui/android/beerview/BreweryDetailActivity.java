@@ -28,6 +28,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.Brewery;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -302,7 +305,8 @@ public class BreweryDetailActivity extends AppCompatActivity
 
             // fetch the icon
             FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            beerIconTask.execute(mBeer.getLabelsIcon());
+            if(mBeer.getLabelsIcon() != null)
+                beerIconTask.execute(mBeer.getLabelsIcon());
         }
 
         @Override

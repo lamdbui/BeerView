@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.com.lamdbui.android.beerview.Beer;
-import app.com.lamdbui.android.beerview.Brewery;
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.Brewery;
 
 /**
  * Created by lamdbui on 5/24/17.
@@ -102,10 +102,12 @@ public class BeerData {
         }
         List<Brewery> breweries = new ArrayList<>();
 
-        for(BreweryResponse.BreweryData brewery : mBreweryResponses) {
-            breweries.add(brewery.convertResponseToBrewery());
+        if(mBreweryResponses != null) {
+            for (BreweryResponse.BreweryData brewery : mBreweryResponses) {
+                breweries.add(brewery.convertResponseToBrewery());
+            }
+            beer.setBreweries(breweries);
         }
-        beer.setBreweries(breweries);
 
         return beer;
     }

@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,6 +133,8 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
                 BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
                 Intent intent = BreweryActivity.newIntent(BrewViewMapsActivity.this, breweryLocation);
+
+                //startActivity(BreweryDetailActivity.newIntent(this, mBrewery, mBreweryBeers));
 
                 startActivity(intent);
             }

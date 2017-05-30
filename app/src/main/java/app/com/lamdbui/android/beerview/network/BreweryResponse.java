@@ -1,13 +1,12 @@
 package app.com.lamdbui.android.beerview.network;
 
-import com.google.gson.InstanceCreator;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import app.com.lamdbui.android.beerview.Brewery;
-import app.com.lamdbui.android.beerview.BreweryLocation;
+import app.com.lamdbui.android.beerview.model.Brewery;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
 /**
  * Created by lamdbui on 5/23/17.

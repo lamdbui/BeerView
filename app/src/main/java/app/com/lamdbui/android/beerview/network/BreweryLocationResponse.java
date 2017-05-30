@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.com.lamdbui.android.beerview.BreweryLocation;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
 /**
  * Created by lamdbui on 4/26/17.

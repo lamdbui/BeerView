@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.com.lamdbui.android.beerview.Beer;
+import app.com.lamdbui.android.beerview.model.Beer;
 
 /**
  * Created by lamdbui on 5/24/17.
@@ -37,8 +37,10 @@ public class BeerListResponse {
     public List<Beer> getBeerList() {
         List<Beer> beers = new ArrayList<>();
 
-        for(BeerData beerData : mData) {
-            beers.add(beerData.convertDataToBeer());
+        if(mData != null) {
+            for (BeerData beerData : mData) {
+                beers.add(beerData.convertDataToBeer());
+            }
         }
 
         return beers;

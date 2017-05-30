@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
+
 public class BreweryActivity extends AppCompatActivity {
 
     public static final String ARG_BREWERY = "brewery";

@@ -1,4 +1,4 @@
-package app.com.lamdbui.android.beerview;
+package app.com.lamdbui.android.beerview.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

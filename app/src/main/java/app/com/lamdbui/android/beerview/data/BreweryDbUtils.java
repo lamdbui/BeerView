@@ -3,7 +3,7 @@ package app.com.lamdbui.android.beerview.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import app.com.lamdbui.android.beerview.BreweryLocation;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
 /**
  * Created by lamdbui on 5/10/17.
