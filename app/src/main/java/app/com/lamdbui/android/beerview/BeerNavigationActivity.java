@@ -71,7 +71,8 @@ public class BeerNavigationActivity extends AppCompatActivity
                     getSupportActionBar().hide();
                 break;
             case R.id.navigation_map:
-                fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+                //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+                fm.beginTransaction().replace(R.id.content, BeerViewMapsFragment.newInstance(mBreweryLocations)).commit();
                 if(getSupportActionBar() != null)
                     getSupportActionBar().hide();
                 break;

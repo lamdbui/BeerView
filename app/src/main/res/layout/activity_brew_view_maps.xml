@@ -1,36 +1,3 @@
-<!--LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:context="app.com.lamdbui.android.beerview.BrewViewMapsActivity"
-    >
-
-    <fragment android:id="@+id/map"
-              android:name="com.google.android.gms.maps.SupportMapFragment"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/map_brewery_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
-            </android.support.v7.widget.RecyclerView>
-
-        </FrameLayout>
-
-    </fragment>
-
-</LinearLayout-->
-
 <fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
