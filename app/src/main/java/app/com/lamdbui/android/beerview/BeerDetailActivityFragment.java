@@ -83,15 +83,18 @@ public class BeerDetailActivityFragment extends Fragment {
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        activity.setSupportActionBar(toolbar);
-//        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         updateUI();
 
         return view;
     }
+
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//
+//        AppCompatActivity activity = (AppCompatActivity) getActivity();
+//        activity.getSupportActionBar().hide();
+//    }
 
     private void updateUI() {
         mBeerNameTextView.setText(mBeer.getNameDisplay());

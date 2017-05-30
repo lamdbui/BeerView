@@ -1,23 +1,38 @@
-<fragment
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/map_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:background="@color/colorPrimary"
+        android:theme="@style/BeerMapper.Theme.AppBarOverlay"
+        app:popupTheme="@style/BeerMapper.Theme.PopupOverlay"/>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/map_brewery_recyclerview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/map_brewery_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+            </android.support.v7.widget.RecyclerView>
 
-</fragment>
+        </FrameLayout>
+    </fragment>
+</LinearLayout>

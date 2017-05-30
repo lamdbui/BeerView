@@ -67,17 +67,18 @@ public class BeerNavigationActivity extends AppCompatActivity
                 fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
                 //getSupportActionBar().setTitle("LOLWUT");
                 //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
-                if(getSupportActionBar() != null)
-                    getSupportActionBar().hide();
+//                if(getSupportActionBar() != null)
+//                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_map:
                 //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
                 fm.beginTransaction().replace(R.id.content, BeerViewMapsFragment.newInstance(mBreweryLocations)).commit();
-                if(getSupportActionBar() != null)
-                    getSupportActionBar().hide();
+//                if(getSupportActionBar() != null)
+//                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_more:
                 fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
+                //fm.beginTransaction().replace(R.id.content, BreweryD)
                 break;
         }
 
