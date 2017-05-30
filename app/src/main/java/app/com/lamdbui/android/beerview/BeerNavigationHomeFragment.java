@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +91,9 @@ public class BeerNavigationHomeFragment extends Fragment {
     }
 
     private class BreweryLocationViewHolder extends RecyclerView.ViewHolder
-            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
+            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener, View.OnClickListener {
 
+        private CardView mBreweryLocationCardView;
         private ImageView mBreweryImageView;
         private TextView mBreweryNameTextView;
 
@@ -99,6 +102,8 @@ public class BeerNavigationHomeFragment extends Fragment {
         public BreweryLocationViewHolder(View itemView) {
             super(itemView);
 
+            mBreweryLocationCardView = (CardView) itemView.findViewById(R.id.list_item_brewery_location_cardview);
+            mBreweryLocationCardView.setOnClickListener(this);
             mBreweryImageView = (ImageView) itemView.findViewById(R.id.list_item_brewery_location_image);
             mBreweryNameTextView = (TextView) itemView.findViewById(R.id.list_item_brewery_location_name);
         }
@@ -116,6 +121,12 @@ public class BeerNavigationHomeFragment extends Fragment {
         public void completedFetchUrlImageTask(Bitmap bitmap) {
             if(bitmap != null)
                 mBreweryImageView.setImageBitmap(bitmap);
+        }
+
+        @Override
+        public void onClick(View view) {
+            // TODO: link to the Brewery
+            Toast.makeText(getActivity(), "id: " + mBreweryLocation.getBreweryId(), Toast.LENGTH_LONG).show();
         }
     }
 

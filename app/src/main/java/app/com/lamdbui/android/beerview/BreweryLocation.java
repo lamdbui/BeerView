@@ -39,6 +39,8 @@ public class BreweryLocation implements Parcelable {
     private String mLocationType;
     private String mLocationTypeDisplay;
     private String mCountryIsoCode;
+    // this is the ID for the general brewery (not the location - mId)
+    private String mBreweryId;
 
     // additional fields
     private boolean mIsFavorite;
@@ -76,6 +78,7 @@ public class BreweryLocation implements Parcelable {
         mLocationTypeDisplay = in.readString();
         mCountryIsoCode = in.readString();
         mIsFavorite = (in.readInt() == 1) ? true : false;
+        mBreweryId = in.readString();
     }
 
     @Override
@@ -113,6 +116,7 @@ public class BreweryLocation implements Parcelable {
         parcel.writeString(mLocationTypeDisplay);
         parcel.writeString(mCountryIsoCode);
         parcel.writeInt(mIsFavorite ? 1 : 0);
+        parcel.writeString(mBreweryId);
     }
 
     public static final Parcelable.Creator<BreweryLocation> CREATOR =
@@ -352,6 +356,14 @@ public class BreweryLocation implements Parcelable {
         mIsFavorite = favorite;
     }
 
+    public String getBreweryId() {
+        return mBreweryId;
+    }
+
+    public void setBreweryId(String breweryId) {
+        mBreweryId = breweryId;
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("id: " + mId + "\n");
@@ -366,6 +378,7 @@ public class BreweryLocation implements Parcelable {
         builder.append("longitude: " + mLongitude + "\n");
         builder.append("established: " + mEstablished + "\n");
         builder.append("image_icon: " + mImagesIcon + "\n");
+        builder.append("brewery_id: " + mBreweryId + "\n");
 
         // additional fields
         builder.append("favorite: " + (mIsFavorite ? "Y" : "N") + "\n");

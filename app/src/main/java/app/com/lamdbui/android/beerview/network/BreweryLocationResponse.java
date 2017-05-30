@@ -88,6 +88,8 @@ public class BreweryLocationResponse {
         breweryLocation.setLocationType(data.getLocationType());
         breweryLocation.setLocationTypeDisplay(data.getLocationTypeDisplay());
         breweryLocation.setCountryIsoCode(data.getCountryIsoCode());
+        breweryLocation.setBreweryId(data.getBreweryId());
+        //breweryLocation.setBreweryId(data.get);
 
         return breweryLocation;
     }
@@ -138,6 +140,8 @@ public class BreweryLocationResponse {
         private String mLocationTypeDisplay;
         @SerializedName("countryIsoCode")
         private String mCountryIsoCode;
+        @SerializedName("breweryId")
+        private String mBreweryId;
         // Do we need this one?
         @SerializedName("brewery")
         private JsonBreweryData mBrewery;
@@ -164,6 +168,8 @@ public class BreweryLocationResponse {
             breweryLocation.setLocationType(mLocationType);
             breweryLocation.setLocationTypeDisplay(mLocationTypeDisplay);
             breweryLocation.setCountryIsoCode(mCountryIsoCode);
+            if(mBreweryId != null)
+                breweryLocation.setBreweryId(mBreweryId);
 
             return breweryLocation;
         }
@@ -310,6 +316,14 @@ public class BreweryLocationResponse {
 
         public void setCountryIsoCode(String countryIsoCode) {
             mCountryIsoCode = countryIsoCode;
+        }
+
+        public String getBreweryId() {
+            return mBreweryId;
+        }
+
+        public void setBreweryId(String breweryId) {
+            mBreweryId = breweryId;
         }
 
         public JsonBreweryData getBrewery() {
