@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="app.com.lamdbui.android.beerview.BeerDetailActivity2">
+    tools:context="app.com.lamdbui.android.beerview.BeerDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -52,7 +52,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_beer_detail2"/>
+    <include layout="@layout/content_beer_detail"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

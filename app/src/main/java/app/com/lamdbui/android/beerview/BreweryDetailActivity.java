@@ -313,7 +313,7 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         @Override
         public void onClick(View view) {
-            startActivity(BeerDetailActivity2.newIntent(getApplicationContext(), mBeer));
+            startActivity(BeerDetailActivity.newIntent(getApplicationContext(), mBeer));
         }
     }
 

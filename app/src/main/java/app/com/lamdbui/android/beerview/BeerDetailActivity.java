@@ -12,13 +12,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BeerDetailActivity2 extends AppCompatActivity
+public class BeerDetailActivity extends AppCompatActivity
     implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
     public static final String ARG_BEER = "beer";
@@ -45,7 +43,7 @@ public class BeerDetailActivity2 extends AppCompatActivity
     private Beer mBeer;
 
     public static Intent newIntent(Context context, Beer beer) {
-        Intent intent = new Intent(context, BeerDetailActivity2.class);
+        Intent intent = new Intent(context, BeerDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_BEER, beer);
         intent.putExtras(bundle);
@@ -65,7 +63,7 @@ public class BeerDetailActivity2 extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beer_detail2);
+        setContentView(R.layout.activity_beer_detail);
 
         ButterKnife.bind(this);
 

@@ -204,7 +204,7 @@ public class BeerViewActivityFragment extends Fragment
         mShowBeerButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(BeerDetailActivity2.newIntent(getActivity(), mBeer));
+                startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
             }
         });
 

@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.com.lamdbui.android.beerview.BeerDetailActivity2"
-    tools:showIn="@layout/activity_beer_detail2">
+    tools:context="app.com.lamdbui.android.beerview.BeerDetailActivity"
+    tools:showIn="@layout/activity_beer_detail">
 
     <LinearLayout
         android:layout_width="match_parent"

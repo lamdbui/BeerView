@@ -3,6 +3,7 @@ package app.com.lamdbui.android.beerview;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -167,7 +169,8 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         }
     }
 
-    private class BreweryLocationHolder extends RecyclerView.ViewHolder {
+    private class BreweryLocationHolder extends RecyclerView.ViewHolder
+        implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
 
         private ImageView mBreweryImage;
         private TextView mBreweryName;
@@ -184,8 +187,17 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
         public void bind(BreweryLocation brewery) {
             mBreweryLocation = brewery;
 
+            FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
+            fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
+
             mBreweryName.setText(mBreweryLocation.getName());
             mBreweryImage.setImageResource(R.drawable.beer_icon_32);
+        }
+
+        @Override
+        public void completedFetchUrlImageTask(Bitmap bitmap) {
+            if(bitmap != null)
+                mBreweryImage.setImageBitmap(bitmap);
         }
     }
 

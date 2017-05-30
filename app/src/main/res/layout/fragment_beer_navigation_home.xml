@@ -32,24 +32,6 @@
 
     </LinearLayout>
 
-    <!--TextView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        style="@android:style/TextAppearance.Large"
-        android:background="@android:color/darker_gray"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:text="SAN FRANCISCO"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        style="@android:style/TextAppearance.Large"
-        android:background="@android:color/darker_gray"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:text="CALIFORNIA"/-->
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

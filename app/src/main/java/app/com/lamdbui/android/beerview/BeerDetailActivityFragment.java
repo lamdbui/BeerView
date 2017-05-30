@@ -72,7 +72,7 @@ public class BeerDetailActivityFragment extends Fragment {
 
         // Inflate the layout for this view
         // TODO: Maybe switch this to a fragment XML?
-        View view = inflater.inflate(R.layout.activity_beer_detail2, container, false);
+        View view = inflater.inflate(R.layout.activity_beer_detail, container, false);
 
         ButterKnife.bind(this, view);
 
