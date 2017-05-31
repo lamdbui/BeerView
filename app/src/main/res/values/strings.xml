@@ -9,7 +9,17 @@
     <string name="title_map">Map</string>
     <string name="title_more">More</string>
     <string name="title_activity_beer_detail2">BeerDetailActivity2</string>
+    <string name="section_detail">Details</string>
+    <string name="section_description">Description</string>
+    <string name="section_breweries">Breweries</string>
+    <string name="section_beers">Beers</string>
+    <string name="section_brewery_beers">Beers at this Brewery</string>
+    <string name="section_type">Type</string>
     <string name="info_none">None</string>
+    <string name="info_none_specified">None specified</string>
+    <string name="text_original_gravity">Original Gravity</string>
+    <string name="text_abv">ABV</string>
+    <string name="text_ibu">IBU</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

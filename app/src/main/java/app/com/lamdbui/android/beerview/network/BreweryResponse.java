@@ -64,11 +64,9 @@ public class BreweryResponse {
             List<BreweryLocation> breweryLocations = new ArrayList<>();
 
             for(BreweryLocationResponse.BreweryLocationData locationData : mLocations) {
-                //BreweryLocation breweryLocation = locationData.convertToBreweryLocation();
                 breweryLocations.add(locationData.convertToBreweryLocation());
             }
             brewery.setLocations(breweryLocations);
-            //brewery.setLocations(data.mLocations);
 
             return brewery;
         }

@@ -282,7 +282,6 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            //startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
             FragmentManager fm = getActivity().getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
                     .addToBackStack(null)

@@ -33,8 +33,6 @@ public class FetchUrlImageTask extends AsyncTask<String, Void, Bitmap> {
 
         // attach callback from caller
         mCallback = callback;
-//        // use this view to load image
-//        mImageView = view;
     }
 
     @Override

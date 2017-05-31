@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            style="@style/AppTheme.TextAppearance.Large"
-            android:text="Russian RBC"/>
+            style="@style/AppTheme.TextAppearance.Large"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -45,7 +44,7 @@
                     android:layout_marginRight="@dimen/text_margin"
                     style="?android:textAppearanceSmall"
                     android:textStyle="bold"
-                    android:text="DETAILS"/>
+                    android:text="@string/section_detail"/>
 
                 <TextView
                     android:id="@+id/brewery_detail_established"
@@ -53,16 +52,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
-                    style="?android:textAppearanceSmall"
-                    android:text="XXXX"/>
+                    style="?android:textAppearanceSmall"/>
                 <TextView
                     android:id="@+id/brewery_detail_address_line1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
-                    style="?android:textAppearanceSmall"
-                    android:text="1234 I CAN HAZ"/>
+                    style="?android:textAppearanceSmall"/>
                 <TextView
                     android:id="@+id/brewery_detail_address_line2"
                     android:layout_width="match_parent"
@@ -78,8 +75,7 @@
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
                     style="?android:textAppearanceSmall"
-                    android:autoLink="phone"
-                    android:text="(555)123-4567"/>
+                    android:autoLink="phone"/>
 
                 <TextView
                     android:id="@+id/brewery_detail_website"
@@ -88,8 +84,7 @@
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
                     android:autoLink="web"
-                    style="?android:textAppearanceSmall"
-                    android:text="http://www.russianriverbrewing.com"/>
+                    style="?android:textAppearanceSmall"/>
 
             </LinearLayout>
 
@@ -102,7 +97,7 @@
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
             android:textStyle="bold"
-            android:text="DESCRIPTION"/>
+            android:text="@string/section_description"/>
 
         <TextView
             android:id="@+id/brewery_detail_description"
@@ -110,15 +105,16 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            android:text="@string/large_text"/>
+            android:text="@string/info_none"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            style="?android:textAppearanceSmall"
             android:textStyle="bold"
-            android:text="BEERS AT THIS BREWERY"/>
+            android:text="@string/section_brewery_beers"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/brewery_beers_recycler_view"

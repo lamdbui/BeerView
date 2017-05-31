@@ -57,7 +57,6 @@ public class BeerDetailActivity extends AppCompatActivity
     @Override
     public void completedFetchUrlImageTask(Bitmap bitmap) {
         if(bitmap != null) {
-            //mToolbarImageView.setImageBitmap(bitmap);
             mBeerImageView.setImageBitmap(bitmap);
         }
     }
@@ -73,7 +72,6 @@ public class BeerDetailActivity extends AppCompatActivity
 
         // initiate our background tasks
         FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
-        //urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/beer/9UG4pg/upload_CN8EwR-medium.png");
         if(mBeer.getLabelsMedium() != null)
             urlImageTask.execute(mBeer.getLabelsMedium());
 

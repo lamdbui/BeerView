@@ -21,8 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            style="@style/AppTheme.TextAppearance.Large"
-            android:text="Pliny the Elder"/>
+            style="@style/AppTheme.TextAppearance.Large"/>
 
         <TextView
             android:id="@+id/beer_detail_brewery"
@@ -30,8 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            style="@style/AppTheme.TextAppearance.Medium"
-            android:text="Russian River Brewing"/>
+            style="@style/AppTheme.TextAppearance.Medium"/>
 
         <ImageView
             android:id="@+id/beer_detail_image"
@@ -53,31 +51,28 @@
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
             android:textStyle="bold"
-            android:text="TYPE"/>
+            android:text="@string/section_type"/>
 
         <TextView
             android:id="@+id/beer_detail_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:text="Imperial or Double India Pale Ale"/>
+            android:layout_marginRight="@dimen/text_margin"/>
 
         <TextView
             android:id="@+id/beer_detail_ibu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:text="80 - IBU"/>
+            android:layout_marginRight="@dimen/text_margin"/>
 
         <TextView
             android:id="@+id/beer_detail_original_gravity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:text="1.07 - Original Gravity"/>
+            android:layout_marginRight="@dimen/text_margin"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -86,7 +81,7 @@
             android:layout_marginRight="@dimen/text_margin"
             style="?android:textAppearanceSmall"
             android:textStyle="bold"
-            android:text="DESCRIPTION"/>
+            android:text="@string/section_description"/>
 
         <TextView
             android:id="@+id/beer_detail_description"
@@ -94,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            android:text="@string/large_text"/>
+            android:text="@string/info_none"/>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

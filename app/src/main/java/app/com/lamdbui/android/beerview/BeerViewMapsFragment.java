@@ -287,8 +287,10 @@ public class BeerViewMapsFragment extends Fragment
         public void bind(BreweryLocation brewery) {
             mBreweryLocation = brewery;
 
-            FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
-            fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
+            if(mBreweryLocation.getImagesMedium() != null) {
+                FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
+                fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
+            }
 
             mBreweryName.setText(mBreweryLocation.getName());
             mBreweryImage.setImageResource(R.drawable.beer_icon_32);

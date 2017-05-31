@@ -106,7 +106,6 @@ public class BreweryDetailActivity extends AppCompatActivity
     public void completedFetchUrlImageTask(Bitmap bitmap) {
         if(bitmap != null)
             mBreweryImageView.setImageBitmap(bitmap);
-            //view.setImageBitmap(bitmap);
     }
 
     @Override
@@ -127,8 +126,7 @@ public class BreweryDetailActivity extends AppCompatActivity
         });
 
         mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
-        //mBreweryBeers = new ArrayList<>();
-        //test
+
         mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
         if(mBreweryBeers == null)
             mBreweryBeers = new ArrayList<>();
@@ -139,11 +137,10 @@ public class BreweryDetailActivity extends AppCompatActivity
             mPreferredLocationId = null;
 
         // initiate our background tasks
-        FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
-        //urlImageTask.execute("https://s3.amazonaws.com/brewerydbapi/brewery/BSsTGw/upload_ozwafH-squareMedium.png");
-        // TODO: Use stock default image or no image, if URL not available
-        if(mBrewery.getImagesMedium() != null)
+        if(mBrewery.getImagesMedium() != null) {
+            FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
             urlImageTask.execute(mBrewery.getImagesMedium());
+        }
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -229,16 +226,44 @@ public class BreweryDetailActivity extends AppCompatActivity
 
     public void updateUI() {
         mBreweryNameTextView.setText(mBrewery.getName());
-        mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
+        if(mBrewery.getEstablished() != 0)
+            mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
+        else
+            mBreweryEstablishedTextView.setVisibility(View.GONE);
 
         BreweryLocation mainBreweryLocation = getMainBreweryLocation();
-        mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
-        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
-                + mainBreweryLocation.getRegion() + " "
-                + mainBreweryLocation.getPostalCode());
-        mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
-        mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
-        mBreweryDescriptionTextView.setText(mBrewery.getDescription());
+        if(mainBreweryLocation.getStreetAddress() != null)
+            mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
+        else
+            mBreweryAddressLine1TextView.setVisibility(View.GONE);
+
+        StringBuilder builder = new StringBuilder();
+        if(mainBreweryLocation.getLocality() != null)
+            builder.append(mainBreweryLocation.getLocality() + ", ");
+        if(mainBreweryLocation.getRegion() != null)
+            builder.append(mainBreweryLocation.getRegion() + " ");
+        if(mainBreweryLocation.getPostalCode() != null)
+            builder.append(mainBreweryLocation.getPostalCode());
+        String addressLine2String = builder.toString();
+        if(!addressLine2String.isEmpty())
+            mBreweryAddressLine2TextView.setText(builder.toString());
+        else
+            mBreweryAddressLine2TextView.setVisibility(View.GONE);
+//        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
+//                + mainBreweryLocation.getRegion() + " "
+//                + mainBreweryLocation.getPostalCode());
+        if(mainBreweryLocation.getPhone() != null)
+            mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
+        else
+            mBreweryPhoneTextView.setVisibility(View.GONE);
+        if(mBrewery.getWebsite() != null)
+            mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
+        else
+            mBreweryWebsiteTextView.setVisibility(View.GONE);
+        if(mBrewery.getDescription() != null)
+            mBreweryDescriptionTextView.setText(mBrewery.getDescription());
+        else
+            mBreweryDescriptionTextView.setText(R.string.info_none);
 
         // handle the data for the beers at a particular brewery
         if(mBeerAdapter == null) {
@@ -304,9 +329,10 @@ public class BreweryDetailActivity extends AppCompatActivity
             mBeerNameTextView.setText(mBeer.getName());
 
             // fetch the icon
-            FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            if(mBeer.getLabelsIcon() != null)
+            if(mBeer.getLabelsIcon() != null) {
+                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
                 beerIconTask.execute(mBeer.getLabelsIcon());
+            }
         }
 
         @Override
@@ -326,8 +352,6 @@ public class BreweryDetailActivity extends AppCompatActivity
         List<Beer> mBeers;
 
         public BeerAdapter(List<Beer> beers) {
-
-            //mBeers = new ArrayList<>();
             mBeers = beers;
         }
 

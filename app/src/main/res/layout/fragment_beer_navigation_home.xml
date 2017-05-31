@@ -45,7 +45,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="BREWERIES"/>
+        android:text="@string/section_breweries"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_breweries_recyclerview"
@@ -55,7 +55,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="BEERS"/>
+        android:text="@string/section_beers"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_beers_recyclerview"

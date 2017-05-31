@@ -23,8 +23,6 @@ public class BeerNavigationActivity extends AppCompatActivity
     private static final String ARG_BEER = "beer";
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
 
-    private TextView mTextMessage;
-
     private Beer mBeer;
     private List<BreweryLocation> mBreweryLocations;
 
@@ -44,9 +42,6 @@ public class BeerNavigationActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        //getSupportActionBar().hide();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_navigation);
 
@@ -54,13 +49,6 @@ public class BeerNavigationActivity extends AppCompatActivity
         mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
 
         FragmentManager fm = getSupportFragmentManager();
-//        //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
-//        if(mHomeFragment == null)
-//            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
-//        fm.beginTransaction()
-//                .replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations), BeerNavigationHomeFragment.TAG)
-//                .addToBackStack(null)
-//                .commit();
 
         mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
@@ -72,23 +60,9 @@ public class BeerNavigationActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        //navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setOnNavigationItemSelectedListener(this);
     }
-
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        //super.onSaveInstanceState(outState);
-//        FragmentManager fm = getSupportFragmentManager();
-//        fm.putFragment(outState, "fragment");
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -96,19 +70,6 @@ public class BeerNavigationActivity extends AppCompatActivity
 
         switch(item.getItemId()) {
             case R.id.navigation_home:
-//                FragmentManager fm = getSupportFragmentManager();
-//                // see if a Fragment already exists
-//                Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-//
-//                // if not, create one
-//                if(fragment == null) {
-//                    fragment = createFragment();
-//                    // initiate a transaction event for the Fragment
-//                    fm.beginTransaction()
-//                            .add(R.id.fragment_container, fragment)
-//                            .commit();
-//                }
-
                 mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
                 if(mHomeFragment == null) {
@@ -120,14 +81,8 @@ public class BeerNavigationActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
 
-                //getSupportActionBar().setTitle("LOLWUT");
-                //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
-//                if(getSupportActionBar() != null)
-//                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_map:
-                //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
-
                 mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
 
                 if(mMapsFragment == null) {
@@ -138,8 +93,6 @@ public class BeerNavigationActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
 
-//                if(getSupportActionBar() != null)
-//                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_more:
                 fm.beginTransaction()

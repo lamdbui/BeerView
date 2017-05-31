@@ -29,8 +29,7 @@
             android:id="@+id/list_item_beer_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/darker_gray"
-            android:text="I CAN HAZ"/>
+            android:background="@android:color/darker_gray"/>
 
     </LinearLayout>
 

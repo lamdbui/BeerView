@@ -62,9 +62,7 @@ public class BeerDetailActivityFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //setHasOptionsMenu(true)
-
-        mBeer = (Beer) getArguments().getParcelable(ARG_BEER);
+        mBeer = getArguments().getParcelable(ARG_BEER);
     }
 
     @Nullable
@@ -88,23 +86,37 @@ public class BeerDetailActivityFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        activity.getSupportActionBar().hide();
-//    }
-
     private void updateUI() {
         mBeerNameTextView.setText(mBeer.getNameDisplay());
         Brewery brewery = mBeer.getBreweries().get(0);
         mBeerBreweryTextView.setText(brewery.getName());
-        mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + "% ABV");
         mBeerTypeTextView.setText(mBeer.getBeerStyleName());
-        //mBeerTypeTextView.setText(mBeer.get)
-        //mBeerIBUTextView.setText(mBeer.get)
-        mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
+
+        StringBuilder abv = new StringBuilder();
+        abv.append(getString(R.string.text_abv));
+        abv.append(": ");
+        if(mBeer.getAbv() == 0)
+            abv.append(getString(R.string.info_none_specified));
+        else
+            abv.append(mBeer.getAbv());
+        mBeerAbvTextView.setText(abv.toString());
+
+//        // template for IBU stuff later
+//        StringBuilder ibu = new StringBuilder();
+//        ibu.append(getString(R.string.text_ibu));
+//        ibu.append(": ");
+        // disable IBU for now
+        mBeerIBUTextView.setVisibility(View.GONE);
+
+        StringBuilder originalGravity = new StringBuilder();
+        originalGravity.append(getString(R.string.text_original_gravity));
+        originalGravity.append(": ");
+        if(mBeer.getOriginalGravity() == 0)
+            originalGravity.append(getString(R.string.info_none_specified));
+        else
+            originalGravity.append(mBeer.getOriginalGravity());
+        mBeerOriginalGravityTextView.setText(originalGravity.toString());
+
         mBeerDescriptionTextView.setText(
                 (mBeer.getDescription() == null) ? getString(R.string.info_none) : mBeer.getDescription());
     }
