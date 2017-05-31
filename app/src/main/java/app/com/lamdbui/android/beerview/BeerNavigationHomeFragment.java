@@ -112,27 +112,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
-//        for(BreweryLocation breweryLocation : mBreweryLocations) {
-//            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-//            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
-//                @Override
-//                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
-//                    List<Beer> beersAtBrewery = response.body().getBeerList();
-//                    if(beersAtBrewery != null) {
-//                        mBreweryBeers.addAll(beersAtBrewery);
-//                        mBreweryBeersAdapter.setBeers(mBreweryBeers);
-//                        mBreweryBeersAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<BeerListResponse> call, Throwable t) {
-//                    Log.e(LOG_TAG, "Error fetching beers from brewery");
-//                }
-//            });
-//        }
-
-
         // TODO: Move into updateUI()
         if(mBreweryLocationAdapter == null) {
             mBreweryLocationAdapter = new BreweryLocationAdapter(mBreweryLocations);
@@ -140,7 +119,7 @@ public class BeerNavigationHomeFragment extends Fragment {
         }
         else {
             mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
-            mBreweryLocationAdapter.notifyDataSetChanged();
+            //mBreweryLocationAdapter.notifyDataSetChanged();
         }
 
         if(mBreweryBeersAdapter == null) {
@@ -149,28 +128,10 @@ public class BeerNavigationHomeFragment extends Fragment {
         }
         else {
             mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
-            mBreweryBeersAdapter.notifyDataSetChanged();
+            //mBreweryBeersAdapter.notifyDataSetChanged();
         }
 
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-//        outState.putParcelableArrayList("state_brewery_locations", (ArrayList<BreweryLocation>)mBreweryLocations);
-//        outState.putParcelableArrayList("state_brewery_beers", (ArrayList<Beer>)mBreweryBeers);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if(savedInstanceState != null) {
-//            mBreweryLocations = savedInstanceState.getParcelableArrayList("state_brewery_locations");
-//            mBreweryBeers = savedInstanceState.getParcelableArrayList("state_brewery_beers");
-        }
     }
 
     public void setBreweryLocations(List<BreweryLocation> breweryLocations) {

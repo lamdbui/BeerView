@@ -1,6 +1,5 @@
 package app.com.lamdbui.android.beerview;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -8,12 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +22,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -53,15 +49,17 @@ public class BeerViewMapsFragment extends Fragment
 
     @BindView(R.id.map_brewery_recyclerview)
     RecyclerView mBreweryRecyclerView;
+    @BindView(R.id.map_view)
+    MapView mMapView;
+
+    private LinearLayoutManager mLinearLayoutManager;
 
     private BeerViewMapsFragment.BreweryAdapter mBreweryAdapter;
 
     private GoogleMap mMap;
-    private SupportMapFragment mSupportMapFragment;
-    @BindView(R.id.map_view)
-    MapView mMapView;
 
     private List<BreweryLocation> mBreweryLocations;
+    private List<Marker> mBreweryLocationMarkers;
 
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries) {
         Bundle args = new Bundle();
@@ -76,23 +74,14 @@ public class BeerViewMapsFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mBreweryLocationMarkers = new ArrayList<>();
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_brew_view_maps, container, false);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-        //        .findFragmentById(R.id.map);
-        //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-
-        //SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
-
-        //mapFragment.getMapAsync(this);
 
         ButterKnife.bind(this, view);
 
@@ -104,7 +93,9 @@ public class BeerViewMapsFragment extends Fragment
 //        activity.setSupportActionBar(toolbar);
         //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mBreweryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         if(mBreweryAdapter == null) {
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
@@ -117,13 +108,6 @@ public class BeerViewMapsFragment extends Fragment
 
         return view;
     }
-
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        FragmentManager fm = getChildFragmentManager();
-//        f
-//    }
 
     /**
      * Manipulates the map once available.
@@ -160,6 +144,8 @@ public class BeerViewMapsFragment extends Fragment
                     .title(breweryLocation.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
             marker.setTag(breweryLocation);
+
+            mBreweryLocationMarkers.add(marker);
         }
 
         //LatLngBounds mapBounds = new LatLngBounds()
@@ -178,6 +164,27 @@ public class BeerViewMapsFragment extends Fragment
                 //startActivity(BreweryDetailActivity.newIntent(this, mBrewery, mBreweryBeers));
 
                 //startActivity(intent);
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //return false;
+
+                marker.showInfoWindow();
+
+                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+
+                int position = mBreweryAdapter.getAdapterItemPostion(breweryLocation.getId());
+
+                mMap.animateCamera(CameraUpdateFactory
+                        .newLatLng(new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude())));
+
+                if(position > -1)
+                    mLinearLayoutManager.scrollToPosition(position);
+
+                return true;
             }
         });
 
@@ -249,9 +256,20 @@ public class BeerViewMapsFragment extends Fragment
         }
     }
 
-    private class BreweryLocationHolder extends RecyclerView.ViewHolder
-            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
+    public Marker getMarkerFromBreweryLocation(BreweryLocation breweryLocation) {
+        for(Marker marker : mBreweryLocationMarkers) {
+            BreweryLocation markerBrewery = (BreweryLocation)marker.getTag();
+            if(markerBrewery.getId().equals(breweryLocation.getId()))
+                return marker;
+        }
+        // didn't find it
+        return null;
+    }
 
+    private class BreweryLocationHolder extends RecyclerView.ViewHolder
+            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener, View.OnClickListener {
+
+        private CardView mBreweryCardView;
         private ImageView mBreweryImage;
         private TextView mBreweryName;
 
@@ -260,6 +278,8 @@ public class BeerViewMapsFragment extends Fragment
         public BreweryLocationHolder(View itemView) {
             super(itemView);
 
+            mBreweryCardView = (CardView) itemView.findViewById(R.id.map_brewery_cardview);
+            mBreweryCardView.setOnClickListener(this);
             mBreweryImage = (ImageView) itemView.findViewById(R.id.map_brewery_image);
             mBreweryName = (TextView) itemView.findViewById(R.id.map_brewery_name);
         }
@@ -278,6 +298,18 @@ public class BeerViewMapsFragment extends Fragment
         public void completedFetchUrlImageTask(Bitmap bitmap) {
             if(bitmap != null)
                 mBreweryImage.setImageBitmap(bitmap);
+        }
+
+        @Override
+        public void onClick(View view) {
+            // TODO: Move to marker on the Map
+
+            Marker marker = getMarkerFromBreweryLocation(mBreweryLocation);
+            if(marker != null)
+                marker.showInfoWindow();
+
+            mMap.animateCamera(CameraUpdateFactory
+                    .newLatLng(new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude())));
         }
     }
 
@@ -306,6 +338,17 @@ public class BeerViewMapsFragment extends Fragment
         @Override
         public int getItemCount() {
             return BeerViewMapsFragment.this.mBreweryLocations.size();
+        }
+
+        // use the BreweryLocation.mId to get the position
+        public int getAdapterItemPostion(String id) {
+            for(int i = 0; i < mBreweryLocations.size(); i++) {
+                if((mBreweryLocations.get(i).getId()).equals(id)) {
+                    return i;
+                }
+            }
+            // didn't find it
+            return -1;
         }
     }
 }
