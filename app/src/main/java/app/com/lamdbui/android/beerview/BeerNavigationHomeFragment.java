@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,8 @@ import retrofit2.Response;
  */
 
 public class BeerNavigationHomeFragment extends Fragment {
+
+    public static final String TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
     private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
@@ -73,18 +76,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_beer_navigation_home, container, false);
-
-        ButterKnife.bind(this, view);
-
-        mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
@@ -106,6 +97,41 @@ public class BeerNavigationHomeFragment extends Fragment {
             });
         }
 
+        //getFragmentManager().findFragmentByTag()
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_beer_navigation_home, container, false);
+
+        ButterKnife.bind(this, view);
+
+        mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+//        for(BreweryLocation breweryLocation : mBreweryLocations) {
+//            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+//            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+//                @Override
+//                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+//                    List<Beer> beersAtBrewery = response.body().getBeerList();
+//                    if(beersAtBrewery != null) {
+//                        mBreweryBeers.addAll(beersAtBrewery);
+//                        mBreweryBeersAdapter.setBeers(mBreweryBeers);
+//                        mBreweryBeersAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<BeerListResponse> call, Throwable t) {
+//                    Log.e(LOG_TAG, "Error fetching beers from brewery");
+//                }
+//            });
+//        }
+
 
         // TODO: Move into updateUI()
         if(mBreweryLocationAdapter == null) {
@@ -113,6 +139,7 @@ public class BeerNavigationHomeFragment extends Fragment {
             mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
         }
         else {
+            mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
             mBreweryLocationAdapter.notifyDataSetChanged();
         }
 
@@ -121,10 +148,29 @@ public class BeerNavigationHomeFragment extends Fragment {
             mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
         }
         else {
+            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
             mBreweryBeersAdapter.notifyDataSetChanged();
         }
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+//        outState.putParcelableArrayList("state_brewery_locations", (ArrayList<BreweryLocation>)mBreweryLocations);
+//        outState.putParcelableArrayList("state_brewery_beers", (ArrayList<Beer>)mBreweryBeers);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null) {
+//            mBreweryLocations = savedInstanceState.getParcelableArrayList("state_brewery_locations");
+//            mBreweryBeers = savedInstanceState.getParcelableArrayList("state_brewery_beers");
+        }
     }
 
     public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
@@ -195,6 +241,8 @@ public class BeerNavigationHomeFragment extends Fragment {
                     if(response.body().getData() != null)
                         mBreweryBeers = response.body().getBeerList();
                     startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
+                    //FragmentManager fm = getActivity().getSupportFragmentManager();
+                    //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
                 }
 
                 @Override
@@ -273,7 +321,11 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
+            //startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

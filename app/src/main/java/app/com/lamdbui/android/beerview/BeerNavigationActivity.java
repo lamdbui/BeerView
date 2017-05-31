@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -26,6 +27,9 @@ public class BeerNavigationActivity extends AppCompatActivity
 
     private Beer mBeer;
     private List<BreweryLocation> mBreweryLocations;
+
+    private Fragment mHomeFragment;
+    private Fragment mMapsFragment;
 
     public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
@@ -50,7 +54,23 @@ public class BeerNavigationActivity extends AppCompatActivity
         mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
 
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+//        //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+//        if(mHomeFragment == null)
+//            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
+//        fm.beginTransaction()
+//                .replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations), BeerNavigationHomeFragment.TAG)
+//                .addToBackStack(null)
+//                .commit();
+
+        mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
+
+        if(mHomeFragment == null) {
+            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
+        }
+            fm.beginTransaction()
+                    .replace(R.id.content, mHomeFragment, BeerNavigationHomeFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -58,13 +78,48 @@ public class BeerNavigationActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(this);
     }
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        //super.onSaveInstanceState(outState);
+//        FragmentManager fm = getSupportFragmentManager();
+//        fm.putFragment(outState, "fragment");
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentManager fm = getSupportFragmentManager();
 
         switch(item.getItemId()) {
             case R.id.navigation_home:
-                fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
+//                FragmentManager fm = getSupportFragmentManager();
+//                // see if a Fragment already exists
+//                Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+//
+//                // if not, create one
+//                if(fragment == null) {
+//                    fragment = createFragment();
+//                    // initiate a transaction event for the Fragment
+//                    fm.beginTransaction()
+//                            .add(R.id.fragment_container, fragment)
+//                            .commit();
+//                }
+
+                mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
+
+                if(mHomeFragment == null) {
+                    mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
+                }
+
+                fm.beginTransaction()
+                        .replace(R.id.content, mHomeFragment, BeerNavigationHomeFragment.TAG)
+                        .addToBackStack(null)
+                        .commit();
+
                 //getSupportActionBar().setTitle("LOLWUT");
                 //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
 //                if(getSupportActionBar() != null)
@@ -72,16 +127,39 @@ public class BeerNavigationActivity extends AppCompatActivity
                 break;
             case R.id.navigation_map:
                 //fm.beginTransaction().replace(R.id.content, BeerNavigationHomeFragment.newInstance(mBreweryLocations)).commit();
-                fm.beginTransaction().replace(R.id.content, BeerViewMapsFragment.newInstance(mBreweryLocations)).commit();
+
+                mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
+
+                if(mMapsFragment == null) {
+                    mMapsFragment = BeerViewMapsFragment.newInstance(mBreweryLocations);
+                }
+                fm.beginTransaction()
+                        .replace(R.id.content, mMapsFragment, BeerViewMapsFragment.TAG)
+                        .addToBackStack(null)
+                        .commit();
+
 //                if(getSupportActionBar() != null)
 //                    getSupportActionBar().hide();
                 break;
             case R.id.navigation_more:
-                fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
+                fm.beginTransaction()
+                        .replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
+                        .addToBackStack(null)
+                        .commit();
                 //fm.beginTransaction().replace(R.id.content, BreweryD)
                 break;
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 }

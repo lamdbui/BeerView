@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,6 +46,8 @@ import butterknife.ButterKnife;
 public class BeerViewMapsFragment extends Fragment
     implements OnMapReadyCallback {
 
+    public static final String TAG = BeerViewActivityFragment.class.getSimpleName();
+
     public static final String ARG_BREWERIES = "breweries";
     public static final int PERMISSION_LOCATION_FINE = 1;
 
@@ -53,6 +57,9 @@ public class BeerViewMapsFragment extends Fragment
     private BeerViewMapsFragment.BreweryAdapter mBreweryAdapter;
 
     private GoogleMap mMap;
+    private SupportMapFragment mSupportMapFragment;
+    @BindView(R.id.map_view)
+    MapView mMapView;
 
     private List<BreweryLocation> mBreweryLocations;
 
@@ -81,10 +88,16 @@ public class BeerViewMapsFragment extends Fragment
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
         //        .findFragmentById(R.id.map);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        //SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
+
+        //mapFragment.getMapAsync(this);
 
         ButterKnife.bind(this, view);
+
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
 
 //        Toolbar toolbar = (Toolbar) view.findViewById(R.id.map_toolbar);
 //        AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -98,11 +111,19 @@ public class BeerViewMapsFragment extends Fragment
             mBreweryRecyclerView.setAdapter(mBreweryAdapter);
         }
         else {
+            mBreweryRecyclerView.setAdapter(mBreweryAdapter);
             mBreweryAdapter.notifyDataSetChanged();
         }
 
         return view;
     }
+
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        FragmentManager fm = getChildFragmentManager();
+//        f
+//    }
 
     /**
      * Manipulates the map once available.
@@ -168,6 +189,42 @@ public class BeerViewMapsFragment extends Fragment
 //        mMap.setOnInfoWindowLongClickListener(this);
 
 //
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
     }
 
     @Override
