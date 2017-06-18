@@ -137,7 +137,7 @@ public class BreweryDetailActivity extends AppCompatActivity
             mPreferredLocationId = null;
 
         // initiate our background tasks
-        if(mBrewery.getImagesMedium() != null) {
+        if(mBrewery != null && mBrewery.getImagesMedium() != null) {
             FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
             urlImageTask.execute(mBrewery.getImagesMedium());
         }

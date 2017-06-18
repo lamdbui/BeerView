@@ -30,10 +30,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.Beer;
+import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
+import app.com.lamdbui.android.beerview.network.BeerListResponse;
+import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by lamdbui on 5/30/17.
@@ -46,6 +53,8 @@ public class BeerViewMapsFragment extends Fragment
 
     public static final String ARG_BREWERIES = "breweries";
     public static final int PERMISSION_LOCATION_FINE = 1;
+
+    private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
     @BindView(R.id.map_brewery_recyclerview)
     RecyclerView mBreweryRecyclerView;
@@ -60,6 +69,12 @@ public class BeerViewMapsFragment extends Fragment
 
     private List<BreweryLocation> mBreweryLocations;
     private List<Marker> mBreweryLocationMarkers;
+
+    private BreweryDbInterface mBreweryDbService;
+
+    // used to hold current Brewery and Beer details
+    private Brewery mBrewery;
+    private List<Beer> mBreweryBeers;
 
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries) {
         Bundle args = new Bundle();
@@ -76,6 +91,11 @@ public class BeerViewMapsFragment extends Fragment
 
         mBreweryLocationMarkers = new ArrayList<>();
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
+
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+        //mBrewery = null;
+        mBreweryBeers = new ArrayList<>();
     }
 
     @Nullable
@@ -157,13 +177,42 @@ public class BeerViewMapsFragment extends Fragment
             @Override
             public void onInfoWindowClick(Marker marker) {
                 // get the BreweryLocation object back
-                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+                final BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
                 //Intent intent = BreweryActivity.newIntent(BrewViewMapsActivity.this, breweryLocation);
 
                 //startActivity(BreweryDetailActivity.newIntent(this, mBrewery, mBreweryBeers));
 
                 //startActivity(intent);
+                Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+                callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                    @Override
+                    public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                        mBrewery = response.body().getBrewery();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+                    }
+                });
+
+                Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+                callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+                    @Override
+                    public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                        // we could possibly get no beers available
+                        if(response.body().getData() != null)
+                            mBreweryBeers = response.body().getBeerList();
+                        startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, breweryLocation.getId()));
+                        //FragmentManager fm = getActivity().getSupportFragmentManager();
+                        //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                    }
+                });
             }
         });
 
@@ -187,6 +236,16 @@ public class BeerViewMapsFragment extends Fragment
                 return true;
             }
         });
+
+//        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+//            @Override
+//            public void onInfoWindowClick(Marker marker) {
+//                Toast.makeText(getActivity(), "clicked marker!", Toast.LENGTH_SHORT).show();
+//                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+//
+//                //startActivity(BreweryDetailActivity.newIntent(getActivity(), breweryLocation.));
+//            }
+//        });
 
         // Set listeners for marker events
 //        mMap.setOnMarkerClickListener(this);
