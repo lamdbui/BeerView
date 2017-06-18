@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class BeerNavigationHomeFragment extends Fragment {
 
     private BreweryDbInterface mBreweryDbService;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList<BreweryLocation>) breweryLocations);
@@ -96,6 +100,12 @@ public class BeerNavigationHomeFragment extends Fragment {
                 }
             });
         }
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
         //getFragmentManager().findFragmentByTag()
 
@@ -282,6 +292,13 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
+
+//            Bundle bundle = new Bundle();
+//            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "beer_click");
+//            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "beer_clicked");
+//            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+//            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
             FragmentManager fm = getActivity().getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
                     .addToBackStack(null)

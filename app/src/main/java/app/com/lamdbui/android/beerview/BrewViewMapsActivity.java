@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,8 +147,6 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
 //        mMap.setOnMarkerDragListener(this);
 //        mMap.setOnInfoWindowCloseListener(this);
 //        mMap.setOnInfoWindowLongClickListener(this);
-
-//
     }
 
     @Override

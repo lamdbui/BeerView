@@ -176,7 +176,7 @@ public class BeerViewMapsFragment extends Fragment
 
                 BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
-                int position = mBreweryAdapter.getAdapterItemPostion(breweryLocation.getId());
+                int position = mBreweryAdapter.getAdapterItemPosition(breweryLocation.getId());
 
                 mMap.animateCamera(CameraUpdateFactory
                         .newLatLng(new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude())));
@@ -343,7 +343,7 @@ public class BeerViewMapsFragment extends Fragment
         }
 
         // use the BreweryLocation.mId to get the position
-        public int getAdapterItemPostion(String id) {
+        public int getAdapterItemPosition(String id) {
             for(int i = 0; i < mBreweryLocations.size(); i++) {
                 if((mBreweryLocations.get(i).getId()).equals(id)) {
                     return i;

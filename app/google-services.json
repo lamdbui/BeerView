@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "15695529765",
+    "firebase_url": "https://beermapper-82b27.firebaseio.com",
+    "project_id": "beermapper-82b27",
+    "storage_bucket": "beermapper-82b27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15695529765:android:f766f283136dfc60",
+        "android_client_info": {
+          "package_name": "app.com.lamdbui.android.beerview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15695529765-8l80ho6dsa7nki7a1o8jecpnl7ufbenv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.com.lamdbui.android.beerview",
+            "certificate_hash": "a49a8f5f248567bfb09f5f935b6b9e76c2b082cc"
+          }
+        },
+        {
+          "client_id": "15695529765-46mjlhnvdm0ag0pv9v7ijkp47qv9du15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQxgD2CtnBPsrBqHYQru6B46mFLHHqSRU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15695529765-46mjlhnvdm0ag0pv9v7ijkp47qv9du15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
