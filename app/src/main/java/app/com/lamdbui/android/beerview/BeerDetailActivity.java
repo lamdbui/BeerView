@@ -100,7 +100,17 @@ public class BeerDetailActivity extends AppCompatActivity
         mBeerTypeTextView.setText(mBeer.getBeerStyleName());
         //mBeerTypeTextView.setText(mBeer.get)
         //mBeerIBUTextView.setText(mBeer.get)
-        mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
+        //mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
+        mBeerIBUTextView.setVisibility(View.GONE);
+
+        StringBuilder originalGravity = new StringBuilder();
+        originalGravity.append(getString(R.string.text_original_gravity));
+        originalGravity.append(": ");
+        if(mBeer.getOriginalGravity() == 0)
+            originalGravity.append(getString(R.string.info_none_specified));
+        else
+            originalGravity.append(mBeer.getOriginalGravity());
+        mBeerOriginalGravityTextView.setText(originalGravity.toString());
         mBeerDescriptionTextView.setText(
                 (mBeer.getDescription() == null) ? getString(R.string.info_none) : mBeer.getDescription());
     }

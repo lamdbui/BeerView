@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/list_item_brewery_location_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:scaleType="centerCrop"
             android:background="@android:color/transparent"
             android:src="@drawable/beer_icon_32"/>

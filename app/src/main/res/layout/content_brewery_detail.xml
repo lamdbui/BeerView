@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
-                    style="?android:textAppearanceSmall"
+                    style="?android:textAppearanceMedium"
                     android:textStyle="bold"
                     android:text="@string/section_detail"/>
 
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
+            style="?android:textAppearanceMedium"
             android:textStyle="bold"
             android:text="@string/section_description"/>
 
@@ -112,14 +112,16 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
-            style="?android:textAppearanceSmall"
+            style="?android:textAppearanceMedium"
             android:textStyle="bold"
             android:text="@string/section_brewery_beers"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/brewery_beers_recycler_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/list_item_margin"
+            android:layout_marginStart="@dimen/list_item_margin">
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
