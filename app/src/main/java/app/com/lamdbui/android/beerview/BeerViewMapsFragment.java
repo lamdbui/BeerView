@@ -34,6 +34,8 @@ import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
+import app.com.lamdbui.android.beerview.network.BreweryDbClient;
+import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;

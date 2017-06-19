@@ -1,6 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
 import android.graphics.Bitmap;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,11 +20,15 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
+import app.com.lamdbui.android.beerview.network.BreweryDbClient;
+import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
@@ -43,9 +48,14 @@ public class BeerNavigationHomeFragment extends Fragment {
     private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
+    private static final String ARG_LOCATION_DATA = "location_data";
 
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
+    @BindView(R.id.navigation_city_textview)
+    TextView mCityTextView;
+    @BindView(R.id.navigation_state_textview)
+    TextView mStateTextView;
     @BindView(R.id.home_breweries_recyclerview)
     RecyclerView mHomeBreweriesRecyclerView;
     @BindView(R.id.home_beers_recyclerview)
@@ -56,14 +66,16 @@ public class BeerNavigationHomeFragment extends Fragment {
 
     private List<BreweryLocation> mBreweryLocations;
     private List<Beer> mBreweryBeers;
+    private List<Address> mAddresses;
 
     private BreweryDbInterface mBreweryDbService;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
-    public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations) {
+    public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList<BreweryLocation>) breweryLocations);
+        args.putParcelableArrayList(ARG_LOCATION_DATA, (ArrayList<Address>) addresses);
         BeerNavigationHomeFragment fragment = new BeerNavigationHomeFragment();
         fragment.setArguments(args);
 
@@ -78,8 +90,10 @@ public class BeerNavigationHomeFragment extends Fragment {
         mBreweryBeers = new ArrayList<>();
 
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
+        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
 
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
@@ -139,6 +153,16 @@ public class BeerNavigationHomeFragment extends Fragment {
         else {
             mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
             //mBreweryBeersAdapter.notifyDataSetChanged();
+        }
+
+        // TODO: Add some code if the city/state is not available
+        // assume the first is what we want
+        Address address = mAddresses.get(0);
+        if(address != null) {
+            if(address.getCity() != null)
+                mCityTextView.setText(address.getCity().toUpperCase());
+            if(address.getState() != null)
+                mStateTextView.setText(address.getState().toUpperCase());
         }
 
         return view;

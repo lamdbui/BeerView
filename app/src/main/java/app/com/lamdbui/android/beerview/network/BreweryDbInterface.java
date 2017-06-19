@@ -1,4 +1,4 @@
-package app.com.lamdbui.android.beerview;
+package app.com.lamdbui.android.beerview.network;
 
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BeerResponse;

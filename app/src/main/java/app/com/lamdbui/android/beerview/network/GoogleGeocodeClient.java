@@ -1,15 +1,15 @@
-package app.com.lamdbui.android.beerview;
+package app.com.lamdbui.android.beerview.network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by lamdbui on 4/26/17.
+ * Created by lamdbui on 6/19/17.
  */
 
-public class BreweryDbClient {
+public class GoogleGeocodeClient {
 
-    public static final String BASE_URL = "http://api.brewerydb.com/v2/";
+    public static final String BASE_URL = "http://maps.googleapis.com/maps/api/geocode/";
 
     private static Retrofit sRetrofit = null;
 

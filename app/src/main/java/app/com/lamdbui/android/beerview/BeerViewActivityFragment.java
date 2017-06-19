@@ -23,13 +23,19 @@ import java.util.List;
 
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
+import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
+import app.com.lamdbui.android.beerview.network.AddressResponse;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BeerResponse;
+import app.com.lamdbui.android.beerview.network.BreweryDbClient;
+import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
+import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
+import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -67,6 +73,8 @@ public class BeerViewActivityFragment extends Fragment
     private Brewery mBrewery;
     private List<Beer> mBreweryBeers;
 
+    private List<Address> mAddresses;
+
     public BeerViewActivityFragment() {
     }
 
@@ -76,6 +84,24 @@ public class BeerViewActivityFragment extends Fragment
 
         mBreweries = new ArrayList<>();
         mBreweryBeers = new ArrayList<>();
+
+        GoogleGeocodeInterface geocacheService =
+                GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
+
+        Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData("94122");
+        callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
+            @Override
+            public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
+                mAddresses = response.body().getAddressList();
+
+                int m = 4;
+            }
+
+            @Override
+            public void onFailure(Call<AddressResponse> call, Throwable t) {
+
+            }
+        });
 
         BreweryDbInterface breweryDbService =
                 BreweryDbClient.getClient().create(BreweryDbInterface.class);
@@ -223,7 +249,7 @@ public class BeerViewActivityFragment extends Fragment
             @Override
             public void onClick(View view) {
                 //startActivity(new Intent(getActivity(), BeerNavigationActivity.class));
-                startActivity(BeerNavigationActivity.newIntent(getActivity(), mBeer, mBreweries));
+                startActivity(BeerNavigationActivity.newIntent(getActivity(), mBeer, mBreweries, mAddresses));
             }
         });
 

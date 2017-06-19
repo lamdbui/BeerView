@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
@@ -22,18 +23,21 @@ public class BeerNavigationActivity extends AppCompatActivity
 
     private static final String ARG_BEER = "beer";
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
+    private static final String ARG_LOCATION_DATA = "location_data";
 
     private Beer mBeer;
     private List<BreweryLocation> mBreweryLocations;
+    private List<Address> mAddresses;
 
     private Fragment mHomeFragment;
     private Fragment mMapsFragment;
 
-    public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations) {
+    public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_BEER, beer);
         bundle.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList) breweryLocations);
+        bundle.putParcelableArrayList(ARG_LOCATION_DATA, (ArrayList) addresses);
         intent.putExtras(bundle);
 
         return intent;
@@ -47,13 +51,14 @@ public class BeerNavigationActivity extends AppCompatActivity
 
         mBeer = getIntent().getParcelableExtra(ARG_BEER);
         mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
+        mAddresses = getIntent().getParcelableArrayListExtra(ARG_LOCATION_DATA);
 
         FragmentManager fm = getSupportFragmentManager();
 
         mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
         if(mHomeFragment == null) {
-            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
+            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
         }
             fm.beginTransaction()
                     .replace(R.id.content, mHomeFragment, BeerNavigationHomeFragment.TAG)
@@ -73,7 +78,7 @@ public class BeerNavigationActivity extends AppCompatActivity
                 mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
                 if(mHomeFragment == null) {
-                    mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations);
+                    mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
                 }
 
                 fm.beginTransaction()

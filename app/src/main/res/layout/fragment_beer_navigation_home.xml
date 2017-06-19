@@ -27,24 +27,24 @@
         android:background="@android:color/darker_gray">
 
         <TextView
-            android:id="@+id/navigation_city"
+            android:id="@+id/navigation_city_textview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:textColor="@android:color/white"
             android:gravity="bottom|center_horizontal"
-            android:text="SAN FRANCISCO"/>
+            android:text="DEFAULT CITY"/>
 
         <TextView
-            android:id="@+id/navigation_state"
+            android:id="@+id/navigation_state_textview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:gravity="top|center_horizontal"
             android:textColor="@android:color/white"
-            android:text="CALIFORNIA"/>
+            android:text="DEFAULT STATE"/>
 
     </LinearLayout>
 
