@@ -16,6 +16,14 @@
         android:theme="@style/BeerMapper.Theme.AppBarOverlay"
         app:popupTheme="@style/BeerMapper.Theme.PopupOverlay"/>
 
+    <!--android.support.v7.widget.SearchView
+        android:id="@+id/location_searchview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_item_margin"
+        android:queryHint="Enter address here...">
+    </android.support.v7.widget.SearchView-->
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -26,6 +34,12 @@
             android:layout_height="match_parent">
 
         </com.google.android.gms.maps.MapView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:text="Current Location: 94122"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/map_brewery_recyclerview"

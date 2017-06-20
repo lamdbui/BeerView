@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,14 +157,20 @@ public class BeerNavigationHomeFragment extends Fragment {
         }
 
         // TODO: Add some code if the city/state is not available
-        // assume the first is what we want
-        Address address = mAddresses.get(0);
-        if(address != null) {
-            if(address.getCity() != null)
-                mCityTextView.setText(address.getCity().toUpperCase());
-            if(address.getState() != null)
-                mStateTextView.setText(address.getState().toUpperCase());
+        if(mAddresses != null) {
+            // assume the first is what we want
+            Address address = mAddresses.get(0);
+            if (address != null) {
+                if (address.getCity() != null)
+                    mCityTextView.setText(address.getCity().toUpperCase());
+                if (address.getState() != null)
+                    mStateTextView.setText(address.getState().toUpperCase());
+            }
         }
+
+        // setting the title
+//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.home_toolbar);
+//        toolbar.setTitle("LOLWUT");
 
         return view;
     }

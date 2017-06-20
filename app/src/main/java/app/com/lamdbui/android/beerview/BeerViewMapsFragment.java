@@ -8,10 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,6 +67,10 @@ public class BeerViewMapsFragment extends Fragment
     RecyclerView mBreweryRecyclerView;
     @BindView(R.id.map_view)
     MapView mMapView;
+//    @BindView(R.id.location_searchview)
+//    SearchView mSearchView;
+
+    //private SearchView mToolbarSearchView;
 
     private LinearLayoutManager mLinearLayoutManager;
 
@@ -103,6 +112,7 @@ public class BeerViewMapsFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.activity_brew_view_maps, container, false);
 
         ButterKnife.bind(this, view);
@@ -117,6 +127,19 @@ public class BeerViewMapsFragment extends Fragment
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
+//        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                Toast.makeText(getActivity(), query, Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+
         mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         if(mBreweryAdapter == null) {
@@ -130,6 +153,14 @@ public class BeerViewMapsFragment extends Fragment
 
         return view;
     }
+
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        //super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.menu_beer_view_maps_fragment, menu);
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        mToolbarSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//    }
 
     /**
      * Manipulates the map once available.
