@@ -1,8 +1,10 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -94,7 +96,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
-
 
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");

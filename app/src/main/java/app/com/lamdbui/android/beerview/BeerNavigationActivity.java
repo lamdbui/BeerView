@@ -3,6 +3,7 @@ package app.com.lamdbui.android.beerview;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,8 @@ public class BeerNavigationActivity extends AppCompatActivity
 
     private Fragment mHomeFragment;
     private Fragment mMapsFragment;
+    private Fragment mSettingsFragment;
+    private PreferenceFragment mSettingsPreferenceFragment;
 
     public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
@@ -102,10 +105,32 @@ public class BeerNavigationActivity extends AppCompatActivity
 
                 break;
             case R.id.navigation_more:
+
+                //mSettingsPreferenceFragment = fm.findFragmentByTag(BeerNavigationSettingsPreferenceFragment.TAG);
+                //mSettingsPreferenceFragment = getFragmentManager().findFragmentByTag(BeerNavigationSettingsPreferenceFragment.TAG);
+//                if(mSettingsPreferenceFragment == null) {
+//                    //mSettingsPreferenceFragment = (Fragment) BeerNavigationSettingsPreferenceFragment.newInstance();
+//                    mSettingsPreferenceFragment = new BeerNavigationSettingsPreferenceFragment();
+//                }
+//                mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
+//                fm.beginTransaction().hide(mMapsFragment).commit();
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.content, mSettingsPreferenceFragment, BeerNavigationSettingsPreferenceFragment.TAG)
+//                        .addToBackStack(null)
+//                        .commit();
+
+                mSettingsFragment = fm.findFragmentByTag(BeerNavigationSettingsFragment.TAG);
+                if(mSettingsFragment == null) {
+                    mSettingsFragment = BeerNavigationSettingsFragment.newInstance();
+                }
                 fm.beginTransaction()
-                        .replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
+                        .replace(R.id.content, mSettingsFragment, BeerNavigationSettingsFragment.TAG)
                         .addToBackStack(null)
                         .commit();
+//                fm.beginTransaction()
+//                        .replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
+//                        .addToBackStack(null)
+//                        .commit();
                 //fm.beginTransaction().replace(R.id.content, BreweryD)
                 break;
         }

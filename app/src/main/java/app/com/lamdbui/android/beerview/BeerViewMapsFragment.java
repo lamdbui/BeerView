@@ -1,8 +1,10 @@
 package app.com.lamdbui.android.beerview;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +70,9 @@ public class BeerViewMapsFragment extends Fragment
     RecyclerView mBreweryRecyclerView;
     @BindView(R.id.map_view)
     MapView mMapView;
+    @BindView(R.id.map_postalcode_button)
+    Button mPostalcodeButton;
+
 //    @BindView(R.id.location_searchview)
 //    SearchView mSearchView;
 
@@ -86,6 +92,8 @@ public class BeerViewMapsFragment extends Fragment
     // used to hold current Brewery and Beer details
     private Brewery mBrewery;
     private List<Beer> mBreweryBeers;
+
+    private SharedPreferences mSettings;
 
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries) {
         Bundle args = new Bundle();
@@ -107,6 +115,13 @@ public class BeerViewMapsFragment extends Fragment
 
         //mBrewery = null;
         mBreweryBeers = new ArrayList<>();
+
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = mSettings.edit();
+        // test code
+        String postalCode = "92612";
+        editor.putString("default_postalCode", postalCode);
+        editor.apply();
     }
 
     @Nullable
@@ -139,6 +154,13 @@ public class BeerViewMapsFragment extends Fragment
 //                return false;
 //            }
 //        });
+
+        mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),mSettings.getString("default_postalCode", "NONE AVAILABLE"), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
 
