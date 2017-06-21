@@ -120,7 +120,7 @@ public class BeerViewMapsFragment extends Fragment
         SharedPreferences.Editor editor = mSettings.edit();
         // test code
         String postalCode = "92612";
-        editor.putString("default_postalCode", postalCode);
+        editor.putString(getString(R.string.pref_location_postal_code), postalCode);
         editor.apply();
     }
 
@@ -158,7 +158,7 @@ public class BeerViewMapsFragment extends Fragment
         mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(),mSettings.getString("default_postalCode", "NONE AVAILABLE"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),mSettings.getString(getString(R.string.pref_location_postal_code), "NONE AVAILABLE"), Toast.LENGTH_SHORT).show();
             }
         });
 

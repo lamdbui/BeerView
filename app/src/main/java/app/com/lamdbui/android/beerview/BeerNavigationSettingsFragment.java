@@ -69,7 +69,7 @@ public class BeerNavigationSettingsFragment extends Fragment {
                                 //String postalCode = "92612";
                                 // TODO: Do some validation of the input here
                                 String postalCode = input.getText().toString();
-                                editor.putString("default_postalCode", postalCode);
+                                editor.putString(getString(R.string.pref_location_postal_code), postalCode);
                                 editor.apply();
                                 Toast.makeText(getActivity(), "Saved! - " + postalCode, Toast.LENGTH_SHORT).show();
                                 updateUI();

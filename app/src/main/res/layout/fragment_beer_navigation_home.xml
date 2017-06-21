@@ -15,7 +15,7 @@
         android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         android:background="@color/colorPrimary"
         android:theme="@style/BeerMapper.Theme.AppBarOverlay"
         app:popupTheme="@style/BeerMapper.Theme.PopupOverlay">
@@ -54,7 +54,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="@dimen/navigation_home_splashbar_height"
         android:orientation="vertical"
         android:background="@android:color/darker_gray">
 

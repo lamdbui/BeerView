@@ -4,7 +4,7 @@
     android:id="@+id/map_brewery_cardview"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="@dimen/cardview_item_margin">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/map_brewery_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/cardview_item_width_small"
+            android:layout_height="@dimen/cardview_item_height_small"
             android:scaleType="centerCrop"
             android:background="@android:color/transparent"
             android:src="@drawable/beer_icon_32"/>

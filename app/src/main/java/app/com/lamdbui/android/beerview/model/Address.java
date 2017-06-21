@@ -48,7 +48,6 @@ public class Address implements Parcelable {
         LatLng southwest = new LatLng(in.readDouble(), in.readDouble());
         LatLng northeast = new LatLng(in.readDouble(), in.readDouble());
         mLatLngBounds = new LatLngBounds(southwest, northeast);
-        //mLatLng = in.readParcelable(LatLng.class);
     }
 
     public static final Creator<Address> CREATOR = new Parcelable.Creator<Address>() {
@@ -84,8 +83,6 @@ public class Address implements Parcelable {
         parcel.writeDouble(mLatLngBounds.southwest.longitude);
         parcel.writeDouble(mLatLngBounds.northeast.latitude);
         parcel.writeDouble(mLatLngBounds.northeast.longitude);
-        //parcel.writeParcelable(mLatLng, 0);
-        //parcel.writeParcelable(mLatLngBounds, 0);
     }
 
     public String getStreetNumber() {
