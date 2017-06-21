@@ -24,4 +24,5 @@
     <string name="title_activity_beer_home">BeerHomeActivity</string>
 
     <string name="pref_location_postal_code">pref_location_postal_code</string>
+    <string name="pref_location_none">None Available</string>
 </resources>

@@ -2,7 +2,9 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +78,9 @@ public class BeerViewActivityFragment extends Fragment
     private List<Beer> mBreweryBeers;
 
     private List<Address> mAddresses;
+    private LatLng mCurrentLatLng;
+
+    private SharedPreferences mSettings;
 
     public BeerViewActivityFragment() {
     }
@@ -85,16 +92,27 @@ public class BeerViewActivityFragment extends Fragment
         mBreweries = new ArrayList<>();
         mBreweryBeers = new ArrayList<>();
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String postalCode = "";
+
+        if(mSettings != null) {
+            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        }
+
         GoogleGeocodeInterface geocacheService =
                 GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
 
-        Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData("94122");
+        //test
+        postalCode = "92612";
+        //Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData("92612");
+        Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
         callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
             @Override
             public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
                 mAddresses = response.body().getAddressList();
 
-                int m = 4;
+                // get Latitude and Longitude
+                //mCurrentLatLng = mAddresses.get(0).getLatLng();
             }
 
             @Override
@@ -161,41 +179,43 @@ public class BeerViewActivityFragment extends Fragment
             }
         });
 
+        //Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, mCurrentLatLng.latitude, mCurrentLatLng.longitude);
         Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
         callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
             @Override
             public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
                 mBreweries = response.body().getBreweries();
 
-                // Add breweries to the database
-                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
-                for(int i = 0; i < mBreweries.size(); i++) {
-                    breweryValues[i] = BreweryDbUtils.convertBreweryToContentValues(mBreweries.get(i));
-                }
-
-                getContext().getContentResolver().bulkInsert(
-                        BreweryContract.BreweryTable.CONTENT_URI,
-                        breweryValues);
-
-                // *** TEST CODE - get them back
-                Cursor cursorResults = getContext().getContentResolver().query(
-                        BreweryContract.BreweryTable.CONTENT_URI,
-                        null,
-                        null,
-                        null,
-                        null);
-                if(cursorResults != null && cursorResults.getCount() > 0) {
-                    cursorResults.moveToFirst();
-
-                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
-
-                    while(!cursorResults.isAfterLast()) {
-
-                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
-
-                        cursorResults.moveToNext();
-                    }
-                }
+                // TEST CODE to verify DB working
+//                // Add breweries to the database
+//                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
+//                for(int i = 0; i < mBreweries.size(); i++) {
+//                    breweryValues[i] = BreweryDbUtils.convertBreweryLocationToContentValues(mBreweries.get(i));
+//                }
+//
+//                getContext().getContentResolver().bulkInsert(
+//                        BreweryContract.BreweryTable.CONTENT_URI,
+//                        breweryValues);
+//
+//                // *** TEST CODE - get them back
+//                Cursor cursorResults = getContext().getContentResolver().query(
+//                        BreweryContract.BreweryTable.CONTENT_URI,
+//                        null,
+//                        null,
+//                        null,
+//                        null);
+//                if(cursorResults != null && cursorResults.getCount() > 0) {
+//                    cursorResults.moveToFirst();
+//
+//                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+//
+//                    while(!cursorResults.isAfterLast()) {
+//
+//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
+//
+//                        cursorResults.moveToNext();
+//                    }
+//                }
 
                 updateUI();
             }

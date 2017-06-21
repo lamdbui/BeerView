@@ -28,6 +28,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.data.BreweryContract;
+import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
@@ -64,6 +66,8 @@ public class BreweryDetailActivity extends AppCompatActivity
     ImageView mBreweryImageView;
     @BindView(R.id.brewery_beers_recycler_view)
     RecyclerView mBreweryBeersRecyclerView;
+    @BindView(R.id.fab_brewery_detail)
+    FloatingActionButton mFavoriteFab;
 
     // used for displaying beers in the recyclerview
     private BeerAdapter mBeerAdapter;
@@ -72,6 +76,7 @@ public class BreweryDetailActivity extends AppCompatActivity
     private List<Beer> mBreweryBeers;
     private Brewery mBrewery;
     private String mPreferredLocationId;
+    private BreweryLocation mBreweryLocation;
 
     public static Intent newIntent(Context context, Brewery brewery) {
         Bundle args = new Bundle();
@@ -116,14 +121,14 @@ public class BreweryDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
 
@@ -148,6 +153,27 @@ public class BreweryDetailActivity extends AppCompatActivity
         }
 
         ButterKnife.bind(this);
+
+        mFavoriteFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                // Add breweries to the database
+//                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
+//                for(int i = 0; i < mBreweries.size(); i++) {
+//                    breweryValues[i] = BreweryDbUtils.convertBreweryLocationToContentValues(mBreweries.get(i));
+//                }
+                getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
+                        BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
+
+//                getContentResolver().bulkInsert(
+//                        BreweryContract.BreweryTable.CONTENT_URI,
+//                        breweryValues);
+            }
+        });
+        mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
 
         // configure our recyclerview to be horizontal scrolling
         mBreweryBeersRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -195,8 +221,9 @@ public class BreweryDetailActivity extends AppCompatActivity
         // TODO: Remove the static location here and set zoom level
         LatLng breweryLocation = new LatLng(38.4414632, -122.7117124);
         if(mPreferredLocationId != null) {
-            BreweryLocation preferredLocation = getBreweryLocationById(mPreferredLocationId);
-            breweryLocation = new LatLng(preferredLocation.getLatitude(), preferredLocation.getLongitude());
+            //BreweryLocation preferredLocation = getBreweryLocationById(mPreferredLocationId);
+            mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
+            breweryLocation = new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude());
         }
         CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
         map.moveCamera(breweryMapPosition);

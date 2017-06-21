@@ -117,6 +117,6 @@ public class BeerNavigationSettingsFragment extends Fragment {
     }
 
     public void updateUI() {
-        mPrefPostalCodeTextView.setText(mSettings.getString("default_postalCode", "NOT AVAILABLE"));
+        mPrefPostalCodeTextView.setText(mSettings.getString(getString(R.string.pref_location_postal_code), getString(R.string.pref_location_none)));
     }
 }

@@ -331,10 +331,13 @@ public class BeerNavigationHomeFragment extends Fragment {
 //            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
 //            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
-                    .addToBackStack(null)
-                    .commit();
+            startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
+
+//            // replace with Beer Fragment
+//            FragmentManager fm = getActivity().getSupportFragmentManager();
+//            fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
+//                    .addToBackStack(null)
+//                    .commit();
         }
     }
 

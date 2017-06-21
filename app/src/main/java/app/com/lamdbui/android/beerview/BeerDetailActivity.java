@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import app.com.lamdbui.android.beerview.data.BreweryContract;
+import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
@@ -41,6 +43,8 @@ public class BeerDetailActivity extends AppCompatActivity
     TextView mBeerOriginalGravityTextView;
     @BindView(R.id.beer_detail_description)
     TextView mBeerDescriptionTextView;
+    @BindView(R.id.fab_beer_detail)
+    FloatingActionButton mFavoriteFab;
 
     private Beer mBeer;
 
@@ -80,12 +84,23 @@ public class BeerDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+
+        mFavoriteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
+                        BreweryDbUtils.convertBeerToContentValues(mBeer));
             }
         });
 
