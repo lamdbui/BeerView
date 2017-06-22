@@ -1,8 +1,13 @@
 package app.com.lamdbui.android.beerview;
 
+import android.*;
+import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -26,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -34,6 +41,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +71,9 @@ public class BeerViewMapsFragment extends Fragment
 
     public static final String ARG_BREWERIES = "breweries";
     public static final int PERMISSION_LOCATION_FINE = 1;
+    public static final int PERMISSION_REQUEST_LOCATION = 2;
+
+    private static final int MAP_DEFAULT_ZOOM_LEVEL = 12;
 
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
@@ -83,6 +94,9 @@ public class BeerViewMapsFragment extends Fragment
     private BeerViewMapsFragment.BreweryAdapter mBreweryAdapter;
 
     private GoogleMap mMap;
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLocation;
 
     private List<BreweryLocation> mBreweryLocations;
     private List<Marker> mBreweryLocationMarkers;
@@ -112,6 +126,34 @@ public class BeerViewMapsFragment extends Fragment
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+//        mFusedLocationProviderClient.getLastLocation()
+//                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        int m = 4;
+//                    }
+//                });
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+        }
+        mFusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            mLocation = location;
+                            // move the map to right location as soon as we get a valid location
+                            if(mLocation != null) {
+                                LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+                            }
+                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         mBrewery = null;
         mBreweryBeers = new ArrayList<>();
@@ -197,9 +239,10 @@ public class BeerViewMapsFragment extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
+        //mMap.setMyLocationEnabled(true);
 
         // TODO: Fix issue with location only showing after reloading the Application
+        // TODO: Move this info a separate function
         if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             //mMap.setMyLocationEnabled(true);
@@ -227,8 +270,12 @@ public class BeerViewMapsFragment extends Fragment
 
         //LatLngBounds mapBounds = new LatLngBounds()
 
-        LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, 12));
+        if(mLocation != null) {
+            LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+        }
+//        LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, MAP_DEFAULT_ZOOM_LEVEL));
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -369,6 +416,30 @@ public class BeerViewMapsFragment extends Fragment
                 }
                 break;
             //}
+            case PERMISSION_REQUEST_LOCATION: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted
+                    if(ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                        mFusedLocationProviderClient.getLastLocation()
+                                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            int m = 4;
+                                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
         }
     }
 
@@ -428,6 +499,29 @@ public class BeerViewMapsFragment extends Fragment
 
             mMap.animateCamera(CameraUpdateFactory
                     .newLatLng(new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude())));
+        }
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // explanation
+            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            } else {
+                // no explanation needed
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
