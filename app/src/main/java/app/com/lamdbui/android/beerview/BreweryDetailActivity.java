@@ -123,15 +123,6 @@ public class BreweryDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
 
         mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
@@ -139,10 +130,7 @@ public class BreweryDetailActivity extends AppCompatActivity
             mBreweryBeers = new ArrayList<>();
 
         mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
-//        if(getIntent().hasExtra(ARG_BREWERY_PREFERRED_LOCATION_ID))
-//            mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
-//        else
-//            mPreferredLocationId = null;
+
         mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
 
         // initiate our background tasks

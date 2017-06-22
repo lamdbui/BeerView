@@ -1,6 +1,5 @@
 package app.com.lamdbui.android.beerview;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -193,25 +192,25 @@ public class BeerViewActivityFragment extends Fragment
 //                        null,
 //                        null,
 //                        null);
-                String[] selectionArgs = {"hj7N75"};
-                Cursor cursorResults = getContext().getContentResolver().query(
-                        BreweryContract.BreweryTable.CONTENT_URI,
-                        null,
-                        "ID=?",
-                        selectionArgs,
-                        null);
-                if(cursorResults != null && cursorResults.getCount() > 0) {
-                    cursorResults.moveToFirst();
-
-                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
-
-                    while(!cursorResults.isAfterLast()) {
-
-                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
-
-                        cursorResults.moveToNext();
-                    }
-                }
+//                String[] selectionArgs = {"hj7N75"};
+//                Cursor cursorResults = getContext().getContentResolver().query(
+//                        BreweryContract.BreweryTable.CONTENT_URI,
+//                        null,
+//                        "ID=?",
+//                        selectionArgs,
+//                        null);
+//                if(cursorResults != null && cursorResults.getCount() > 0) {
+//                    cursorResults.moveToFirst();
+//
+//                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+//
+//                    while(!cursorResults.isAfterLast()) {
+//
+//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
+//
+//                        cursorResults.moveToNext();
+//                    }
+//                }
 
                 // TEST CODE to verify DB working
 //                // Add breweries to the database
@@ -238,7 +237,7 @@ public class BeerViewActivityFragment extends Fragment
 //
 //                    while(!cursorResults.isAfterLast()) {
 //
-//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
+//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
 //
 //                        cursorResults.moveToNext();
 //                    }
@@ -341,7 +340,7 @@ public class BeerViewActivityFragment extends Fragment
 
             while(!data.isAfterLast()) {
 
-                cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(data));
+                cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
 
                 data.moveToNext();
             }

@@ -113,12 +113,13 @@ public class BeerViewMapsFragment extends Fragment
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
-        //mBrewery = null;
+        mBrewery = null;
         mBreweryBeers = new ArrayList<>();
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = mSettings.edit();
         // test code
+        // TODO: Get this info from Location API
         String postalCode = "92612";
         editor.putString(getString(R.string.pref_location_postal_code), postalCode);
         editor.apply();
@@ -196,6 +197,7 @@ public class BeerViewMapsFragment extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
 
         // TODO: Fix issue with location only showing after reloading the Application
         if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -203,7 +205,7 @@ public class BeerViewMapsFragment extends Fragment
             //mMap.setMyLocationEnabled(true);
             // show the explanation?
             if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(getActivity(), "Request for location to determine nearest Breweries", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.permission_location_message), Toast.LENGTH_LONG).show();
             }
 
             ActivityCompat.requestPermissions(getActivity(), new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_FINE);

@@ -324,13 +324,6 @@ public class BeerNavigationHomeFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-
-//            Bundle bundle = new Bundle();
-//            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "beer_click");
-//            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "beer_clicked");
-//            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-//            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-
             startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
 
 //            // replace with Beer Fragment
@@ -346,8 +339,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         List<Beer> mBeers;
 
         public BeerAdapter(List<Beer> beers) {
-
-            //mBeers = new ArrayList<>();
             mBeers = beers;
         }
 

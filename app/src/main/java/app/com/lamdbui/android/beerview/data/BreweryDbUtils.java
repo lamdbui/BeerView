@@ -19,28 +19,6 @@ public class BreweryDbUtils {
             return null;
 
         ContentValues beerValues = new ContentValues();
-        // TODO: Implement convertBeerToContentValues
-
-//        // extra field to identify associations
-//        public static final String FAVORITE = "favorite";
-//
-//        // from the Beer class
-//        public static final String ID = "id";
-//        public static final String NAME = "name";
-//        public static final String NAME_DISPLAY = "name_display";
-//        public static final String DESCRIPTION = "description";
-//        public static final String ABV = "abv";
-//        public static final String GLASSWARE_ID = "glassware_id";
-//        public static final String SRM_ID = "srm_id";
-//        public static final String AVAILABLE_ID = "available_id";
-//        public static final String STYLE_ID = "style_id";
-//        public static final String IS_ORGANIC = "is_organic";
-//        public static final String SERVING_TEMPERATURE = "serving_temperature";
-//        public static final String SERVING_TEMPERATURE_DISPLAY = "serving_temperature_display";
-//        public static final String ORIGINAL_GRAVITY = "orginal_gravity";
-//        public static final String LABELS_ICON = "labels_icon";
-//        public static final String LABELS_MEDIUM = "labels_medium";
-//        public static final String LABELS_LARGE = "labels_large";
 
         beerValues.put(BreweryContract.BeerTable.COLS.ID, beer.getId());
         beerValues.put(BreweryContract.BeerTable.COLS.NAME, beer.getName());
@@ -65,25 +43,6 @@ public class BreweryDbUtils {
     public static Beer convertCursorToBeer(Cursor c) {
         Beer beer = new Beer();
 
-        // from the Beer class
-//        public static final String ID = "id";
-//        public static final String NAME = "name";
-//        public static final String NAME_DISPLAY = "name_display";
-//        public static final String DESCRIPTION = "description";
-//        public static final String ABV = "abv";
-//        public static final String GLASSWARE_ID = "glassware_id";
-//        public static final String SRM_ID = "srm_id";
-//        public static final String AVAILABLE_ID = "available_id";
-//        public static final String STYLE_ID = "style_id";
-//        public static final String IS_ORGANIC = "is_organic";
-//        public static final String SERVING_TEMPERATURE = "serving_temperature";
-//        public static final String SERVING_TEMPERATURE_DISPLAY = "serving_temperature_display";
-//        public static final String ORIGINAL_GRAVITY = "orginal_gravity";
-//        public static final String LABELS_ICON = "labels_icon";
-//        public static final String LABELS_MEDIUM = "labels_medium";
-//        public static final String LABELS_LARGE = "labels_large";
-
-        //breweryLocation.setId(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.ID)));
         beer.setId(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.ID)));
         beer.setName(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.NAME)));
         beer.setNameDisplay(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.NAME_DISPLAY)));
@@ -169,7 +128,7 @@ public class BreweryDbUtils {
         return breweryValues;
     }
 
-    public static BreweryLocation convertCursorToBrewery(Cursor c) {
+    public static BreweryLocation convertCursorToBreweryLocation(Cursor c) {
 
         BreweryLocation breweryLocation = new BreweryLocation();
 

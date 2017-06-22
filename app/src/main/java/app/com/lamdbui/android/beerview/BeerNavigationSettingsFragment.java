@@ -60,17 +60,17 @@ public class BeerNavigationSettingsFragment extends Fragment {
                 input.setMaxLines(1);
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 final AlertDialog postalCodeAlertDialog = new AlertDialog.Builder(getActivity())
-                        .setNegativeButton("Cancel", null)
-                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.dialog_cancel), null)
+                        .setPositiveButton(getString(R.string.dialog_save), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 SharedPreferences.Editor editor = mSettings.edit();
                                 // test code
                                 //String postalCode = "92612";
-                                // TODO: Do some validation of the input here
                                 String postalCode = input.getText().toString();
                                 editor.putString(getString(R.string.pref_location_postal_code), postalCode);
                                 editor.apply();
+                                // TODO: Maybe switch to Snackbar?
                                 Toast.makeText(getActivity(), "Saved! - " + postalCode, Toast.LENGTH_SHORT).show();
                                 updateUI();
                             }

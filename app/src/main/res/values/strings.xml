@@ -22,6 +22,11 @@
     <string name="text_ibu">IBU</string>
     <string name="title_activity_brewery_detail">BreweryDetailActivity</string>
     <string name="title_activity_beer_home">BeerHomeActivity</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_save">Save</string>
+    <string name="permission_location_message">Request for location to determine nearest Breweries</string>
+
+    <string name="beer_percent_abv">% ABV</string>
 
     <string name="pref_location_postal_code">pref_location_postal_code</string>
     <string name="pref_location_none">None Available</string>

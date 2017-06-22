@@ -70,8 +70,6 @@ public class BeerData {
 
     public Beer convertDataToBeer() {
 
-        //BeerData jsonData = response.mData;
-
         Beer beer = new Beer();
 
         beer.setId(mId);

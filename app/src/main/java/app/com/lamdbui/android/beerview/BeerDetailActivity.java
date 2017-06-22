@@ -97,20 +97,9 @@ public class BeerDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         mFavoriteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
-//                        BreweryDbUtils.convertBeerToContentValues(mBeer));
                 String favoritesResponse = "";
                 if(mIsFavorite) {
                     String[] selectionArgs = { mBeer.getId() };
@@ -137,11 +126,8 @@ public class BeerDetailActivity extends AppCompatActivity
         mBeerNameTextView.setText(mBeer.getNameDisplay());
         Brewery brewery = mBeer.getBreweries().get(0);
         mBeerBreweryTextView.setText(brewery.getName());
-        mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + "% ABV");
+        mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + getString(R.string.beer_percent_abv));
         mBeerTypeTextView.setText(mBeer.getBeerStyleName());
-        //mBeerTypeTextView.setText(mBeer.get)
-        //mBeerIBUTextView.setText(mBeer.get)
-        //mBeerOriginalGravityTextView.setText(Double.toString(mBeer.getOriginalGravity()));
         mBeerIBUTextView.setVisibility(View.GONE);
 
         StringBuilder originalGravity = new StringBuilder();

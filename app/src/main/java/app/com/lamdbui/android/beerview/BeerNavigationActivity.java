@@ -33,7 +33,6 @@ public class BeerNavigationActivity extends AppCompatActivity
     private Fragment mHomeFragment;
     private Fragment mMapsFragment;
     private Fragment mSettingsFragment;
-    private PreferenceFragment mSettingsPreferenceFragment;
 
     public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
