@@ -2,6 +2,7 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -47,6 +48,7 @@ public class BeerDetailActivity extends AppCompatActivity
     FloatingActionButton mFavoriteFab;
 
     private Beer mBeer;
+    private boolean mIsFavorite;
 
     public static Intent newIntent(Context context, Beer beer) {
         Intent intent = new Intent(context, BeerDetailActivity.class);
@@ -79,6 +81,17 @@ public class BeerDetailActivity extends AppCompatActivity
         if(mBeer.getLabelsMedium() != null)
             urlImageTask.execute(mBeer.getLabelsMedium());
 
+        // check to see if it is a Favorite
+        // TODO: Should we move this into a function?
+        String[] selectionArgs = {mBeer.getId()};
+        Cursor cursorResults = getContentResolver().query(
+                BreweryContract.BeerTable.CONTENT_URI,
+                null,
+                "ID=?",
+                selectionArgs,
+                null);
+         mIsFavorite = (cursorResults.getCount() > 0) ? true : false;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mBeer.getNameDisplay());
         setSupportActionBar(toolbar);
@@ -99,8 +112,19 @@ public class BeerDetailActivity extends AppCompatActivity
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
-                        BreweryDbUtils.convertBeerToContentValues(mBeer));
+//                getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
+//                        BreweryDbUtils.convertBeerToContentValues(mBeer));
+                if(mIsFavorite) {
+                    String[] selectionArgs = { mBeer.getId() };
+                    getContentResolver().delete(BreweryContract.BeerTable.CONTENT_URI, "ID=?", selectionArgs);
+                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                }
+                else {
+                    getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
+                            BreweryDbUtils.convertBeerToContentValues(mBeer));
+                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                }
+                mIsFavorite = !mIsFavorite;
             }
         });
 
@@ -128,5 +152,9 @@ public class BeerDetailActivity extends AppCompatActivity
         mBeerOriginalGravityTextView.setText(originalGravity.toString());
         mBeerDescriptionTextView.setText(
                 (mBeer.getDescription() == null) ? getString(R.string.info_none) : mBeer.getDescription());
+        if(mIsFavorite)
+            mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+        else
+            mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
     }
 }

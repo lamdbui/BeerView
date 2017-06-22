@@ -186,6 +186,33 @@ public class BeerViewActivityFragment extends Fragment
             public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
                 mBreweries = response.body().getBreweries();
 
+                // *** TEST CODE - get them back
+//                Cursor cursorResults = getContext().getContentResolver().query(
+//                        BreweryContract.BreweryTable.CONTENT_URI,
+//                        null,
+//                        null,
+//                        null,
+//                        null);
+                String[] selectionArgs = {"hj7N75"};
+                Cursor cursorResults = getContext().getContentResolver().query(
+                        BreweryContract.BreweryTable.CONTENT_URI,
+                        null,
+                        "ID=?",
+                        selectionArgs,
+                        null);
+                if(cursorResults != null && cursorResults.getCount() > 0) {
+                    cursorResults.moveToFirst();
+
+                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+
+                    while(!cursorResults.isAfterLast()) {
+
+                        cursorBreweries.add(BreweryDbUtils.convertCursorToBrewery(cursorResults));
+
+                        cursorResults.moveToNext();
+                    }
+                }
+
                 // TEST CODE to verify DB working
 //                // Add breweries to the database
 //                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
