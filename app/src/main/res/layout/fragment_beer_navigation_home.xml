@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_home_splashbar_height"
         android:orientation="vertical"
-        android:background="@android:color/darker_gray">
+        android:background="@color/colorPrimaryLight">
 
         <TextView
             android:id="@+id/navigation_city_textview"
