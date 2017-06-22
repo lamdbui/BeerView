@@ -94,6 +94,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/list_item_margin"
         android:layout_marginRight="@dimen/list_item_margin"/>
+    <TextView
+        android:id="@+id/home_breweries_none_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_item_margin"
+        android:visibility="gone"
+        android:text="@string/brewery_none_available"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -109,6 +116,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/list_item_margin"
         android:layout_marginRight="@dimen/list_item_margin"/>
+    <TextView
+        android:id="@+id/home_beers_none_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_item_margin"
+        android:visibility="gone"
+        android:text="@string/beer_none_available"/>
 
 </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

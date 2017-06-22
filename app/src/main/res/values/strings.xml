@@ -24,6 +24,8 @@
     <string name="title_activity_beer_home">BeerHomeActivity</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_save">Save</string>
+    <string name="brewery_none_available">No Breweries available</string>
+    <string name="beer_none_available">No Beers available</string>
     <string name="permission_location_message">Request for location to determine nearest Breweries</string>
 
     <string name="beer_percent_abv">% ABV</string>

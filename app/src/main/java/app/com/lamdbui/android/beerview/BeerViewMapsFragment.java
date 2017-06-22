@@ -148,7 +148,9 @@ public class BeerViewMapsFragment extends Fragment
                             // move the map to right location as soon as we get a valid location
                             if(mLocation != null) {
                                 LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+                                // TODO: What should we do to ensure the map is valid first
+                                if(mMap != null)
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
                             }
                             Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                         }

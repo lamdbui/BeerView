@@ -1,13 +1,21 @@
 package app.com.lamdbui.android.beerview;
 
+import android.*;
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Geocoder;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -50,6 +64,8 @@ public class BeerNavigationHomeFragment extends Fragment {
 
     private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
+    public static final int PERMISSION_REQUEST_LOCATION = 2;
+
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
     private static final String ARG_LOCATION_DATA = "location_data";
 
@@ -61,8 +77,12 @@ public class BeerNavigationHomeFragment extends Fragment {
     TextView mStateTextView;
     @BindView(R.id.home_breweries_recyclerview)
     RecyclerView mHomeBreweriesRecyclerView;
+    @BindView(R.id.home_breweries_none_textview)
+    TextView mHomeBreweriesNoneTextView;
     @BindView(R.id.home_beers_recyclerview)
     RecyclerView mHomeBeersRecyclerView;
+    @BindView(R.id.home_beers_none_textview)
+    TextView mHomeBeersNoneTextView;
 
     private BreweryLocationAdapter mBreweryLocationAdapter;
     private BeerAdapter mBreweryBeersAdapter;
@@ -72,6 +92,8 @@ public class BeerNavigationHomeFragment extends Fragment {
     private List<Address> mAddresses;
 
     private BreweryDbInterface mBreweryDbService;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLocation;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -88,6 +110,24 @@ public class BeerNavigationHomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+        }
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            mLocation = location;
+                            // move the map to right location as soon as we get a valid location
+                            updateUI();
+                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         mBreweryLocations = new ArrayList<>();
         mBreweryBeers = new ArrayList<>();
@@ -108,6 +148,7 @@ public class BeerNavigationHomeFragment extends Fragment {
                         mBreweryBeersAdapter.setBeers(mBreweryBeers);
                         mBreweryBeersAdapter.notifyDataSetChanged();
                     }
+                    updateUI();
                 }
 
                 @Override
@@ -138,36 +179,7 @@ public class BeerNavigationHomeFragment extends Fragment {
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
-        // TODO: Move into updateUI()
-        if(mBreweryLocationAdapter == null) {
-            mBreweryLocationAdapter = new BreweryLocationAdapter(mBreweryLocations);
-            mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
-        }
-        else {
-            mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
-            //mBreweryLocationAdapter.notifyDataSetChanged();
-        }
-
-        if(mBreweryBeersAdapter == null) {
-            mBreweryBeersAdapter = new BeerAdapter(mBreweryBeers);
-            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
-        }
-        else {
-            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
-            //mBreweryBeersAdapter.notifyDataSetChanged();
-        }
-
-        // TODO: Add some code if the city/state is not available
-        if(mAddresses != null) {
-            // assume the first is what we want
-            Address address = mAddresses.get(0);
-            if (address != null) {
-                if (address.getCity() != null)
-                    mCityTextView.setText(address.getCity().toUpperCase());
-                if (address.getState() != null)
-                    mStateTextView.setText(address.getState().toUpperCase());
-            }
-        }
+        updateUI();
 
         // setting the title
 //        Toolbar toolbar = (Toolbar) view.findViewById(R.id.home_toolbar);
@@ -176,8 +188,62 @@ public class BeerNavigationHomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_LOCATION: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted
+                    if(ContextCompat.checkSelfPermission(getActivity(),
+                            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                        mFusedLocationProviderClient.getLastLocation()
+                                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            int m = 4;
+                                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+    }
+
     public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
         mBreweryLocations = breweryLocations;
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // explanation
+            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            } else {
+                // no explanation needed
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     private class BreweryLocationViewHolder extends RecyclerView.ViewHolder
@@ -252,6 +318,55 @@ public class BeerNavigationHomeFragment extends Fragment {
                 public void onFailure(Call<BeerListResponse> call, Throwable t) {
                 }
             });
+        }
+    }
+
+    public void updateUI() {
+        if(mBreweryLocationAdapter == null) {
+            mBreweryLocationAdapter = new BreweryLocationAdapter(mBreweryLocations);
+            mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
+        }
+        else {
+            mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
+            //mBreweryLocationAdapter.notifyDataSetChanged();
+        }
+
+        if(mBreweryBeersAdapter == null) {
+            mBreweryBeersAdapter = new BeerAdapter(mBreweryBeers);
+            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
+        }
+        else {
+            mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
+            //mBreweryBeersAdapter.notifyDataSetChanged();
+        }
+        // switch out to an empty textview, if there's no data to display
+        if(mBreweryLocations.isEmpty()) {
+            mHomeBreweriesRecyclerView.setVisibility(View.GONE);
+            mHomeBreweriesNoneTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mHomeBreweriesRecyclerView.setVisibility(View.VISIBLE);
+            mHomeBreweriesNoneTextView.setVisibility(View.GONE);
+        }
+        if(mBreweryBeers.isEmpty()) {
+            mHomeBeersRecyclerView.setVisibility(View.GONE);
+            mHomeBeersNoneTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mHomeBeersRecyclerView.setVisibility(View.VISIBLE);
+            mHomeBeersNoneTextView.setVisibility(View.GONE);
+        }
+
+        // TODO: Add some code if the city/state is not available
+        if(mAddresses != null) {
+            // assume the first is what we want
+            Address address = mAddresses.get(0);
+            if (address != null) {
+                if (address.getCity() != null)
+                    mCityTextView.setText(address.getCity().toUpperCase());
+                if (address.getState() != null)
+                    mStateTextView.setText(address.getState().toUpperCase());
+            }
         }
     }
 
