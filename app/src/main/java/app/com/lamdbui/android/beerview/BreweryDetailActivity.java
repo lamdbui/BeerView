@@ -2,6 +2,7 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -77,6 +78,7 @@ public class BreweryDetailActivity extends AppCompatActivity
     private Brewery mBrewery;
     private String mPreferredLocationId;
     private BreweryLocation mBreweryLocation;
+    private boolean mIsFavorite;
 
     public static Intent newIntent(Context context, Brewery brewery) {
         Bundle args = new Bundle();
@@ -136,10 +138,12 @@ public class BreweryDetailActivity extends AppCompatActivity
         if(mBreweryBeers == null)
             mBreweryBeers = new ArrayList<>();
 
-        if(getIntent().hasExtra(ARG_BREWERY_PREFERRED_LOCATION_ID))
-            mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
-        else
-            mPreferredLocationId = null;
+        mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
+//        if(getIntent().hasExtra(ARG_BREWERY_PREFERRED_LOCATION_ID))
+//            mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
+//        else
+//            mPreferredLocationId = null;
+        mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
 
         // initiate our background tasks
         if(mBrewery != null && mBrewery.getImagesMedium() != null) {
@@ -154,23 +158,36 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        // check to see if it is a Favorite
+        // TODO: Should we move this into a function?
+        String[] selectionArgs = {mBreweryLocation.getId()};
+        Cursor cursorResults = getContentResolver().query(
+                BreweryContract.BreweryTable.CONTENT_URI,
+                null,
+                "ID=?",
+                selectionArgs,
+                null);
+        mIsFavorite = (cursorResults.getCount() > 0) ? true : false;
+
         mFavoriteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                // Add breweries to the database
-//                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
-//                for(int i = 0; i < mBreweries.size(); i++) {
-//                    breweryValues[i] = BreweryDbUtils.convertBreweryLocationToContentValues(mBreweries.get(i));
-//                }
-                getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
-                        BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
-
-//                getContentResolver().bulkInsert(
-//                        BreweryContract.BreweryTable.CONTENT_URI,
-//                        breweryValues);
+                String favoritesResponse = "";
+                if(mIsFavorite) {
+                    String[] selectionArgs = { mBreweryLocation.getId() };
+                    getContentResolver().delete(BreweryContract.BreweryTable.CONTENT_URI, "ID=?", selectionArgs);
+                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    favoritesResponse = getString(R.string.favorites_removed);
+                }
+                else {
+                    getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
+                            BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
+                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    favoritesResponse = getString(R.string.favorites_added);
+                }
+                Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
+                        .setAction("ToggleFavorites", null).show();
+                mIsFavorite = !mIsFavorite;
             }
         });
         mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
@@ -300,6 +317,10 @@ public class BreweryDetailActivity extends AppCompatActivity
         else {
             mBeerAdapter.notifyDataSetChanged();
         }
+        if(mIsFavorite)
+            mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+        else
+            mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
     }
 
     public BreweryLocation getBreweryLocationById(String id) {

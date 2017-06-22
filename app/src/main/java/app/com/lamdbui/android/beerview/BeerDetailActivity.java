@@ -109,21 +109,23 @@ public class BeerDetailActivity extends AppCompatActivity
         mFavoriteFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
 //                getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
 //                        BreweryDbUtils.convertBeerToContentValues(mBeer));
+                String favoritesResponse = "";
                 if(mIsFavorite) {
                     String[] selectionArgs = { mBeer.getId() };
                     getContentResolver().delete(BreweryContract.BeerTable.CONTENT_URI, "ID=?", selectionArgs);
                     mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    favoritesResponse = getString(R.string.favorites_removed);
                 }
                 else {
                     getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
                             BreweryDbUtils.convertBeerToContentValues(mBeer));
                     mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    favoritesResponse = getString(R.string.favorites_added);
                 }
+                Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
+                        .setAction("ToggleFavorites", null).show();
                 mIsFavorite = !mIsFavorite;
             }
         });

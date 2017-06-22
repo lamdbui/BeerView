@@ -25,4 +25,6 @@
 
     <string name="pref_location_postal_code">pref_location_postal_code</string>
     <string name="pref_location_none">None Available</string>
+    <string name="favorites_added">Added to your Favorites</string>
+    <string name="favorites_removed">Removed from your Favorites</string>
 </resources>
