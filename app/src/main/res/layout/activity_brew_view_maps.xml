@@ -14,7 +14,11 @@
         android:elevation="4dp"
         android:background="@color/colorPrimary"
         android:theme="@style/BeerMapper.Theme.AppBarOverlay"
-        app:popupTheme="@style/BeerMapper.Theme.PopupOverlay"/>
+        app:popupTheme="@style/BeerMapper.Theme.PopupOverlay">
+
+        <include layout="@layout/toolbar_brewmapper"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <!--android.support.v7.widget.SearchView
         android:id="@+id/location_searchview"

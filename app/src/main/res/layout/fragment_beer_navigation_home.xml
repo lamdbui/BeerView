@@ -20,36 +20,8 @@
         android:theme="@style/BeerMapper.Theme.AppBarOverlay"
         app:popupTheme="@style/BeerMapper.Theme.PopupOverlay">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <include layout="@layout/toolbar_brewmapper"/>
 
-            <ImageView
-                android:id="@+id/beer_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_centerInParent="true"
-                android:src="@drawable/beer_icon_32"/>
-
-            <TextView
-                android:id="@+id/beer_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/beer_icon"
-                android:layout_centerVertical="true"
-                android:textAppearance="@style/AppTheme.TextAppearance.Large"
-                android:text="Brew"/>
-            <TextView
-                android:id="@+id/beer_text2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/beer_icon"
-                android:layout_centerVertical="true"
-                android:textAppearance="@style/AppTheme.TextAppearance.Large"
-                android:text="Mapper"/>
-
-        </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout

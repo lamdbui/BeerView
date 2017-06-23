@@ -127,9 +127,7 @@ public class BeerNavigationHomeFragment extends Fragment {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             mLocation = location;
-                            // move the map to right location as soon as we get a valid location
                             updateUI();
-                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -186,10 +184,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         refreshSettingsData();
         updateUI();
 
-        // setting the title
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.home_toolbar);
-//        toolbar.setTitle("LOLWUT");
-
         return view;
     }
 
@@ -217,14 +211,12 @@ public class BeerNavigationHomeFragment extends Fragment {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
                                             mLocation = location;
-                                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
 
                     }
                     else {
-                        Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
