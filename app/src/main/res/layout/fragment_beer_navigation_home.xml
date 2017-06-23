@@ -65,8 +65,7 @@
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:textColor="@android:color/white"
-            android:gravity="bottom|center_horizontal"
-            android:text="DEFAULT CITY"/>
+            android:gravity="bottom|center_horizontal"/>
 
         <TextView
             android:id="@+id/navigation_state_textview"
@@ -75,8 +74,7 @@
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:gravity="top|center_horizontal"
-            android:textColor="@android:color/white"
-            android:text="DEFAULT STATE"/>
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

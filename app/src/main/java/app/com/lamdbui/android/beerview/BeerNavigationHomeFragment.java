@@ -43,11 +43,14 @@ import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
+import app.com.lamdbui.android.beerview.network.AddressResponse;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
+import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
+import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -97,6 +100,8 @@ public class BeerNavigationHomeFragment extends Fragment {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private SharedPreferences mSettings;
+
     public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList<BreweryLocation>) breweryLocations);
@@ -129,6 +134,9 @@ public class BeerNavigationHomeFragment extends Fragment {
                     }
                 });
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        //refreshSettingsData();
+
         mBreweryLocations = new ArrayList<>();
         mBreweryBeers = new ArrayList<>();
 
@@ -153,25 +161,21 @@ public class BeerNavigationHomeFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                    //TODO: maybe log this with Analytics?
                     Log.e(LOG_TAG, "Error fetching beers from brewery");
                 }
             });
         }
 
-        // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         Bundle bundle = new Bundle();
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
-
-        //getFragmentManager().findFragmentByTag()
-
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_beer_navigation_home, container, false);
 
         ButterKnife.bind(this, view);
@@ -179,6 +183,7 @@ public class BeerNavigationHomeFragment extends Fragment {
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
+        refreshSettingsData();
         updateUI();
 
         // setting the title
@@ -189,10 +194,17 @@ public class BeerNavigationHomeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // we make sure to update here in case something was changed in the SharedPreferences
+        // in a separate Activity or Fragment
+        refreshSettingsData();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case PERMISSION_REQUEST_LOCATION: {
+            case PERMISSION_REQUEST_LOCATION:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted
                     if(ContextCompat.checkSelfPermission(getActivity(),
@@ -204,7 +216,7 @@ public class BeerNavigationHomeFragment extends Fragment {
                                     public void onSuccess(Location location) {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
-                                            int m = 4;
+                                            mLocation = location;
                                             Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -215,7 +227,7 @@ public class BeerNavigationHomeFragment extends Fragment {
                         Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
+                break;
         }
     }
 
@@ -310,12 +322,36 @@ public class BeerNavigationHomeFragment extends Fragment {
                     if(response.body().getData() != null)
                         mBreweryBeers = response.body().getBeerList();
                     startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
-                    //FragmentManager fm = getActivity().getSupportFragmentManager();
-                    //fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer)).commit();
                 }
 
                 @Override
                 public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                }
+            });
+        }
+    }
+
+    public void refreshSettingsData() {
+        String postalCode = "";
+        if(mSettings != null) {
+            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        }
+
+        if(!postalCode.isEmpty()) {
+            GoogleGeocodeInterface geocacheService =
+                    GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
+
+            Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
+            callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
+                @Override
+                public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
+                    mAddresses = response.body().getAddressList();
+                    updateUI();
+                }
+
+                @Override
+                public void onFailure(Call<AddressResponse> call, Throwable t) {
+
                 }
             });
         }
@@ -362,10 +398,14 @@ public class BeerNavigationHomeFragment extends Fragment {
             // assume the first is what we want
             Address address = mAddresses.get(0);
             if (address != null) {
-                if (address.getCity() != null)
+                if (address.getCity() != null && address.getState() != null) {
                     mCityTextView.setText(address.getCity().toUpperCase());
-                if (address.getState() != null)
                     mStateTextView.setText(address.getState().toUpperCase());
+                }
+                else {
+                    mCityTextView.setText(getString(R.string.home_default_line1));
+                    mStateTextView.setText(getString(R.string.home_default_line2));
+                }
             }
         }
     }
@@ -440,12 +480,6 @@ public class BeerNavigationHomeFragment extends Fragment {
         @Override
         public void onClick(View view) {
             startActivity(BeerDetailActivity.newIntent(getActivity(), mBeer));
-
-//            // replace with Beer Fragment
-//            FragmentManager fm = getActivity().getSupportFragmentManager();
-//            fm.beginTransaction().replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
-//                    .addToBackStack(null)
-//                    .commit();
         }
     }
 

@@ -418,7 +418,7 @@ public class BeerViewMapsFragment extends Fragment
                 }
                 break;
             //}
-            case PERMISSION_REQUEST_LOCATION: {
+            case PERMISSION_REQUEST_LOCATION:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted
                     if(ContextCompat.checkSelfPermission(getActivity(),
@@ -430,7 +430,6 @@ public class BeerViewMapsFragment extends Fragment
                                     public void onSuccess(Location location) {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
-                                            int m = 4;
                                             Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -441,7 +440,7 @@ public class BeerViewMapsFragment extends Fragment
                         Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
+                break;
         }
     }
 

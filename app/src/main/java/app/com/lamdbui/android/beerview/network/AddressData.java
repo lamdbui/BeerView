@@ -83,9 +83,16 @@ public class AddressData {
         if(currentComponent != null)
             address.setStreetNumber(currentComponent.getLongName());
 
+        // 'neighborhood' or 'locality' might be available
         currentComponent = getAddressComponent("locality");
         if(currentComponent != null)
             address.setCity(currentComponent.getLongName());
+        if(address.getCity() == null) {
+            currentComponent = getAddressComponent("neighborhood");
+            if (currentComponent != null) {
+                address.setCity(currentComponent.getLongName());
+            }
+        }
 
         currentComponent = getAddressComponent("administrative_area_level_1");
         if(currentComponent != null)
