@@ -48,6 +48,9 @@ public class LocationDataHelper {
     public static LocationDataHelper get(Context context, LocationDataHelperCallbacks callbacks) {
         if(sLocationDataHelper == null)
             sLocationDataHelper = new LocationDataHelper(context, callbacks);
+        // in case there's multiple callbacks listening
+        sLocationDataHelper.setContext(context);
+        sLocationDataHelper.setCallbacks(callbacks);
         return sLocationDataHelper;
     }
 
@@ -100,6 +103,22 @@ public class LocationDataHelper {
         else {
             return true;
         }
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public LocationDataHelperCallbacks getCallbacks() {
+        return mCallbacks;
+    }
+
+    public void setCallbacks(LocationDataHelperCallbacks callbacks) {
+        mCallbacks = callbacks;
     }
 
     public Location getLocation() {

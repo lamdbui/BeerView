@@ -336,6 +336,7 @@ public class BeerNavigationHomeFragment extends Fragment
             postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         }
 
+        // TODO: possibly move this to a util function
         if(!postalCode.isEmpty()) {
             GoogleGeocodeInterface geocacheService =
                     GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);

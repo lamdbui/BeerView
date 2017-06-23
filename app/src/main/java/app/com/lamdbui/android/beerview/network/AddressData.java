@@ -102,10 +102,14 @@ public class AddressData {
         if(currentComponent != null)
             address.setPostalCode(currentComponent.getLongName());
 
-        address.setLatLng(new LatLng(mGeometry.mLocation.mLatitude, mGeometry.mLocation.mLongitude));
-        LatLng northeastBound = new LatLng(mGeometry.mBounds.mNortheast.mLatitude, mGeometry.mBounds.mNortheast.mLongitude);
-        LatLng southwestBound = new LatLng(mGeometry.mBounds.mSouthwest.mLatitude, mGeometry.mBounds.mSouthwest.mLongitude);
-        address.setLatLngBounds(new LatLngBounds(southwestBound, northeastBound));
+        if(mGeometry != null) {
+            address.setLatLng(new LatLng(mGeometry.mLocation.mLatitude, mGeometry.mLocation.mLongitude));
+            if(mGeometry.mBounds != null) {
+                LatLng northeastBound = new LatLng(mGeometry.mBounds.mNortheast.mLatitude, mGeometry.mBounds.mNortheast.mLongitude);
+                LatLng southwestBound = new LatLng(mGeometry.mBounds.mSouthwest.mLatitude, mGeometry.mBounds.mSouthwest.mLongitude);
+                address.setLatLngBounds(new LatLngBounds(southwestBound, northeastBound));
+            }
+        }
 
         return address;
     }
