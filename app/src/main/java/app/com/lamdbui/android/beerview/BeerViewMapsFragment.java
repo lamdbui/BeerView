@@ -46,6 +46,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
@@ -70,6 +71,8 @@ public class BeerViewMapsFragment extends Fragment
     public static final String TAG = BeerViewActivityFragment.class.getSimpleName();
 
     public static final String ARG_BREWERIES = "breweries";
+    public static final String ARG_LOCATION = "location";
+
     public static final int PERMISSION_LOCATION_FINE = 1;
     public static final int PERMISSION_REQUEST_LOCATION = 2;
 
@@ -100,6 +103,7 @@ public class BeerViewMapsFragment extends Fragment
 
     private List<BreweryLocation> mBreweryLocations;
     private List<Marker> mBreweryLocationMarkers;
+    private List<Address> mAddresses;
 
     private BreweryDbInterface mBreweryDbService;
 
@@ -109,9 +113,10 @@ public class BeerViewMapsFragment extends Fragment
 
     private SharedPreferences mSettings;
 
-    public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries) {
+    public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries, List<Address> addresses) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERIES, (ArrayList<BreweryLocation>)breweries);
+        args.putParcelableArrayList(ARG_LOCATION, (ArrayList<Address>)addresses);
         BeerViewMapsFragment fragment = new BeerViewMapsFragment();
         fragment.setArguments(args);
 
@@ -124,6 +129,7 @@ public class BeerViewMapsFragment extends Fragment
 
         mBreweryLocationMarkers = new ArrayList<>();
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
+        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
@@ -180,25 +186,7 @@ public class BeerViewMapsFragment extends Fragment
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.map_toolbar);
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        activity.setSupportActionBar(toolbar);
-        //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-
-//        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                Toast.makeText(getActivity(), query, Toast.LENGTH_SHORT).show();
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
 
         mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,14 +208,6 @@ public class BeerViewMapsFragment extends Fragment
 
         return view;
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        //super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.menu_beer_view_maps_fragment, menu);
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-//        mToolbarSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-//    }
 
     /**
      * Manipulates the map once available.
@@ -272,12 +252,12 @@ public class BeerViewMapsFragment extends Fragment
 
         //LatLngBounds mapBounds = new LatLngBounds()
 
-        if(mLocation != null) {
-            LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
-        }
-//        LatLng sunsetReservoir = new LatLng(37.7539648, -122.4824472);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sunsetReservoir, MAP_DEFAULT_ZOOM_LEVEL));
+        // working
+//        if(mLocation != null) {
+//            LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+//        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromAddresses(),MAP_DEFAULT_ZOOM_LEVEL));
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -325,8 +305,6 @@ public class BeerViewMapsFragment extends Fragment
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //return false;
-
                 marker.showInfoWindow();
 
                 BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
@@ -451,6 +429,15 @@ public class BeerViewMapsFragment extends Fragment
                 return marker;
         }
         // didn't find it
+        return null;
+    }
+
+    private LatLng getLatLngFromAddresses() {
+        if(mAddresses != null) {
+            // assume the first is what we want
+            Address address = mAddresses.get(0);
+            return address.getLatLng();
+        }
         return null;
     }
 

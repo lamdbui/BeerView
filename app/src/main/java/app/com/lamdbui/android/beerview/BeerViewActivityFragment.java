@@ -49,7 +49,8 @@ import retrofit2.Response;
  * A placeholder fragment containing a simple view.
  */
 public class BeerViewActivityFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<Cursor> {
+    implements LoaderManager.LoaderCallbacks<Cursor>,
+        LocationDataHelper.LocationDataHelperCallbacks {
 
     private static final String LOG_TAG = BeerViewActivityFragment.class.getSimpleName();
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
@@ -178,79 +179,84 @@ public class BeerViewActivityFragment extends Fragment
             }
         });
 
-        //Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, mCurrentLatLng.latitude, mCurrentLatLng.longitude);
-        Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
-        callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
-            @Override
-            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
-                mBreweries = response.body().getBreweries();
+        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
+        //locationDataHelper.findBreweryLocationsByLatLng(new LatLng(37.774929, -122.419416));    // SF - 94122
+        locationDataHelper.findBreweryLocationsByLatLng(new LatLng(33.658895, -117.828212));    // Irvine - 92612
+        //mBreweries = locationDataHelper.getBreweryLocations();
 
-                // *** TEST CODE - get them back
-//                Cursor cursorResults = getContext().getContentResolver().query(
-//                        BreweryContract.BreweryTable.CONTENT_URI,
-//                        null,
-//                        null,
-//                        null,
-//                        null);
-//                String[] selectionArgs = {"hj7N75"};
-//                Cursor cursorResults = getContext().getContentResolver().query(
-//                        BreweryContract.BreweryTable.CONTENT_URI,
-//                        null,
-//                        "ID=?",
-//                        selectionArgs,
-//                        null);
-//                if(cursorResults != null && cursorResults.getCount() > 0) {
-//                    cursorResults.moveToFirst();
-//
-//                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
-//
-//                    while(!cursorResults.isAfterLast()) {
-//
-//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
-//
-//                        cursorResults.moveToNext();
-//                    }
-//                }
-
-                // TEST CODE to verify DB working
-//                // Add breweries to the database
-//                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
-//                for(int i = 0; i < mBreweries.size(); i++) {
-//                    breweryValues[i] = BreweryDbUtils.convertBreweryLocationToContentValues(mBreweries.get(i));
-//                }
-//
-//                getContext().getContentResolver().bulkInsert(
-//                        BreweryContract.BreweryTable.CONTENT_URI,
-//                        breweryValues);
+//        //Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, mCurrentLatLng.latitude, mCurrentLatLng.longitude);
+//        Call<BreweryLocationResponse> callBreweriesNearby = breweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
+//        callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
+//            @Override
+//            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
+//                mBreweries = response.body().getBreweries();
 //
 //                // *** TEST CODE - get them back
-//                Cursor cursorResults = getContext().getContentResolver().query(
-//                        BreweryContract.BreweryTable.CONTENT_URI,
-//                        null,
-//                        null,
-//                        null,
-//                        null);
-//                if(cursorResults != null && cursorResults.getCount() > 0) {
-//                    cursorResults.moveToFirst();
+////                Cursor cursorResults = getContext().getContentResolver().query(
+////                        BreweryContract.BreweryTable.CONTENT_URI,
+////                        null,
+////                        null,
+////                        null,
+////                        null);
+////                String[] selectionArgs = {"hj7N75"};
+////                Cursor cursorResults = getContext().getContentResolver().query(
+////                        BreweryContract.BreweryTable.CONTENT_URI,
+////                        null,
+////                        "ID=?",
+////                        selectionArgs,
+////                        null);
+////                if(cursorResults != null && cursorResults.getCount() > 0) {
+////                    cursorResults.moveToFirst();
+////
+////                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+////
+////                    while(!cursorResults.isAfterLast()) {
+////
+////                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
+////
+////                        cursorResults.moveToNext();
+////                    }
+////                }
 //
-//                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+//                // TEST CODE to verify DB working
+////                // Add breweries to the database
+////                ContentValues[] breweryValues = new ContentValues[mBreweries.size()];
+////                for(int i = 0; i < mBreweries.size(); i++) {
+////                    breweryValues[i] = BreweryDbUtils.convertBreweryLocationToContentValues(mBreweries.get(i));
+////                }
+////
+////                getContext().getContentResolver().bulkInsert(
+////                        BreweryContract.BreweryTable.CONTENT_URI,
+////                        breweryValues);
+////
+////                // *** TEST CODE - get them back
+////                Cursor cursorResults = getContext().getContentResolver().query(
+////                        BreweryContract.BreweryTable.CONTENT_URI,
+////                        null,
+////                        null,
+////                        null,
+////                        null);
+////                if(cursorResults != null && cursorResults.getCount() > 0) {
+////                    cursorResults.moveToFirst();
+////
+////                    List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+////
+////                    while(!cursorResults.isAfterLast()) {
+////
+////                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
+////
+////                        cursorResults.moveToNext();
+////                    }
+////                }
 //
-//                    while(!cursorResults.isAfterLast()) {
+//                updateUI();
+//            }
 //
-//                        cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(cursorResults));
-//
-//                        cursorResults.moveToNext();
-//                    }
-//                }
-
-                updateUI();
-            }
-
-            @Override
-            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
-                Log.e(LOG_TAG, t.toString());
-            }
-        });
+//            @Override
+//            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
+//                Log.e(LOG_TAG, t.toString());
+//            }
+//        });
 
         // init our Loader
         getLoaderManager().initLoader(LOADER_BREWERY, null, this);
@@ -381,6 +387,11 @@ public class BeerViewActivityFragment extends Fragment
             Intent intent = BreweryActivity.newIntent(getActivity(), mBreweryLocation);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
+        mBreweries = breweryLocations;
     }
 
     private class BreweryAdapter extends RecyclerView.Adapter<BreweryHolder> {

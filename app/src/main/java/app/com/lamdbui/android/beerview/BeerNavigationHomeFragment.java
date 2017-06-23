@@ -61,7 +61,8 @@ import retrofit2.Response;
  * Created by lamdbui on 5/29/17.
  */
 
-public class BeerNavigationHomeFragment extends Fragment {
+public class BeerNavigationHomeFragment extends Fragment
+    implements LocationDataHelper.LocationDataHelperCallbacks {
 
     public static final String TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
@@ -223,6 +224,12 @@ public class BeerNavigationHomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
+        mBreweryLocations = breweryLocations;
+    }
+
+    // TODO: do we need this?
     public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
         mBreweryLocations = breweryLocations;
     }

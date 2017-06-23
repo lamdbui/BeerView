@@ -95,7 +95,7 @@ public class BeerNavigationActivity extends AppCompatActivity
                 mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
 
                 if(mMapsFragment == null) {
-                    mMapsFragment = BeerViewMapsFragment.newInstance(mBreweryLocations);
+                    mMapsFragment = BeerViewMapsFragment.newInstance(mBreweryLocations, mAddresses);
                 }
                 fm.beginTransaction()
                         .replace(R.id.content, mMapsFragment, BeerViewMapsFragment.TAG)

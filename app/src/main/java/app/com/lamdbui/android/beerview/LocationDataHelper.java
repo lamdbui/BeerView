@@ -35,19 +35,25 @@ public class LocationDataHelper {
     private static LocationDataHelper sLocationDataHelper;
 
     private Context mContext;
+    private LocationDataHelperCallbacks mCallbacks;
     private Location mLocation;
     private List<BreweryLocation> mBreweryLocations;
     private List<Beer> mBeers;
     private BreweryDbInterface mBreweryDbService;
 
-    public static LocationDataHelper get(Context context) {
+    public interface LocationDataHelperCallbacks {
+        public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations);
+    }
+
+    public static LocationDataHelper get(Context context, LocationDataHelperCallbacks callbacks) {
         if(sLocationDataHelper == null)
-            sLocationDataHelper = new LocationDataHelper(context);
+            sLocationDataHelper = new LocationDataHelper(context, callbacks);
         return sLocationDataHelper;
     }
 
-    private LocationDataHelper(Context context) {
+    private LocationDataHelper(Context context, LocationDataHelperCallbacks callbacks) {
         mContext = context;
+        mCallbacks = callbacks;
         mBreweryLocations = new ArrayList<>();
         mBeers = new ArrayList<>();
         mLocation = null;
@@ -61,6 +67,7 @@ public class LocationDataHelper {
             @Override
             public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
                 mBreweryLocations = response.body().getBreweries();
+                mCallbacks.onFindBreweryLocationsCallback(mBreweryLocations);
             }
 
             @Override
