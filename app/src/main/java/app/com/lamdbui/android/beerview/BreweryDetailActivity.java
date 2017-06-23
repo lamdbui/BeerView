@@ -34,9 +34,15 @@ import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
+import app.com.lamdbui.android.beerview.network.BeerListResponse;
+import app.com.lamdbui.android.beerview.network.BreweryDbClient;
+import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BreweryDetailActivity extends AppCompatActivity
     implements OnMapReadyCallback, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
@@ -46,6 +52,8 @@ public class BreweryDetailActivity extends AppCompatActivity
     private static final String ARG_BREWERY_BEERS = "brewery_beers";
     // use this if there's a particular LOCATION_ID that should be used for location
     private static final String ARG_BREWERY_PREFERRED_LOCATION_ID = "preferred_location_id";
+
+    private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
     @BindView(R.id.brewery_detail_map)
     MapView mBreweryMapView;
@@ -81,6 +89,9 @@ public class BreweryDetailActivity extends AppCompatActivity
     private String mPreferredLocationId;
     private BreweryLocation mBreweryLocation;
     private boolean mIsFavorite;
+
+    // data fetching
+    private BreweryDbInterface mBreweryDbService;
 
     public static Intent newIntent(Context context, Brewery brewery) {
         Bundle args = new Bundle();
@@ -125,15 +136,19 @@ public class BreweryDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
-        mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
-        if(mBreweryBeers == null)
-            mBreweryBeers = new ArrayList<>();
+        mBrewery = getIntent().getParcelableExtra(ARG_BREWERY);
 
         mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
 
         mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
+
+        mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
+        if(mBreweryBeers == null) {
+            mBreweryBeers = new ArrayList<>();
+            getBeersAtBrewery();
+        }
 
         // initiate our background tasks
         if(mBrewery != null && mBrewery.getImagesMedium() != null) {
@@ -350,6 +365,26 @@ public class BreweryDetailActivity extends AppCompatActivity
             }
         }
         return null;
+    }
+
+    public void getBeersAtBrewery() {
+        Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(mBrewery.getId(), API_KEY, "Y");
+        callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+            @Override
+            public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                // we could possibly get no beers available
+                if(response.body().getData() != null) {
+                    mBreweryBeers = response.body().getBeerList();
+                    mBeerAdapter.setBeers(mBreweryBeers);
+                    mBeerAdapter.notifyDataSetChanged();
+                    updateUI();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BeerListResponse> call, Throwable t) {
+            }
+        });
     }
 
     private class BeerHolder extends RecyclerView.ViewHolder

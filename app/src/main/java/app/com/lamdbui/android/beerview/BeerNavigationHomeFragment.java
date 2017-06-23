@@ -103,6 +103,11 @@ public class BeerNavigationHomeFragment extends Fragment
 
     private SharedPreferences mSettings;
 
+    // counter to know when batch AsyncTasks are complete
+    private int mAsyncTaskCount;
+    // used to detect changes in the SharedPreferences
+    private String mCurrPostalCode;
+
     public static BeerNavigationHomeFragment newInstance(List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList<BreweryLocation>) breweryLocations);
@@ -117,6 +122,9 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mBreweryLocations = new ArrayList<>();
+        mBreweryBeers = new ArrayList<>();
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -128,43 +136,21 @@ public class BeerNavigationHomeFragment extends Fragment
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             mLocation = location;
-                            updateUI();
+                            //updateUI();
                         }
                     }
                 });
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         //refreshSettingsData();
-
-        mBreweryLocations = new ArrayList<>();
-        mBreweryBeers = new ArrayList<>();
 
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
-        for(BreweryLocation breweryLocation : mBreweryLocations) {
-            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
-                @Override
-                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
-                    List<Beer> beersAtBrewery = response.body().getBeerList();
-                    if(beersAtBrewery != null) {
-                        mBreweryBeers.addAll(beersAtBrewery);
-                        mBreweryBeersAdapter.setBeers(mBreweryBeers);
-                        mBreweryBeersAdapter.notifyDataSetChanged();
-                    }
-                    updateUI();
-                }
-
-                @Override
-                public void onFailure(Call<BeerListResponse> call, Throwable t) {
-                    //TODO: maybe log this with Analytics?
-                    Log.e(LOG_TAG, getString(R.string.error_fetching_beers));
-                }
-            });
-        }
+        fetchAllBeersAtBreweryLocations();
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
@@ -194,7 +180,15 @@ public class BeerNavigationHomeFragment extends Fragment
         // we make sure to update here in case something was changed in the SharedPreferences
         // in a separate Activity or Fragment
         refreshSettingsData();
-        //refreshBreweryLocationData();
+//        String postalCode = "";
+//        if(mSettings != null) {
+//            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+//        }
+//        if(!mCurrPostalCode.equals(postalCode)) {
+//            refreshSettingsData();
+//            //refreshBreweryLocationData();
+//            mCurrPostalCode = postalCode;
+//        }
     }
 
     @Override
@@ -230,11 +224,52 @@ public class BeerNavigationHomeFragment extends Fragment
         mBreweryLocations = breweryLocations;
         mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
         mBreweryLocationAdapter.notifyDataSetChanged();
+        fetchAllBeersAtBreweryLocations();
     }
 
-    // TODO: do we need this?
-    public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
-        mBreweryLocations = breweryLocations;
+    // keeps track of pending AsyncTasks
+    private boolean batchAsyncTaskComplete() {
+        mAsyncTaskCount--;
+
+        return (mAsyncTaskCount == 0) ? true : false;
+    }
+
+    public void fetchAllBeersAtBreweryLocations() {
+
+        // set our initial count to know how many AsyncTasks to expect
+        mAsyncTaskCount = mBreweryLocations.size();
+
+        // delete our old list of Beers
+        mBreweryBeers.clear();
+
+        for(BreweryLocation breweryLocation : mBreweryLocations) {
+            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
+                @Override
+                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
+                    List<Beer> beersAtBrewery = response.body().getBeerList();
+                    if(beersAtBrewery != null) {
+                        if(mBreweryBeers == null)
+                            mBreweryBeers = new ArrayList<Beer>();
+                        mBreweryBeers.addAll(beersAtBrewery);
+                        mBreweryBeersAdapter.setBeers(mBreweryBeers);
+                        mBreweryBeersAdapter.notifyDataSetChanged();
+                    }
+                    batchAsyncTaskComplete();
+                    if(batchAsyncTaskComplete())
+                        updateUI();
+                }
+
+                @Override
+                public void onFailure(Call<BeerListResponse> call, Throwable t) {
+                    //TODO: maybe log this with Analytics?
+                    Log.e(LOG_TAG, getString(R.string.error_fetching_beers));
+                    batchAsyncTaskComplete();
+                    if(batchAsyncTaskComplete())
+                        updateUI();
+                }
+            });
+        }
     }
 
     public boolean checkLocationPermission() {
@@ -270,13 +305,11 @@ public class BeerNavigationHomeFragment extends Fragment
         private BreweryLocation mBreweryLocation;
 
         private Brewery mBrewery;
-        private List<Beer> mBreweryBeers;
 
         public BreweryLocationViewHolder(View itemView) {
             super(itemView);
 
             mBrewery = null;
-            mBreweryBeers = null;
 
             mBreweryLocationCardView = (CardView) itemView.findViewById(R.id.list_item_brewery_location_cardview);
             mBreweryLocationCardView.setOnClickListener(this);
@@ -302,13 +335,12 @@ public class BeerNavigationHomeFragment extends Fragment
 
         @Override
         public void onClick(View view) {
-
             Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
             callBreweryById.enqueue(new Callback<BreweryResponse>() {
                 @Override
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                     mBrewery = response.body().getBrewery();
-                    //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
+                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
                 }
 
                 @Override
@@ -316,53 +348,43 @@ public class BeerNavigationHomeFragment extends Fragment
 
                 }
             });
-
-            Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
-            callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
-                @Override
-                public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
-                    // we could possibly get no beers available
-                    if(response.body().getData() != null) {
-                        mBreweryBeers = response.body().getBeerList();
-//                        // TODO: is it enough to wait for this?
-//                        startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
-                    }
-                    // TODO: is it enough to wait for this?
-                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
-                }
-
-                @Override
-                public void onFailure(Call<BeerListResponse> call, Throwable t) {
-                }
-            });
         }
     }
 
-    public void refreshSettingsData() {
+    // TODO: Maybe rename this to fetchDataSet(or similar)
+    public boolean refreshSettingsData() {
         String postalCode = "";
         if(mSettings != null) {
             postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         }
 
-        // TODO: possibly move this to a util function
-        if(!postalCode.isEmpty()) {
-            GoogleGeocodeInterface geocacheService =
-                    GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
+        if(!mCurrPostalCode.equals(postalCode)) {
+            mCurrPostalCode = postalCode;
+            // TODO: possibly move this to a util function
+            if (!postalCode.isEmpty()) {
+                GoogleGeocodeInterface geocacheService =
+                        GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
 
-            Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
-            callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
-                @Override
-                public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                    mAddresses = response.body().getAddressList();
-                    refreshBreweryLocationData();
-                    //updateUI();
-                }
+                Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
+                callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
+                    @Override
+                    public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
+                        mAddresses = response.body().getAddressList();
+                        refreshBreweryLocationData();
+                        //fetchAllBeersAtBreweryLocations();
+                        updateUI();
+                    }
 
-                @Override
-                public void onFailure(Call<AddressResponse> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<AddressResponse> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
+            return true;
+        }
+        else {  // no update needed
+            return false;
         }
     }
 

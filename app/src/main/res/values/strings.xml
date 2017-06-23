@@ -34,6 +34,10 @@
     <string name="error_fetching_beers">Error fetching beers from brewery</string>
     <string name="pref_location_postal_code">pref_location_postal_code</string>
     <string name="pref_location_none">None Available</string>
+    <string name="setting_saved">Setting Saved!</string>
+    <string name="setting_postal_code">Postal Code</string>
+    <string name="setting_postal_code_description">Default postal code used for Location Services</string>
+    <string name="setting_postal_code_hint">Please enter postal code here</string>
     <string name="favorites_added">Added to your Favorites</string>
     <string name="favorites_removed">Removed from your Favorites</string>
 </resources>

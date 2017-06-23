@@ -41,6 +41,9 @@ public class BreweryDbUtils {
     }
 
     public static Beer convertCursorToBeer(Cursor c) {
+
+        final int NONE = -1;
+
         Beer beer = new Beer();
 
         beer.setId(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.ID)));
@@ -56,22 +59,22 @@ public class BreweryDbUtils {
         if(glasswareIdString != null && !glasswareIdString.isEmpty())
             beer.setGlasswareId(Integer.parseInt(glasswareIdString));
         else
-            beer.setGlasswareId(-1);
+            beer.setGlasswareId(NONE);
         String srmIdString = c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.SRM_ID));
         if(srmIdString != null && !srmIdString.isEmpty())
             beer.setSrmId(Integer.parseInt(srmIdString));
         else
-            beer.setSrmId(-1);
+            beer.setSrmId(NONE);
         String availableIdString = c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.AVAILABLE_ID));
         if(availableIdString != null && !availableIdString.isEmpty())
             beer.setAvailableId(Integer.parseInt(availableIdString));
         else
-            beer.setAvailableId(-1);
+            beer.setAvailableId(NONE);
         String styleIdString = c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.STYLE_ID));
         if(styleIdString != null && !styleIdString.isEmpty())
             beer.setStyleId(Integer.parseInt(styleIdString));
         else
-            beer.setAvailableId(-1);
+            beer.setAvailableId(NONE);
         beer.setOrganic(convertYorNtoBoolean(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.IS_ORGANIC))));
         beer.setServingTemperature(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.SERVING_TEMPERATURE)));
         beer.setServingTemperatureDisplay(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.SERVING_TEMPERATURE_DISPLAY)));

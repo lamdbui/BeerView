@@ -353,8 +353,6 @@ public class BeerViewActivityFragment extends Fragment
 
             mBreweries = cursorBreweries;
             updateUI();
-            //mBreweryAdapter.setBreweries(mBreweries);
-            //mBreweryAdapter.notifyDataSetChanged();
         }
     }
 

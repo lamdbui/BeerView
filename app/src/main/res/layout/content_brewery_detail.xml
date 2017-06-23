@@ -127,6 +127,8 @@
             android:id="@+id/brewery_beers_none_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
             android:visibility="gone"
             android:text="@string/beer_none_available"/>
     </LinearLayout>
