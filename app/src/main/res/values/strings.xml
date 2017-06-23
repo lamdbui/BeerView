@@ -28,10 +28,10 @@
     <string name="home_default_line2">Discover great local Beers and Breweries</string>
     <string name="brewery_none_available">No Breweries available</string>
     <string name="beer_none_available">No Beers available</string>
-    <string name="permission_location_message">Request for location to determine nearest Breweries</string>
-
     <string name="beer_percent_abv">% ABV</string>
-
+    <string name="beer_percent_abv_none">No ABV% information available</string>
+    <string name="permission_location_message">Request for location to determine nearest Breweries</string>
+    <string name="error_fetching_beers">Error fetching beers from brewery</string>
     <string name="pref_location_postal_code">pref_location_postal_code</string>
     <string name="pref_location_none">None Available</string>
     <string name="favorites_added">Added to your Favorites</string>

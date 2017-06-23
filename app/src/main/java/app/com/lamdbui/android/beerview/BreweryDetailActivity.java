@@ -67,6 +67,8 @@ public class BreweryDetailActivity extends AppCompatActivity
     ImageView mBreweryImageView;
     @BindView(R.id.brewery_beers_recycler_view)
     RecyclerView mBreweryBeersRecyclerView;
+    @BindView(R.id.brewery_beers_none_textview)
+    TextView mBreweryBeersNoneTextView;
     @BindView(R.id.fab_brewery_detail)
     FloatingActionButton mFavoriteFab;
 
@@ -148,36 +150,37 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         // check to see if it is a Favorite
         // TODO: Should we move this into a function?
-        String[] selectionArgs = {mBreweryLocation.getId()};
-        Cursor cursorResults = getContentResolver().query(
-                BreweryContract.BreweryTable.CONTENT_URI,
-                null,
-                "ID=?",
-                selectionArgs,
-                null);
-        mIsFavorite = (cursorResults.getCount() > 0) ? true : false;
+        if(mBreweryLocation != null) {
+            String[] selectionArgs = {mBreweryLocation.getId()};
+            Cursor cursorResults = getContentResolver().query(
+                    BreweryContract.BreweryTable.CONTENT_URI,
+                    null,
+                    "ID=?",
+                    selectionArgs,
+                    null);
+            mIsFavorite = (cursorResults.getCount() > 0) ? true : false;
 
-        mFavoriteFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String favoritesResponse = "";
-                if(mIsFavorite) {
-                    String[] selectionArgs = { mBreweryLocation.getId() };
-                    getContentResolver().delete(BreweryContract.BreweryTable.CONTENT_URI, "ID=?", selectionArgs);
-                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    favoritesResponse = getString(R.string.favorites_removed);
+            mFavoriteFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String favoritesResponse = "";
+                    if (mIsFavorite) {
+                        String[] selectionArgs = {mBreweryLocation.getId()};
+                        getContentResolver().delete(BreweryContract.BreweryTable.CONTENT_URI, "ID=?", selectionArgs);
+                        mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        favoritesResponse = getString(R.string.favorites_removed);
+                    } else {
+                        getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
+                                BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
+                        mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                        favoritesResponse = getString(R.string.favorites_added);
+                    }
+                    Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
+                            .setAction("ToggleFavorites", null).show();
+                    mIsFavorite = !mIsFavorite;
                 }
-                else {
-                    getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
-                            BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
-                    mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    favoritesResponse = getString(R.string.favorites_added);
-                }
-                Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
-                        .setAction("ToggleFavorites", null).show();
-                mIsFavorite = !mIsFavorite;
-            }
-        });
+            });
+        }
         mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
 
         // configure our recyclerview to be horizontal scrolling
@@ -228,7 +231,8 @@ public class BreweryDetailActivity extends AppCompatActivity
         if(mPreferredLocationId != null) {
             //BreweryLocation preferredLocation = getBreweryLocationById(mPreferredLocationId);
             mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
-            breweryLocation = new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude());
+            if(mBreweryLocation != null)
+                breweryLocation = new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude());
         }
         CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
         map.moveCamera(breweryMapPosition);
@@ -257,58 +261,67 @@ public class BreweryDetailActivity extends AppCompatActivity
     }
 
     public void updateUI() {
-        mBreweryNameTextView.setText(mBrewery.getName());
-        if(mBrewery.getEstablished() != 0)
-            mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
-        else
-            mBreweryEstablishedTextView.setVisibility(View.GONE);
+        if(mBrewery != null) {
+            mBreweryNameTextView.setText(mBrewery.getName());
+            if (mBrewery.getEstablished() != 0)
+                mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
+            else
+                mBreweryEstablishedTextView.setVisibility(View.GONE);
 
-        BreweryLocation mainBreweryLocation = getMainBreweryLocation();
-        if(mainBreweryLocation.getStreetAddress() != null)
-            mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
-        else
-            mBreweryAddressLine1TextView.setVisibility(View.GONE);
+            BreweryLocation mainBreweryLocation = getMainBreweryLocation();
+            if (mainBreweryLocation.getStreetAddress() != null)
+                mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
+            else
+                mBreweryAddressLine1TextView.setVisibility(View.GONE);
 
-        StringBuilder builder = new StringBuilder();
-        if(mainBreweryLocation.getLocality() != null)
-            builder.append(mainBreweryLocation.getLocality() + ", ");
-        if(mainBreweryLocation.getRegion() != null)
-            builder.append(mainBreweryLocation.getRegion() + " ");
-        if(mainBreweryLocation.getPostalCode() != null)
-            builder.append(mainBreweryLocation.getPostalCode());
-        String addressLine2String = builder.toString();
-        if(!addressLine2String.isEmpty())
-            mBreweryAddressLine2TextView.setText(builder.toString());
-        else
-            mBreweryAddressLine2TextView.setVisibility(View.GONE);
-//        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
-//                + mainBreweryLocation.getRegion() + " "
-//                + mainBreweryLocation.getPostalCode());
-        if(mainBreweryLocation.getPhone() != null)
-            mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
-        else
-            mBreweryPhoneTextView.setVisibility(View.GONE);
-        if(mBrewery.getWebsite() != null)
-            mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
-        else
-            mBreweryWebsiteTextView.setVisibility(View.GONE);
-        if(mBrewery.getDescription() != null)
-            mBreweryDescriptionTextView.setText(mBrewery.getDescription());
-        else
-            mBreweryDescriptionTextView.setText(R.string.info_none);
+            StringBuilder builder = new StringBuilder();
+            if (mainBreweryLocation.getLocality() != null)
+                builder.append(mainBreweryLocation.getLocality() + ", ");
+            if (mainBreweryLocation.getRegion() != null)
+                builder.append(mainBreweryLocation.getRegion() + " ");
+            if (mainBreweryLocation.getPostalCode() != null)
+                builder.append(mainBreweryLocation.getPostalCode());
+            String addressLine2String = builder.toString();
+            if (!addressLine2String.isEmpty())
+                mBreweryAddressLine2TextView.setText(builder.toString());
+            else
+                mBreweryAddressLine2TextView.setVisibility(View.GONE);
+            //        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
+            //                + mainBreweryLocation.getRegion() + " "
+            //                + mainBreweryLocation.getPostalCode());
+            if (mainBreweryLocation.getPhone() != null)
+                mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
+            else
+                mBreweryPhoneTextView.setVisibility(View.GONE);
+            if (mBrewery.getWebsite() != null)
+                mBreweryWebsiteTextView.setText(mBrewery.getWebsite());
+            else
+                mBreweryWebsiteTextView.setVisibility(View.GONE);
+            if (mBrewery.getDescription() != null)
+                mBreweryDescriptionTextView.setText(mBrewery.getDescription());
+            else
+                mBreweryDescriptionTextView.setText(R.string.info_none);
 
-        // handle the data for the beers at a particular brewery
-        if(mBeerAdapter == null) {
-            mBeerAdapter = new BeerAdapter(mBreweryBeers);
-            mBreweryBeersRecyclerView.setAdapter(mBeerAdapter);
+            // handle the data for the beers at a particular brewery
+            if (mBeerAdapter == null) {
+                mBeerAdapter = new BeerAdapter(mBreweryBeers);
+                mBreweryBeersRecyclerView.setAdapter(mBeerAdapter);
+            } else {
+                mBeerAdapter.notifyDataSetChanged();
+            }
+            if(mBeerAdapter.getItemCount() > 0) {
+                mBreweryBeersRecyclerView.setVisibility(View.VISIBLE);
+                mBreweryBeersNoneTextView.setVisibility(View.GONE);
+            }
+            else {
+                mBreweryBeersRecyclerView.setVisibility(View.GONE);
+                mBreweryBeersNoneTextView.setVisibility(View.VISIBLE);
+            }
+            if (mIsFavorite)
+                mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+            else
+                mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
         }
-        else {
-            mBeerAdapter.notifyDataSetChanged();
-        }
-        if(mIsFavorite)
-            mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
-        else
-            mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
     }
 
     public BreweryLocation getBreweryLocationById(String id) {

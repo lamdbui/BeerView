@@ -336,8 +336,6 @@ public class BeerViewMapsFragment extends Fragment
 
     public void refreshBreweryLocationData() {
         LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
-        //locationDataHelper.findBreweryLocationsByLatLng(new LatLng(37.774929, -122.419416));    // SF - 94122
-        //locationDataHelper.findBreweryLocationsByLatLng(new LatLng(33.658895, -117.828212));    // Irvine - 92612
         locationDataHelper.findBreweryLocationsByLatLng(getLatLngFromAddresses());
     }
 
@@ -465,6 +463,7 @@ public class BeerViewMapsFragment extends Fragment
         return null;
     }
 
+    // TODO: move to utility function
     private LatLng getLatLngFromAddresses() {
         if(mAddresses != null) {
             // assume the first is what we want

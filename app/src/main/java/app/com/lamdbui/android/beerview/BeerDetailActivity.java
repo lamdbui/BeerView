@@ -126,7 +126,10 @@ public class BeerDetailActivity extends AppCompatActivity
         mBeerNameTextView.setText(mBeer.getNameDisplay());
         Brewery brewery = mBeer.getBreweries().get(0);
         mBeerBreweryTextView.setText(brewery.getName());
-        mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + getString(R.string.beer_percent_abv));
+        if(mBeer.getAbv() != 0.0)
+            mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + getString(R.string.beer_percent_abv));
+        else
+            mBeerAbvTextView.setText(getString(R.string.beer_percent_abv_none));
         mBeerTypeTextView.setText(mBeer.getBeerStyleName());
         mBeerIBUTextView.setVisibility(View.GONE);
 

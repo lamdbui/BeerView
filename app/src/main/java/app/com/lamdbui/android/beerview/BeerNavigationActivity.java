@@ -124,11 +124,6 @@ public class BeerNavigationActivity extends AppCompatActivity
                         .replace(R.id.content, mSettingsFragment, BeerNavigationSettingsFragment.TAG)
                         .addToBackStack(null)
                         .commit();
-//                fm.beginTransaction()
-//                        .replace(R.id.content, BeerDetailActivityFragment.newInstance(mBeer))
-//                        .addToBackStack(null)
-//                        .commit();
-                //fm.beginTransaction().replace(R.id.content, BreweryD)
                 break;
         }
 

@@ -161,7 +161,7 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onFailure(Call<BeerListResponse> call, Throwable t) {
                     //TODO: maybe log this with Analytics?
-                    Log.e(LOG_TAG, "Error fetching beers from brewery");
+                    Log.e(LOG_TAG, getString(R.string.error_fetching_beers));
                 }
             });
         }
@@ -194,6 +194,7 @@ public class BeerNavigationHomeFragment extends Fragment
         // we make sure to update here in case something was changed in the SharedPreferences
         // in a separate Activity or Fragment
         refreshSettingsData();
+        //refreshBreweryLocationData();
     }
 
     @Override
@@ -227,6 +228,8 @@ public class BeerNavigationHomeFragment extends Fragment
     @Override
     public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
         mBreweryLocations = breweryLocations;
+        mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
+        mBreweryLocationAdapter.notifyDataSetChanged();
     }
 
     // TODO: do we need this?
@@ -305,6 +308,7 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                     mBrewery = response.body().getBrewery();
+                    //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
                 }
 
                 @Override
@@ -318,8 +322,12 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
                     // we could possibly get no beers available
-                    if(response.body().getData() != null)
+                    if(response.body().getData() != null) {
                         mBreweryBeers = response.body().getBeerList();
+//                        // TODO: is it enough to wait for this?
+//                        startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
+                    }
+                    // TODO: is it enough to wait for this?
                     startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, mBreweryLocation.getId()));
                 }
 
@@ -346,7 +354,8 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
                     mAddresses = response.body().getAddressList();
-                    updateUI();
+                    refreshBreweryLocationData();
+                    //updateUI();
                 }
 
                 @Override
@@ -355,6 +364,20 @@ public class BeerNavigationHomeFragment extends Fragment
                 }
             });
         }
+    }
+
+    private LatLng getLatLngFromAddresses() {
+        if(mAddresses != null) {
+            // assume the first is what we want
+            Address address = mAddresses.get(0);
+            return address.getLatLng();
+        }
+        return null;
+    }
+
+    public void refreshBreweryLocationData() {
+        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
+        locationDataHelper.findBreweryLocationsByLatLng(getLatLngFromAddresses());
     }
 
     public void updateUI() {
@@ -435,6 +458,10 @@ public class BeerNavigationHomeFragment extends Fragment
         @Override
         public int getItemCount() {
             return mBreweryLocations.size();
+        }
+
+        public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
+            mBreweryLocations = breweryLocations;
         }
     }
 
