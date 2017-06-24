@@ -80,7 +80,8 @@ public class BeerNavigationActivity extends AppCompatActivity
                 mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
                 if(mHomeFragment == null) {
-                    mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
+                    //mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
+                    mHomeFragment = BeerNavigationHomeFragment.newInstance(null, mAddresses);
                 }
 
                 fm.beginTransaction()
@@ -93,7 +94,8 @@ public class BeerNavigationActivity extends AppCompatActivity
                 mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
 
                 if(mMapsFragment == null) {
-                    mMapsFragment = BeerViewMapsFragment.newInstance(mBreweryLocations, mAddresses);
+                    //mMapsFragment = BeerViewMapsFragment.newInstance(mBreweryLocations, mAddresses);
+                    mMapsFragment = BeerViewMapsFragment.newInstance(null, mAddresses);
                 }
                 fm.beginTransaction()
                         .replace(R.id.content, mMapsFragment, BeerViewMapsFragment.TAG)

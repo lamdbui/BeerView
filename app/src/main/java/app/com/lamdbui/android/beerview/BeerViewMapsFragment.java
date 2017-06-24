@@ -134,11 +134,18 @@ public class BeerViewMapsFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+
         mBrewery = null;
         mBreweryBeers = new ArrayList<>();
         mBreweryLocationMarkers = new ArrayList<>();
-        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION);
+        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
+        if(mBreweryLocations == null) {
+            mBreweryLocations = new ArrayList<>();
+            refreshLocationData();
+        }
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
@@ -165,8 +172,6 @@ public class BeerViewMapsFragment extends Fragment
                     }
                 });
 
-        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         mCurrMarker = null;
         mCurrBreweryLocation = new BreweryLocation();
     }

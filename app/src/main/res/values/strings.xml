@@ -26,8 +26,8 @@
     <string name="dialog_save">Save</string>
     <string name="home_default_line1">Welcome to BrewMapper!</string>
     <string name="home_default_line2">Discover great local Beers and Breweries</string>
-    <string name="brewery_none_available">No Breweries available</string>
-    <string name="beer_none_available">No Beers available</string>
+    <string name="brewery_none_available">No Brewery information available</string>
+    <string name="beer_none_available">No Beer information available</string>
     <string name="beer_percent_abv">% ABV</string>
     <string name="beer_percent_abv_none">No ABV% information available</string>
     <string name="permission_location_message">Request for location to determine nearest Breweries</string>

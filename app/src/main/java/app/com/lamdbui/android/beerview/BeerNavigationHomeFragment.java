@@ -122,8 +122,28 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBreweryLocations = new ArrayList<>();
         mBreweryBeers = new ArrayList<>();
+
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        mCurrPostalCode = "0";
+        refreshSettingsData();
+
+        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
+        if(mBreweryLocations == null) {
+            mBreweryLocations = new ArrayList<>();
+        }
+        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
+        if(mAddresses == null) {
+            mAddresses = new ArrayList<>();
+        }
+
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -141,21 +161,7 @@ public class BeerNavigationHomeFragment extends Fragment
                     }
                 });
 
-        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-        //refreshSettingsData();
-
-        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
-        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
-
-        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
-
         fetchAllBeersAtBreweryLocations();
-
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
-
-        Bundle bundle = new Bundle();
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
     }
 
     @Nullable
