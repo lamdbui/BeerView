@@ -116,6 +116,9 @@ public class BeerViewMapsFragment extends Fragment
 
     private SharedPreferences mSettings;
     private String mCurrPostalCode;
+    // track currently focused Marker to determine a second click used to launch Activity
+    private Marker mCurrMarker;
+    private BreweryLocation mCurrBreweryLocation;
 
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries, List<Address> addresses) {
         Bundle args = new Bundle();
@@ -155,14 +158,17 @@ public class BeerViewMapsFragment extends Fragment
 
                             LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
                             // TODO: What should we do to ensure the map is valid first?
-                            if(mMap != null)
+                            if(mMap != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+                            }
                         }
                     }
                 });
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        mCurrMarker = null;
+        mCurrBreweryLocation = new BreweryLocation();
     }
 
     @Nullable
@@ -190,10 +196,6 @@ public class BeerViewMapsFragment extends Fragment
         if(mBreweryAdapter == null) {
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
             mBreweryRecyclerView.setAdapter(mBreweryAdapter);
-        }
-        else {
-            mBreweryRecyclerView.setAdapter(mBreweryAdapter);
-            mBreweryAdapter.notifyDataSetChanged();
         }
 
         return view;
@@ -279,33 +281,29 @@ public class BeerViewMapsFragment extends Fragment
                 // get the BreweryLocation object back
                 final BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
-                Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-                callBreweryById.enqueue(new Callback<BreweryResponse>() {
-                    @Override
-                    public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                        mBrewery = response.body().getBrewery();
-                    }
+                // check to see if this is the second click
+                if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
+                //if(marker == mCurrMarker) {
+                    // TODO: Move this into a util function
+                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                        @Override
+                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                            mBrewery = response.body().getBrewery();
+                            if(mBrewery != null)
+                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, breweryLocation.getId()));
+                        }
 
-                    @Override
-                    public void onFailure(Call<BreweryResponse> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
 
-                    }
-                });
-
-                Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-                callBeersAtBrewery.enqueue(new Callback<BeerListResponse>() {
-                    @Override
-                    public void onResponse(Call<BeerListResponse> call, Response<BeerListResponse> response) {
-                        // we could possibly get no beers available
-                        if(response.body().getData() != null)
-                            mBreweryBeers = response.body().getBeerList();
-                        startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, mBreweryBeers, breweryLocation.getId()));
-                    }
-
-                    @Override
-                    public void onFailure(Call<BeerListResponse> call, Throwable t) {
-                    }
-                });
+                        }
+                    });
+                }
+                else {
+                    mCurrBreweryLocation = breweryLocation;
+                    mCurrMarker = marker;
+                }
             }
         });
 
@@ -314,7 +312,7 @@ public class BeerViewMapsFragment extends Fragment
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
 
-                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+                final BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
                 int position = mBreweryAdapter.getAdapterItemPosition(breweryLocation.getId());
 
@@ -323,6 +321,30 @@ public class BeerViewMapsFragment extends Fragment
 
                 if(position > -1)
                     mLinearLayoutManager.scrollToPosition(position);
+
+                // check to see if this is the second click
+                if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
+                    //if(marker == mCurrMarker) {
+                    // TODO: Move this into a util function
+                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
+                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                        @Override
+                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                            mBrewery = response.body().getBrewery();
+                            if(mBrewery != null)
+                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, breweryLocation.getId()));
+                        }
+
+                        @Override
+                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+                else {
+                    mCurrBreweryLocation = breweryLocation;
+                    mCurrMarker = marker;
+                }
 
                 return true;
             }
@@ -514,8 +536,33 @@ public class BeerViewMapsFragment extends Fragment
             // TODO: Move to marker on the Map
 
             Marker marker = getMarkerFromBreweryLocation(mBreweryLocation);
-            if(marker != null)
+            if(marker != null) {
                 marker.showInfoWindow();
+
+                // check to see if this is the second click
+                //if(marker == mCurrMarker) {
+                if(mBreweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
+                    // TODO: Move this into a util function
+                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
+                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                        @Override
+                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                            mBrewery = response.body().getBrewery();
+                            if(mBrewery != null)
+                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
+                        }
+
+                        @Override
+                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+                else {
+                    mCurrMarker = marker;
+                    mCurrBreweryLocation = mBreweryLocation;
+                }
+            }
 
             mMap.animateCamera(CameraUpdateFactory
                     .newLatLng(new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude())));
