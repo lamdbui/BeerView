@@ -4,13 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import static android.R.attr.bitmap;
 
 /**
  * Created by lamdbui on 5/25/17.

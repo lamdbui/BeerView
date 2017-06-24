@@ -32,7 +32,7 @@ public class BreweryActivity extends AppCompatActivity {
                     mTextMessage.setText(R.string.title_map);
                     return true;
                 case R.id.navigation_more:
-                    mTextMessage.setText(R.string.title_more);
+                    mTextMessage.setText(R.string.title_settings);
                     return true;
             }
             return false;

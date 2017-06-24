@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import app.com.lamdbui.android.beerview.data.BreweryContract.BreweryTable;
 import app.com.lamdbui.android.beerview.data.BreweryContract.BeerTable;
+import app.com.lamdbui.android.beerview.data.BreweryContract.BreweryTable;
 
 /**
  * Created by lamdbui on 5/2/17.

@@ -1,32 +1,30 @@
 package app.com.lamdbui.android.beerview;
 
-import android.*;
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +49,6 @@ import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.AddressResponse;
-import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
@@ -192,7 +189,32 @@ public class BeerViewMapsFragment extends Fragment
         mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(),mSettings.getString(getString(R.string.pref_location_postal_code), "NONE AVAILABLE"), Toast.LENGTH_SHORT).show();
+                final EditText input = new EditText(getActivity());
+                final View innerView = view;
+                input.setHint(getString(R.string.setting_postal_code_hint));
+                input.setMaxLines(1);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                final AlertDialog postalCodeAlertDialog = new AlertDialog.Builder(getActivity())
+                        .setNegativeButton(getString(R.string.dialog_cancel), null)
+                        .setPositiveButton(getString(R.string.dialog_save), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences.Editor editor = mSettings.edit();
+                                String postalCode = input.getText().toString();
+                                editor.putString(getString(R.string.pref_location_postal_code), postalCode);
+                                editor.apply();
+                                Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
+                                        .setAction("SavedPostalCode", null).show();
+                                mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+                                updateUI();
+                            }
+                        })
+                        .create();
+
+                postalCodeAlertDialog.setTitle(R.string.setting_postal_code);
+                postalCodeAlertDialog.setMessage(getString(R.string.setting_postal_code_description));
+                postalCodeAlertDialog.setView(input);
+                postalCodeAlertDialog.show();
             }
         });
 
@@ -202,6 +224,8 @@ public class BeerViewMapsFragment extends Fragment
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
             mBreweryRecyclerView.setAdapter(mBreweryAdapter);
         }
+
+        updateUI();
 
         return view;
     }
@@ -247,16 +271,6 @@ public class BeerViewMapsFragment extends Fragment
         setBreweryLocationMapMarkers();
 
         moveMapCameraToAddress();
-
-//        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//            @Override
-//            public void onInfoWindowClick(Marker marker) {
-//                Toast.makeText(getActivity(), "clicked marker!", Toast.LENGTH_SHORT).show();
-//                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
-//
-//                //startActivity(BreweryDetailActivity.newIntent(getActivity(), breweryLocation.));
-//            }
-//        });
 
         // Set listeners for marker events
 //        mMap.setOnMarkerClickListener(this);
@@ -356,6 +370,10 @@ public class BeerViewMapsFragment extends Fragment
         });
     }
 
+    public void updateUI() {
+        mPostalcodeButton.setText(getString(R.string.map_current_location) + " " + mCurrPostalCode);
+    }
+
     public void moveMapCameraToAddress() {
         if(mMap != null)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromAddresses(), MAP_DEFAULT_ZOOM_LEVEL));
@@ -380,7 +398,7 @@ public class BeerViewMapsFragment extends Fragment
                     if(mAddresses != null)
                         refreshBreweryLocationData();
                     moveMapCameraToAddress();
-                    //updateUI();
+                    updateUI();
                 }
 
                 @Override
