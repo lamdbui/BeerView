@@ -27,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -337,9 +338,13 @@ public class BeerNavigationHomeFragment extends Fragment
             mBreweryNameTextView.setText(mBreweryLocation.getName());
 
             // fetch the icon
-            FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            if(mBreweryLocation.getImagesIcon() != null)
-                beerIconTask.execute(mBreweryLocation.getImagesIcon());
+            //FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+            if(mBreweryLocation.getImagesMedium() != null) {
+                //beerIconTask.execute(mBreweryLocation.getImagesIcon());
+                Picasso.with(getActivity())
+                        .load(mBreweryLocation.getImagesMedium())
+                        .into(mBreweryImageView);
+            }
         }
 
         @Override
@@ -535,9 +540,12 @@ public class BeerNavigationHomeFragment extends Fragment
             mBeerNameTextView.setText(mBeer.getName());
 
             // fetch the icon
-            if(mBeer.getLabelsIcon() != null) {
-                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-                beerIconTask.execute(mBeer.getLabelsIcon());
+            if(mBeer.getLabelsMedium() != null) {
+//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+//                beerIconTask.execute(mBeer.getLabelsIcon());
+                Picasso.with(getActivity())
+                        .load(mBeer.getLabelsMedium())
+                        .into(mBeerIconImageView);
             }
             else
                 mBeerIconImageView.setImageResource(R.drawable.beer_icon_32);

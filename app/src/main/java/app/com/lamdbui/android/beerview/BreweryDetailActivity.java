@@ -27,6 +27,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -427,9 +428,12 @@ public class BreweryDetailActivity extends AppCompatActivity
             mBeerNameTextView.setText(mBeer.getName());
 
             // fetch the icon
-            if(mBeer.getLabelsIcon() != null) {
-                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-                beerIconTask.execute(mBeer.getLabelsIcon());
+            if(mBeer.getLabelsMedium() != null) {
+//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
+//                beerIconTask.execute(mBeer.getLabelsIcon());
+                Picasso.with(getApplicationContext())
+                        .load(mBeer.getLabelsMedium())
+                        .into(mBeerIconImageView);
             }
         }
 

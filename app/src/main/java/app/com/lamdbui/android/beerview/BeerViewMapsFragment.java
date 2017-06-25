@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -566,13 +567,17 @@ public class BeerViewMapsFragment extends Fragment
         public void bind(BreweryLocation brewery) {
             mBreweryLocation = brewery;
 
+            mBreweryImage.setImageResource(R.drawable.beer_icon_32);
+
             if(mBreweryLocation.getImagesMedium() != null) {
                 FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
                 fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
+//                Picasso.with(getActivity())
+//                        .load(mBreweryLocation.getImagesMedium())
+//                        .into(mBreweryImage);
             }
 
             mBreweryName.setText(mBreweryLocation.getName());
-            mBreweryImage.setImageResource(R.drawable.beer_icon_32);
         }
 
         @Override
