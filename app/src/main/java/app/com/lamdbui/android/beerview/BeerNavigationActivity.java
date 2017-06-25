@@ -1,14 +1,22 @@
 package app.com.lamdbui.android.beerview;
 
+import android.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +28,11 @@ import app.com.lamdbui.android.beerview.model.BreweryLocation;
 public class BeerNavigationActivity extends AppCompatActivity
     implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String ARG_BEER = "beer";
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
     private static final String ARG_LOCATION_DATA = "location_data";
 
-    private Beer mBeer;
+    public static final int PERMISSION_REQUEST_LOCATION = 2;
+
     private List<BreweryLocation> mBreweryLocations;
     private List<Address> mAddresses;
 
@@ -32,10 +40,9 @@ public class BeerNavigationActivity extends AppCompatActivity
     private Fragment mMapsFragment;
     private Fragment mSettingsFragment;
 
-    public static Intent newIntent(Context context, Beer beer, List<BreweryLocation> breweryLocations, List<Address> addresses) {
+    public static Intent newIntent(Context context, List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_BEER, beer);
         bundle.putParcelableArrayList(ARG_BREWERY_LOCATIONS, (ArrayList) breweryLocations);
         bundle.putParcelableArrayList(ARG_LOCATION_DATA, (ArrayList) addresses);
         intent.putExtras(bundle);
@@ -49,11 +56,12 @@ public class BeerNavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_navigation);
 
-        mBeer = getIntent().getParcelableExtra(ARG_BEER);
         mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
         mAddresses = getIntent().getParcelableArrayListExtra(ARG_LOCATION_DATA);
 
         FragmentManager fm = getSupportFragmentManager();
+
+        checkLocationPermission();
 
         mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
@@ -103,20 +111,6 @@ public class BeerNavigationActivity extends AppCompatActivity
 
                 break;
             case R.id.navigation_more:
-
-                //mSettingsPreferenceFragment = fm.findFragmentByTag(BeerNavigationSettingsPreferenceFragment.TAG);
-                //mSettingsPreferenceFragment = getFragmentManager().findFragmentByTag(BeerNavigationSettingsPreferenceFragment.TAG);
-//                if(mSettingsPreferenceFragment == null) {
-//                    //mSettingsPreferenceFragment = (Fragment) BeerNavigationSettingsPreferenceFragment.newInstance();
-//                    mSettingsPreferenceFragment = new BeerNavigationSettingsPreferenceFragment();
-//                }
-//                mMapsFragment = fm.findFragmentByTag(BeerViewMapsFragment.TAG);
-//                fm.beginTransaction().hide(mMapsFragment).commit();
-//                getFragmentManager().beginTransaction()
-//                        .replace(R.id.content, mSettingsPreferenceFragment, BeerNavigationSettingsPreferenceFragment.TAG)
-//                        .addToBackStack(null)
-//                        .commit();
-
                 mSettingsFragment = fm.findFragmentByTag(BeerNavigationSettingsFragment.TAG);
                 if(mSettingsFragment == null) {
                     mSettingsFragment = BeerNavigationSettingsFragment.newInstance();
@@ -138,6 +132,63 @@ public class BeerNavigationActivity extends AppCompatActivity
         }
         else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+//            case PERMISSION_LOCATION_FINE:
+//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    //mMap.setMyLocationEnabled(true);
+//                    try {
+//                        mMap.setMyLocationEnabled(true);
+//                    }
+//                    catch(SecurityException e) {
+//                        // print error here
+//                    }
+//                }
+//                else {
+//                    // permission not granted
+//                }
+//                break;
+//            //}
+            case PERMISSION_REQUEST_LOCATION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted
+                    if(ContextCompat.checkSelfPermission(this,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                    }
+                    else {
+                        Toast.makeText(this, "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // explanation
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            } else {
+                // no explanation needed
+                ActivityCompat.requestPermissions(this,
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        else {
+            return true;
         }
     }
 }

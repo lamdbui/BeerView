@@ -97,8 +97,10 @@ public class BreweryLocationResponse {
     public List<BreweryLocation> getBreweries() {
         List<BreweryLocation> breweries = new ArrayList<>();
 
-        for(BreweryLocationData data : mData) {
-            breweries.add(convertResponseToBreweryLocation(data));
+        if(mData != null) {
+            for (BreweryLocationData data : mData) {
+                breweries.add(convertResponseToBreweryLocation(data));
+            }
         }
 
         return breweries;

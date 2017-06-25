@@ -115,46 +115,57 @@ public class BeerNavigationHomeFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         mBreweryBeers = new ArrayList<>();
-
-        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        mBreweryLocations = new ArrayList<>();
+        mAddresses = new ArrayList<>();
         mCurrPostalCode = "0";
-        refreshSettingsData();
 
-        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
-        if(mBreweryLocations == null) {
-            mBreweryLocations = new ArrayList<>();
-        }
-        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
-        if(mAddresses == null) {
-            mAddresses = new ArrayList<>();
-        }
+        boolean permission = checkLocationPermission();
 
-        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            permission = checkLocationPermission();
+//        }
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        if(permission) {
 
-        Bundle bundle = new Bundle();
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+            mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+            refreshSettingsData();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mFusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            mLocation = location;
-                            //updateUI();
+            mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
+            if (mBreweryLocations == null) {
+                mBreweryLocations = new ArrayList<>();
+            }
+            mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
+            if (mAddresses == null) {
+                mAddresses = new ArrayList<>();
+            }
+
+            mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+
+            Bundle bundle = new Bundle();
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                checkLocationPermission();
+            }
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                mLocation = location;
+                                //updateUI();
+                            }
                         }
-                    }
-                });
+                    });
 
-        //updateUI();
-        fetchAllBeersAtBreweryLocations();
+            //updateUI();
+            fetchAllBeersAtBreweryLocations();
+        }
     }
 
     @Nullable
@@ -167,8 +178,11 @@ public class BeerNavigationHomeFragment extends Fragment
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
-        refreshSettingsData();
-        updateUI();
+        boolean permission = checkLocationPermission();
+        if(permission) {
+            refreshSettingsData();
+            updateUI();
+        }
 
         return view;
     }
@@ -210,6 +224,7 @@ public class BeerNavigationHomeFragment extends Fragment
                                         }
                                     }
                                 });
+                        refreshSettingsData();
 
                     }
                     else {
@@ -353,6 +368,9 @@ public class BeerNavigationHomeFragment extends Fragment
 
     // TODO: Maybe rename this to fetchDataSet(or similar)
     public boolean refreshSettingsData() {
+
+        boolean permission = checkLocationPermission();
+
         String postalCode = "";
         if(mSettings != null) {
             postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
@@ -360,26 +378,28 @@ public class BeerNavigationHomeFragment extends Fragment
 
         if(!mCurrPostalCode.equals(postalCode)) {
             mCurrPostalCode = postalCode;
-            // TODO: possibly move this to a util function
-            if (!postalCode.isEmpty()) {
-                GoogleGeocodeInterface geocacheService =
-                        GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
+            if(permission) {
+                // TODO: possibly move this to a util function
+                if (!postalCode.isEmpty()) {
+                    GoogleGeocodeInterface geocacheService =
+                            GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
 
-                Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
-                callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
-                    @Override
-                    public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                        mAddresses = response.body().getAddressList();
-                        refreshBreweryLocationData();
-                        //fetchAllBeersAtBreweryLocations();
-                        updateUI();
-                    }
+                    Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
+                    callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
+                        @Override
+                        public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
+                            mAddresses = response.body().getAddressList();
+                            refreshBreweryLocationData();
+                            //fetchAllBeersAtBreweryLocations();
+                            updateUI();
+                        }
 
-                    @Override
-                    public void onFailure(Call<AddressResponse> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<AddressResponse> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
             return true;
         }

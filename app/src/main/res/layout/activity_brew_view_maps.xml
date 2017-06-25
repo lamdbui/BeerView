@@ -27,6 +27,7 @@
     </android.support.v7.widget.SearchView-->
 
     <FrameLayout
+        android:id="@+id/map_view_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -34,7 +35,6 @@
             android:id="@+id/map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </com.google.android.gms.maps.MapView>
 
         <Button
@@ -51,5 +51,11 @@
         </android.support.v7.widget.RecyclerView>
 
     </FrameLayout>
+    <TextView
+        android:id="@+id/map_location_none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:text="@string/map_current_location_none"/>
 
 </LinearLayout>
