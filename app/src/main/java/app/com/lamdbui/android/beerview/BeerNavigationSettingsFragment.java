@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -28,6 +30,8 @@ public class BeerNavigationSettingsFragment extends Fragment {
 
     @BindView(R.id.pref_postalcode_textview)
     TextView mPrefPostalCodeTextView;
+    @BindView(R.id.settings_postal_code_layout)
+    LinearLayout mSettingsPostalCodeLayout;
 
     private SharedPreferences mSettings;
 
@@ -49,7 +53,7 @@ public class BeerNavigationSettingsFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        mPrefPostalCodeTextView.setOnClickListener(new View.OnClickListener() {
+        mSettingsPostalCodeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final EditText input = new EditText(getActivity());
@@ -64,10 +68,16 @@ public class BeerNavigationSettingsFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 SharedPreferences.Editor editor = mSettings.edit();
                                 String postalCode = input.getText().toString();
-                                editor.putString(getString(R.string.pref_location_postal_code), postalCode);
-                                editor.apply();
-                                Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
-                                        .setAction("SavedPostalCode", null).show();
+                                if(!postalCode.equals("")) {
+                                    editor.putString(getString(R.string.pref_location_postal_code), postalCode);
+                                    editor.apply();
+                                    Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
+                                            .setAction("SavedPostalCode", null).show();
+                                }
+                                else {
+                                    Snackbar.make(innerView, getString(R.string.setting_postal_code_error), Snackbar.LENGTH_SHORT)
+                                            .setAction("SavedPostalCode", null).show();
+                                }
                                 updateUI();
                             }
                         })
@@ -86,6 +96,10 @@ public class BeerNavigationSettingsFragment extends Fragment {
     }
 
     public void updateUI() {
-        mPrefPostalCodeTextView.setText(mSettings.getString(getString(R.string.pref_location_postal_code), getString(R.string.pref_location_none)));
+        String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), getString(R.string.pref_location_none));
+        if(!postalCode.equals(""))
+            mPrefPostalCodeTextView.setText(postalCode);
+        else
+            mPrefPostalCodeTextView.setText(getString(R.string.setting_postal_code_hint));
     }
 }

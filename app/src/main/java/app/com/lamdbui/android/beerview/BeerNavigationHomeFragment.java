@@ -148,21 +148,21 @@ public class BeerNavigationHomeFragment extends Fragment
             Bundle bundle = new Bundle();
             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                checkLocationPermission();
-            }
-            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-            mFusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                mLocation = location;
-                                //updateUI();
-                            }
-                        }
-                    });
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                checkLocationPermission();
+//            }
+//            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+//            mFusedLocationProviderClient.getLastLocation()
+//                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            // Got last known location. In some rare situations this can be null.
+//                            if (location != null) {
+//                                mLocation = location;
+//                                //updateUI();
+//                            }
+//                        }
+//                    });
 
             //updateUI();
             fetchAllBeersAtBreweryLocations();
@@ -289,26 +289,27 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            // explanation
-            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            } else {
-                // no explanation needed
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            }
-            return false;
-        }
-        else {
-            return true;
-        }
+        return true;
+//        if (ContextCompat.checkSelfPermission(getActivity(),
+//                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            // explanation
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+//                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                ActivityCompat.requestPermissions(getActivity(),
+//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+//                        PERMISSION_REQUEST_LOCATION);
+//            } else {
+//                // no explanation needed
+//                ActivityCompat.requestPermissions(getActivity(),
+//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+//                        PERMISSION_REQUEST_LOCATION);
+//            }
+//            return false;
+//        }
+//        else {
+//            return true;
+//        }
     }
 
     private class BreweryLocationViewHolder extends RecyclerView.ViewHolder

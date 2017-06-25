@@ -10,7 +10,7 @@
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:elevation="@dimen/fab_elevation"
         android:background="@color/colorPrimary"
         android:theme="@style/BeerMapper.Theme.AppBarOverlay"
         app:popupTheme="@style/BeerMapper.Theme.PopupOverlay">
@@ -24,19 +24,27 @@
         android:text="Settings"
         android:layout_margin="@dimen/list_item_margin"
         style="@style/AppTheme.TextAppearance.Large"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/list_item_margin"
-        android:layout_marginRight="@dimen/list_item_margin"
-        android:layout_marginBottom="@dimen/list_item_margin"
-        android:text="Default Location Postal Code"
-        style="@style/AppTheme.TextAppearance.Small"/>
 
-    <TextView
-        android:id="@+id/pref_postalcode_textview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/settings_postal_code_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_margin"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/list_item_margin"
+            android:layout_marginRight="@dimen/list_item_margin"
+            android:layout_marginBottom="@dimen/list_item_margin"
+            android:text="Default Location Postal Code"
+            style="@style/AppTheme.TextAppearance.Small"/>
+
+        <TextView
+            android:id="@+id/pref_postalcode_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_item_margin"/>
+    </LinearLayout>
 
 </LinearLayout>

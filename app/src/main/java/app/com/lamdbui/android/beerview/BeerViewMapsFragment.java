@@ -161,23 +161,23 @@ public class BeerViewMapsFragment extends Fragment
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
-        mFusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            mLocation = location;
-                            // move the map to right location as soon as we get a valid location
-
-                            LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                            // TODO: What should we do to ensure the map is valid first?
-                            if(mMap != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
-                            }
-                        }
-                    }
-                });
+//        mFusedLocationProviderClient.getLastLocation()
+//                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            mLocation = location;
+//                            // move the map to right location as soon as we get a valid location
+//
+//                            LatLng lastLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+//                            // TODO: What should we do to ensure the map is valid first?
+//                            if(mMap != null) {
+//                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, MAP_DEFAULT_ZOOM_LEVEL));
+//                            }
+//                        }
+//                    }
+//                });
 
         mCurrMarker = null;
         mCurrBreweryLocation = new BreweryLocation();
@@ -194,10 +194,11 @@ public class BeerViewMapsFragment extends Fragment
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
+        mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
+
         if(mCurrPostalCode != "") {
             //mMapView.getMapAsync(this);
-
-            mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
             mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -214,12 +215,19 @@ public class BeerViewMapsFragment extends Fragment
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     SharedPreferences.Editor editor = mSettings.edit();
                                     String postalCode = input.getText().toString();
-                                    editor.putString(getString(R.string.pref_location_postal_code), postalCode);
-                                    editor.apply();
-                                    Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
-                                            .setAction("SavedPostalCode", null).show();
-                                    mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-                                    updateUI();
+                                    if(!postalCode.equals("")) {
+                                        editor.putString(getString(R.string.pref_location_postal_code), postalCode);
+                                        editor.apply();
+                                        Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
+                                                .setAction("SavedPostalCode", null).show();
+                                        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+                                        refreshLocationData();
+                                        updateUI();
+                                    }
+                                    else {
+                                        Snackbar.make(innerView, getString(R.string.setting_postal_code_error), Snackbar.LENGTH_SHORT)
+                                                .setAction("SavedPostalCode", null).show();
+                                    }
                                 }
                             })
                             .create();
@@ -230,17 +238,13 @@ public class BeerViewMapsFragment extends Fragment
                     postalCodeAlertDialog.show();
                 }
             });
-
-            mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
-
-//            if (mBreweryAdapter == null) {
-//                mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
-//                mBreweryRecyclerView.setAdapter(mBreweryAdapter);
-//            }
         }
 
         if (mBreweryAdapter == null) {
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
+            mBreweryRecyclerView.setAdapter(mBreweryAdapter);
+        }
+        else {
             mBreweryRecyclerView.setAdapter(mBreweryAdapter);
         }
 
@@ -441,6 +445,9 @@ public class BeerViewMapsFragment extends Fragment
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+
+
+
         // check to see if postalCode change and move map, if it did
         String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         if(!mCurrPostalCode.equals(postalCode)) {

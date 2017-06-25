@@ -61,7 +61,7 @@ public class BeerNavigationActivity extends AppCompatActivity
 
         FragmentManager fm = getSupportFragmentManager();
 
-        checkLocationPermission();
+        //checkLocationPermission();
 
         mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
