@@ -70,6 +70,19 @@
             android:label="@string/title_activity_beer_home"
             android:theme="@style/BeerMapper.Theme.NoActionBar">
         </activity>
+
+        <receiver
+            android:name=".widget.BeerMapperWidgetProvider"
+            android:label="@string/widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="@string/widget_action"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_favorites_counter"/>
+        </receiver>
+
     </application>
 
 </manifest>

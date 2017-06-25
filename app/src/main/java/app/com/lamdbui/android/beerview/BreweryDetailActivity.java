@@ -1,5 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,6 +40,7 @@ import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
+import app.com.lamdbui.android.beerview.widget.BeerMapperWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -193,6 +196,9 @@ public class BreweryDetailActivity extends AppCompatActivity
                     Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
                             .setAction("ToggleFavorites", null).show();
                     mIsFavorite = !mIsFavorite;
+
+                    // notify any App Widgets of change
+                    updateAppWidget();
                 }
             });
         }
@@ -273,6 +279,14 @@ public class BreweryDetailActivity extends AppCompatActivity
     public void onLowMemory() {
         super.onLowMemory();
         mBreweryMapView.onLowMemory();
+    }
+
+    public void updateAppWidget() {
+        Intent intent = new Intent(getApplicationContext(), BeerMapperWidgetProvider.class);
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BeerMapperWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 
     public void updateUI() {

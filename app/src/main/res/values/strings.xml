@@ -1,5 +1,6 @@
 <resources>
     <string name="content_authority">app.com.lamdbui.android.beerview</string>
+    <string name="widget_action">app.com.lamdbui.android.beerview.ACTION_DATA_UPDATED</string>
 
     <string name="app_name">BeerView</string>
     <string name="action_settings">Settings</string>
@@ -41,4 +42,7 @@
     <string name="favorites_added">Added to your Favorites</string>
     <string name="favorites_removed">Removed from your Favorites</string>
     <string name="map_current_location">Current Location: </string>
+    <string name="widget_title">BeerMapper Favorites</string>
+    <string name="widget_favorite_breweries">Breweries Favorited:</string>
+    <string name="widget_favorite_beers">Beers Favorited:</string>
 </resources>

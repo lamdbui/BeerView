@@ -153,7 +153,8 @@ public class BeerNavigationHomeFragment extends Fragment
                     }
                 });
 
-        fetchAllBeersAtBreweryLocations();
+        //updateUI();
+        //fetchAllBeersAtBreweryLocations();
     }
 
     @Nullable

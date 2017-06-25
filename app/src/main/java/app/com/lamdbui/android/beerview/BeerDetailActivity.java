@@ -1,5 +1,7 @@
 package app.com.lamdbui.android.beerview;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,6 +20,7 @@ import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
+import app.com.lamdbui.android.beerview.widget.BeerMapperWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -116,10 +119,21 @@ public class BeerDetailActivity extends AppCompatActivity
                 Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
                         .setAction("ToggleFavorites", null).show();
                 mIsFavorite = !mIsFavorite;
+
+                // notify any App Widgets of change
+                updateAppWidget();
             }
         });
 
         updateUI();
+    }
+
+    public void updateAppWidget() {
+        Intent intent = new Intent(getApplicationContext(), BeerMapperWidgetProvider.class);
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BeerMapperWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        sendBroadcast(intent);
     }
 
     private void updateUI() {
