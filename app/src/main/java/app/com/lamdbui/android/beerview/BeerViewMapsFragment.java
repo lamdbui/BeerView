@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,11 +94,6 @@ public class BeerViewMapsFragment extends Fragment
     TextView mMapLocationNone;
     @BindView(R.id.map_view_frame)
     FrameLayout mMapFrameLayout;
-
-//    @BindView(R.id.location_searchview)
-//    SearchView mSearchView;
-
-    //private SearchView mToolbarSearchView;
 
     private LinearLayoutManager mLinearLayoutManager;
 
@@ -309,13 +306,33 @@ public class BeerViewMapsFragment extends Fragment
     public void setBreweryLocationMapMarkers() {
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             LatLng location = new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude());
-            Marker marker = mMap.addMarker(new MarkerOptions()
+            final Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(breweryLocation.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
             marker.setTag(breweryLocation);
+            if(breweryLocation.getImagesIcon() != null) {
+                Picasso.with(getActivity())
+                        .load(breweryLocation.getImagesIcon())
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-            mBreweryLocationMarkers.add(marker);
+                                marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                                mBreweryLocationMarkers.add(marker);
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            }
+                        });
+            }
+            else
+                mBreweryLocationMarkers.add(marker);
         }
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -577,11 +594,11 @@ public class BeerViewMapsFragment extends Fragment
             mBreweryImage.setImageResource(R.drawable.beer_icon_32);
 
             if(mBreweryLocation.getImagesMedium() != null) {
-                FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
-                fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
-//                Picasso.with(getActivity())
-//                        .load(mBreweryLocation.getImagesMedium())
-//                        .into(mBreweryImage);
+//                FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
+//                fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
+                Picasso.with(getActivity())
+                        .load(mBreweryLocation.getImagesMedium())
+                        .into(mBreweryImage);
             }
 
             mBreweryName.setText(mBreweryLocation.getName());

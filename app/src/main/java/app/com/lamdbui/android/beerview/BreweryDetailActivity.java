@@ -155,9 +155,10 @@ public class BreweryDetailActivity extends AppCompatActivity
         }
 
         // initiate our background tasks
-        if(mBrewery != null && mBrewery.getImagesMedium() != null) {
+        if(mBrewery != null && mBrewery.getImagesSquareMedium() != null) {
             FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
-            urlImageTask.execute(mBrewery.getImagesMedium());
+            urlImageTask.execute(mBrewery.getImagesSquareMedium());
+            //urlImageTask.execute(mBrewery.getImagesMedium());
         }
 
         Bundle mapViewBundle = null;
