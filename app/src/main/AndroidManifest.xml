@@ -23,11 +23,11 @@
             android:name=".BeerViewActivity"
             android:label="@string/app_name"
             android:theme="@style/BeerMapper.Theme.NoActionBar">
-            <intent-filter>
+            <!--intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter-->
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -69,6 +69,11 @@
             android:name=".BeerNavigationActivity"
             android:label="@string/title_activity_beer_home"
             android:theme="@style/BeerMapper.Theme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
         <receiver

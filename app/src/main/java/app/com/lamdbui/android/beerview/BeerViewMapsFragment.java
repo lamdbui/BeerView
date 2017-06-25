@@ -138,11 +138,15 @@ public class BeerViewMapsFragment extends Fragment
         mBreweryBeers = new ArrayList<>();
         mBreweryLocationMarkers = new ArrayList<>();
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION);
+        if(mAddresses == null) {
+            mAddresses = new ArrayList<>();
+        }
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
         if(mBreweryLocations == null) {
             mBreweryLocations = new ArrayList<>();
-            refreshLocationData();
         }
+
+        refreshLocationData();
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
@@ -510,7 +514,7 @@ public class BeerViewMapsFragment extends Fragment
 
     // TODO: move to utility function
     private LatLng getLatLngFromAddresses() {
-        if(mAddresses != null) {
+        if(mAddresses != null && mAddresses.size() > 0) {
             // assume the first is what we want
             Address address = mAddresses.get(0);
             return address.getLatLng();

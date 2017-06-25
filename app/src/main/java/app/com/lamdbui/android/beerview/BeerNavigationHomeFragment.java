@@ -154,7 +154,7 @@ public class BeerNavigationHomeFragment extends Fragment
                 });
 
         //updateUI();
-        //fetchAllBeersAtBreweryLocations();
+        fetchAllBeersAtBreweryLocations();
     }
 
     @Nullable
@@ -168,7 +168,7 @@ public class BeerNavigationHomeFragment extends Fragment
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         refreshSettingsData();
-        //updateUI();
+        updateUI();
 
         return view;
     }
@@ -179,6 +179,7 @@ public class BeerNavigationHomeFragment extends Fragment
         // we make sure to update here in case something was changed in the SharedPreferences
         // in a separate Activity or Fragment
         refreshSettingsData();
+        //updateUI();
 //        String postalCode = "";
 //        if(mSettings != null) {
 //            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
@@ -437,8 +438,7 @@ public class BeerNavigationHomeFragment extends Fragment
             mHomeBeersNoneTextView.setVisibility(View.GONE);
         }
 
-        // TODO: Add some code if the city/state is not available
-        if(mAddresses != null) {
+        if(mAddresses != null && mAddresses.size() > 0) {
             // assume the first is what we want
             Address address = mAddresses.get(0);
             if (address != null) {
@@ -451,6 +451,10 @@ public class BeerNavigationHomeFragment extends Fragment
                     mStateTextView.setText(getString(R.string.home_default_line2));
                 }
             }
+        }
+        else {
+            mCityTextView.setText(getString(R.string.home_default_line1));
+            mStateTextView.setText(getString(R.string.home_default_line2));
         }
     }
 

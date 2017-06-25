@@ -58,7 +58,8 @@ public class BeerNavigationActivity extends AppCompatActivity
         mHomeFragment = fm.findFragmentByTag(BeerNavigationHomeFragment.TAG);
 
         if(mHomeFragment == null) {
-            mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
+            mHomeFragment = BeerNavigationHomeFragment.newInstance(null, mAddresses);
+            //mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
         }
             fm.beginTransaction()
                     .replace(R.id.content, mHomeFragment, BeerNavigationHomeFragment.TAG)
