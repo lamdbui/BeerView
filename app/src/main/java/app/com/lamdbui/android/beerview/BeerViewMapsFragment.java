@@ -317,7 +317,6 @@ public class BeerViewMapsFragment extends Fragment
                         .into(new Target() {
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
                                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
                                 mBreweryLocationMarkers.add(marker);
                             }

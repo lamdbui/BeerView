@@ -18,6 +18,7 @@
     <string name="section_type">Type</string>
     <string name="info_none">None</string>
     <string name="info_none_specified">None specified</string>
+    <string name="info_loading">Please wait...loading data</string>
     <string name="text_original_gravity">Original Gravity</string>
     <string name="text_abv">ABV</string>
     <string name="text_ibu">IBU</string>

@@ -37,6 +37,7 @@
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:textColor="@android:color/white"
+            android:background="@android:color/darker_gray"
             android:gravity="bottom|center_horizontal"/>
 
         <TextView
@@ -46,6 +47,7 @@
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
             android:gravity="top|center_horizontal"
+            android:background="@android:color/darker_gray"
             android:textColor="@android:color/white"/>
 
     </LinearLayout>

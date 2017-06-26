@@ -340,10 +340,12 @@ public class BeerNavigationHomeFragment extends Fragment
 
             // fetch the icon
             //FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            if(mBreweryLocation.getImagesMedium() != null) {
+            //if(mBreweryLocation.getImagesMedium() != null) {
+            if(mBreweryLocation.getImagesSquareMedium() != null) {
                 //beerIconTask.execute(mBreweryLocation.getImagesIcon());
                 Picasso.with(getActivity())
-                        .load(mBreweryLocation.getImagesMedium())
+                        .load(mBreweryLocation.getImagesSquareMedium())
+                        //.load(mBreweryLocation.getImagesMedium())
                         .into(mBreweryImageView);
             }
         }
@@ -426,6 +428,10 @@ public class BeerNavigationHomeFragment extends Fragment
     public void refreshBreweryLocationData() {
         LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
         locationDataHelper.findBreweryLocationsByLatLng(getLatLngFromAddresses());
+
+        // set loading message
+        mHomeBreweriesNoneTextView.setText(getString(R.string.info_loading));
+        mHomeBeersNoneTextView.setText(getString(R.string.info_loading));
     }
 
     public void updateUI() {

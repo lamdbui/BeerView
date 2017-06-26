@@ -22,7 +22,10 @@
         <TextView
             android:id="@+id/map_brewery_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorPrimaryText"
+            android:background="@color/colorPrimaryLight"/>
 
     </LinearLayout>
 
