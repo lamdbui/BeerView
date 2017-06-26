@@ -2,7 +2,9 @@
     <string name="content_authority">app.com.lamdbui.android.beerview</string>
     <string name="widget_action">app.com.lamdbui.android.beerview.ACTION_DATA_UPDATED</string>
 
-    <string name="app_name">BeerView</string>
+    <string name="app_name">BrewMapper</string>
+    <string name="app_name_brew">Brew</string>
+    <string name="app_name_mapper">Mapper</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_brew_view_maps">BrewView</string>
     <string name="title_activity_brewery">BreweryActivity</string>
@@ -50,4 +52,6 @@
     <string name="widget_title">BeerMapper Favorites</string>
     <string name="widget_favorite_breweries">Breweries Favorited:</string>
     <string name="widget_favorite_beers">Beers Favorited:</string>
+    <string name="content_image_beer_label">Label of selected Beer</string>
+    <string name="content_image_brewery_logo">Logo of selected Brewery</string>
 </resources>

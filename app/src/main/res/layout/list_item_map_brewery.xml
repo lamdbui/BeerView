@@ -17,6 +17,7 @@
             android:layout_height="@dimen/cardview_item_height_small"
             android:scaleType="centerCrop"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/content_image_brewery_logo"
             android:src="@drawable/beer_icon_32"/>
 
         <TextView

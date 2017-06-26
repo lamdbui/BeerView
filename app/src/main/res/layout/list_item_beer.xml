@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/content_image_beer_label"
             android:src="@drawable/beer_icon_32"/>
 
         <TextView

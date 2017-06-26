@@ -36,6 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/list_item_margin"
             android:layout_marginRight="@dimen/list_item_margin"
+            android:layout_marginStart="@dimen/list_item_margin"
+            android:layout_marginEnd="@dimen/list_item_margin"
             android:layout_marginBottom="@dimen/list_item_margin"
             android:text="Default Location Postal Code"
             style="@style/AppTheme.TextAppearance.Small"/>

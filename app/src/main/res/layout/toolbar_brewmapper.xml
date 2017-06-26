@@ -13,14 +13,7 @@
         android:layout_centerVertical="true"
         android:textAppearance="@style/AppTheme.TextAppearance.Large"
         android:fontFamily="sans-serif-black"
-        android:text="Brew"/>
-    <!--ImageView
-        android:id="@+id/beer_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_centerInParent="true"
-        android:src="@drawable/beer_icon_32"/-->
+        android:text="@string/app_name_brew"/>
     <TextView
         android:id="@+id/beer_text2"
         android:layout_width="wrap_content"
@@ -29,6 +22,6 @@
         android:textAppearance="@style/AppTheme.TextAppearance.Large"
         android:fontFamily="sans-serif-black"
         android:textStyle="italic"
-        android:text="Mapper"/>
+        android:text="@string/app_name_mapper"/>
 
 </LinearLayout>

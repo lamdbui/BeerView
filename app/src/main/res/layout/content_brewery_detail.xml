@@ -31,7 +31,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_margin"
-                android:layout_marginRight="@dimen/text_margin"/>
+                android:layout_marginRight="@dimen/text_margin"
+                android:contentDescription="@string/content_image_brewery_logo"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,6 +45,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     style="?android:textAppearanceMedium"
                     android:textStyle="bold"
                     android:text="@string/section_detail"/>
@@ -54,6 +57,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     style="?android:textAppearanceSmall"/>
                 <TextView
                     android:id="@+id/brewery_detail_address_line1"
@@ -61,6 +66,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     style="?android:textAppearanceSmall"/>
                 <TextView
                     android:id="@+id/brewery_detail_address_line2"
@@ -68,6 +75,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     style="?android:textAppearanceSmall"/>
 
                 <TextView
@@ -76,6 +85,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     style="?android:textAppearanceSmall"
                     android:autoLink="phone"/>
 
@@ -85,6 +96,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
                     android:autoLink="web"
                     style="?android:textAppearanceSmall"/>
 
@@ -97,6 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
             style="?android:textAppearanceMedium"
             android:textStyle="bold"
             android:text="@string/section_description"/>
@@ -107,6 +122,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/info_none"/>
 
         <TextView
@@ -114,6 +131,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
             style="?android:textAppearanceMedium"
             android:textStyle="bold"
             android:text="@string/section_brewery_beers"/>
@@ -122,8 +141,10 @@
             android:id="@+id/brewery_beers_recycler_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/list_item_margin"
-            android:layout_marginStart="@dimen/list_item_margin">
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin">
         </android.support.v7.widget.RecyclerView>
         <TextView
             android:id="@+id/brewery_beers_none_textview"
@@ -131,6 +152,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/text_margin"
             android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
             android:visibility="gone"
             android:text="@string/beer_none_available"/>
     </LinearLayout>
