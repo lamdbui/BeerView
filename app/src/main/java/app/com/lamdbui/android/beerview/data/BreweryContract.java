@@ -56,7 +56,13 @@ public class BreweryContract {
             public static final String ORIGINAL_GRAVITY = "orginal_gravity";
             public static final String LABELS_ICON = "labels_icon";
             public static final String LABELS_MEDIUM = "labels_medium";
+            public static final String BEER_STYLE_ID = "beer_style_id";
+            public static final String BEER_STYLE_NAME = "beer_style_name";
+            public static final String BEER_STYLE_SHORT_NAME = "beer_style_short_name";
+            public static final String BEER_STYLE_DESCRIPTION = "beer_style_description";
             public static final String LABELS_LARGE = "labels_large";
+            public static final String BREWERY_ID = "brewery_id";
+            public static final String BREWERY_NAME = "brewery_name";
         }
 
         public static Uri buildBeerUri(long id) {

@@ -32,6 +32,8 @@ public class Beer implements Parcelable {
     private String mBeerStyleName;
     private String mBeerStyleShortName;
     private String mBeerStyleDescription;
+    private String mBreweryId;
+    private String mBreweryName;
     private List<Brewery> mBreweries;
 
 
@@ -60,6 +62,8 @@ public class Beer implements Parcelable {
         mBeerStyleName = in.readString();
         mBeerStyleShortName = in.readString();
         mBeerStyleDescription = in.readString();
+        mBreweryId = in.readString();
+        mBreweryName = in.readString();
         mBreweries = new ArrayList<Brewery>();
         in.readTypedList(mBreweries, Brewery.CREATOR);
     }
@@ -91,6 +95,8 @@ public class Beer implements Parcelable {
         parcel.writeString(mBeerStyleName);
         parcel.writeString(mBeerStyleShortName);
         parcel.writeString(mBeerStyleDescription);
+        parcel.writeString(mBreweryId);
+        parcel.writeString(mBreweryName);
         parcel.writeTypedList(mBreweries);
     }
 
@@ -129,6 +135,8 @@ public class Beer implements Parcelable {
         builder.append("beerStyleName: " + mBeerStyleName + "\n");
         builder.append("beerStyleShortName: " + mBeerStyleShortName + "\n");
         builder.append("beerStyleDescription: " + mBeerStyleDescription + "\n");
+        builder.append("beerBreweryId: " + mBreweryId + "\n");
+        builder.append("beerBreweryName: " + mBreweryName + "\n");
         builder.append("breweries: " + ((mBreweries != null) ? mBreweries.size() : 0) + "\n");
 
         return builder.toString();
@@ -292,6 +300,22 @@ public class Beer implements Parcelable {
 
     public void setBeerStyleDescription(String beerStyleDescription) {
         mBeerStyleDescription = beerStyleDescription;
+    }
+
+    public String getBreweryId() {
+        return mBreweryId;
+    }
+
+    public void setBreweryId(String breweryId) {
+        mBreweryId = breweryId;
+    }
+
+    public String getBreweryName() {
+        return mBreweryName;
+    }
+
+    public void setBreweryName(String breweryName) {
+        mBreweryName = breweryName;
     }
 
     public List<Brewery> getBreweries() {

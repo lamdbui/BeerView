@@ -190,6 +190,7 @@ public class BreweryDetailActivity extends AppCompatActivity
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                         favoritesResponse = getString(R.string.favorites_removed);
                     } else {
+                        mBreweryLocation.setBreweryId(mBrewery.getId());
                         getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
                                 BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);

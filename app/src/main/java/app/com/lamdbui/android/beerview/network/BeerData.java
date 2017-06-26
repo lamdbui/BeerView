@@ -98,6 +98,7 @@ public class BeerData {
             beer.setBeerStyleShortName(mBeerStyle.mShortName);
             beer.setBeerStyleDescription(mBeerStyle.mDescription);
         }
+
         List<Brewery> breweries = new ArrayList<>();
 
         if(mBreweryResponses != null) {
@@ -105,6 +106,14 @@ public class BeerData {
                 breweries.add(brewery.convertResponseToBrewery());
             }
             beer.setBreweries(breweries);
+            if(breweries.size() > 0) {
+                beer.setBreweryId(breweries.get(0).getId());
+                beer.setBreweryName(breweries.get(0).getName());
+            }
+//            else {
+//                beer.setBreweryId(breweries.get(0).getId());
+//                beer.setBreweryName(breweries.get(0).getName());
+//            }
         }
 
         return beer;

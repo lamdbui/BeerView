@@ -36,6 +36,12 @@ public class BreweryDbUtils {
         beerValues.put(BreweryContract.BeerTable.COLS.LABELS_ICON, beer.getLabelsIcon());
         beerValues.put(BreweryContract.BeerTable.COLS.LABELS_MEDIUM, beer.getLabelsMedium());
         beerValues.put(BreweryContract.BeerTable.COLS.LABELS_LARGE, beer.getLabelsLarge());
+        beerValues.put(BreweryContract.BeerTable.COLS.BEER_STYLE_ID, beer.getBeerStyleId());
+        beerValues.put(BreweryContract.BeerTable.COLS.BEER_STYLE_NAME, beer.getBeerStyleName());
+        beerValues.put(BreweryContract.BeerTable.COLS.BEER_STYLE_SHORT_NAME, beer.getBeerStyleShortName());
+        beerValues.put(BreweryContract.BeerTable.COLS.BEER_STYLE_DESCRIPTION, beer.getBeerStyleDescription());
+        beerValues.put(BreweryContract.BeerTable.COLS.BREWERY_ID, beer.getBreweryId());
+        beerValues.put(BreweryContract.BeerTable.COLS.BREWERY_NAME, beer.getBreweryName());
 
         return beerValues;
     }
@@ -86,6 +92,15 @@ public class BreweryDbUtils {
         beer.setLabelsIcon(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.LABELS_ICON)));
         beer.setLabelsMedium(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.LABELS_MEDIUM)));
         beer.setLabelsLarge(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.LABELS_LARGE)));
+
+        //beer.setBeerStyleId(Integer.parseInt(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BEER_STYLE_ID))));
+        beer.setBeerStyleName(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BEER_STYLE_NAME)));
+        beer.setBeerStyleShortName(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BEER_STYLE_SHORT_NAME)));
+        beer.setBeerStyleDescription(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BEER_STYLE_DESCRIPTION)));
+
+        beer.setBreweryId(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BREWERY_ID)));
+        beer.setBreweryName(c.getString(c.getColumnIndex(BreweryContract.BeerTable.COLS.BREWERY_NAME)));
+
 
         return beer;
     }

@@ -15,10 +15,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
+import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import app.com.lamdbui.android.beerview.widget.BeerMapperWidgetProvider;
 import butterknife.BindView;
@@ -138,8 +141,12 @@ public class BeerDetailActivity extends AppCompatActivity
 
     private void updateUI() {
         mBeerNameTextView.setText(mBeer.getNameDisplay());
-        Brewery brewery = mBeer.getBreweries().get(0);
-        mBeerBreweryTextView.setText(brewery.getName());
+//        List<Brewery> breweries = mBeer.getBreweries();
+//        if(breweries != null && breweries.size() > 0) {
+//            Brewery brewery = mBeer.getBreweries().get(0);
+//            mBeerBreweryTextView.setText(brewery.getName());
+//        }
+        mBeerBreweryTextView.setText(mBeer.getBreweryName());
         if(mBeer.getAbv() != 0.0)
             mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + getString(R.string.beer_percent_abv));
         else

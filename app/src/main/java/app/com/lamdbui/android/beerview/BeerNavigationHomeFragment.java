@@ -192,7 +192,7 @@ public class BeerNavigationHomeFragment extends Fragment
             fetchAllBeersAtBreweryLocations();
         }
 
-        getLoaderManager().initLoader(LOADER_BREWERY, null, this);
+        //getLoaderManager().initLoader(LOADER_BREWERY, null, this);
     }
 
     @Nullable
@@ -201,6 +201,8 @@ public class BeerNavigationHomeFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_beer_navigation_home, container, false);
 
         ButterKnife.bind(this, view);
+
+        getLoaderManager().initLoader(LOADER_BREWERY, null, this);
 
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -236,9 +238,17 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        CursorLoader loader = new CursorLoader(
+//                getActivity(),
+//                BreweryContract.BreweryTable.CONTENT_URI,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
         CursorLoader loader = new CursorLoader(
                 getActivity(),
-                BreweryContract.BreweryTable.CONTENT_URI,
+                BreweryContract.BeerTable.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -252,20 +262,42 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data != null && data.getCount() > 0) {
             data.moveToFirst();
-            List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+//            List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+//
+//            while(!data.isAfterLast()) {
+//
+//                cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
+//
+//                data.moveToNext();
+//            }
+//
+//            mBreweryLocationFavorites = cursorBreweries;
+//            mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
+//            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
+//            mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
+            List<Beer> cursorBeers = new ArrayList<>();
 
             while(!data.isAfterLast()) {
 
-                cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
+                cursorBeers.add(BreweryDbUtils.convertCursorToBeer(data));
 
                 data.moveToNext();
             }
 
-            mBreweryLocationFavorites = cursorBreweries;
-            mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
-            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
-            mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
-            updateUI();
+            mBreweryBeerFavorites = cursorBeers;
+            if(mBreweryBeerFavoritesAdapter == null) {
+                mBreweryBeerFavoritesAdapter = new BeerAdapter(mBreweryBeerFavorites);
+                mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
+            }
+            else {
+                //mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
+                mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
+                //mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
+            }
+            //mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
+//            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
+            //mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
+//            updateUI();
         }
     }
 
@@ -440,8 +472,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
                 @Override
                 public void onFailure(Call<BreweryResponse> call, Throwable t) {
-                    int m = 4;
-
                 }
             });
         }

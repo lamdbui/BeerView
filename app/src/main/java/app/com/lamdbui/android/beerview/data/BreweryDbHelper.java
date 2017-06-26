@@ -80,6 +80,12 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
                 + BeerTable.COLS.LABELS_ICON + " TEXT, "
                 + BeerTable.COLS.LABELS_MEDIUM + " TEXT, "
                 + BeerTable.COLS.LABELS_LARGE + " TEXT, "
+                + BeerTable.COLS.BREWERY_ID + " TEXT, "
+                + BeerTable.COLS.BREWERY_NAME + " TEXT, "
+                + BeerTable.COLS.BEER_STYLE_ID + " INTEGER, "
+                + BeerTable.COLS.BEER_STYLE_NAME + " TEXT, "
+                + BeerTable.COLS.BEER_STYLE_SHORT_NAME + " TEXT, "
+                + BeerTable.COLS.BEER_STYLE_DESCRIPTION + " TEXT, "
                 // additional association fields
                 + BeerTable.COLS.FAVORITE + " TEXT "
                 + ");";
