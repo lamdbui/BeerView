@@ -2,6 +2,7 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Build;
@@ -11,7 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.com.lamdbui.android.beerview.data.BreweryContract;
+import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Address;
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
@@ -55,13 +61,16 @@ import retrofit2.Response;
  */
 
 public class BeerNavigationHomeFragment extends Fragment
-    implements LocationDataHelper.LocationDataHelperCallbacks {
+    implements LoaderManager.LoaderCallbacks<Cursor>,
+        LocationDataHelper.LocationDataHelperCallbacks {
 
     public static final String TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
     private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
     public static final int PERMISSION_REQUEST_LOCATION = 2;
+    private static final int LOADER_BREWERY = 0;
+    private static final int LOADER_BEERS = 1;
 
     private static final String ARG_BREWERY_LOCATIONS = "brewery_locations";
     private static final String ARG_LOCATION_DATA = "location_data";
@@ -80,12 +89,25 @@ public class BeerNavigationHomeFragment extends Fragment
     RecyclerView mHomeBeersRecyclerView;
     @BindView(R.id.home_beers_none_textview)
     TextView mHomeBeersNoneTextView;
+    @BindView(R.id.home_breweries_favorites_recyclerview)
+    RecyclerView mHomeBreweriesFavoritesRecyclerView;
+    @BindView(R.id.home_breweries_favorites_none_textview)
+    TextView mHomeBreweriesFavoritesNoneTextView;
+    @BindView(R.id.home_beers_favorites_recyclerview)
+    RecyclerView mHomeBeersFavoritesRecyclerView;
+    @BindView(R.id.home_beers_favorites_none_textview)
+    TextView mHomeBeersFavoritesNoneTextView;
 
     private BreweryLocationAdapter mBreweryLocationAdapter;
     private BeerAdapter mBreweryBeersAdapter;
 
+    private BreweryLocationAdapter mBreweryLocationFavoritesAdapter;
+    private BeerAdapter mBreweryBeerFavoritesAdapter;
+
     private List<BreweryLocation> mBreweryLocations;
     private List<Beer> mBreweryBeers;
+    private List<BreweryLocation> mBreweryLocationFavorites;
+    private List<Beer> mBreweryBeerFavorites;
     private List<Address> mAddresses;
 
     private BreweryDbInterface mBreweryDbService;
@@ -117,6 +139,8 @@ public class BeerNavigationHomeFragment extends Fragment
 
         mBreweryBeers = new ArrayList<>();
         mBreweryLocations = new ArrayList<>();
+        mBreweryLocationFavorites = new ArrayList<>();
+        mBreweryBeerFavorites = new ArrayList<>();
         mAddresses = new ArrayList<>();
         mCurrPostalCode = "0";
 
@@ -167,6 +191,8 @@ public class BeerNavigationHomeFragment extends Fragment
             //updateUI();
             fetchAllBeersAtBreweryLocations();
         }
+
+        getLoaderManager().initLoader(LOADER_BREWERY, null, this);
     }
 
     @Nullable
@@ -178,6 +204,8 @@ public class BeerNavigationHomeFragment extends Fragment
 
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeBreweriesFavoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeBeersFavoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         boolean permission = checkLocationPermission();
         if(permission) {
@@ -204,6 +232,46 @@ public class BeerNavigationHomeFragment extends Fragment
 //            //refreshBreweryLocationData();
 //            mCurrPostalCode = postalCode;
 //        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = new CursorLoader(
+                getActivity(),
+                BreweryContract.BreweryTable.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data != null && data.getCount() > 0) {
+            data.moveToFirst();
+            List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
+
+            while(!data.isAfterLast()) {
+
+                cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
+
+                data.moveToNext();
+            }
+
+            mBreweryLocationFavorites = cursorBreweries;
+            mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
+            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
+            mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
+            updateUI();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     @Override
@@ -358,7 +426,11 @@ public class BeerNavigationHomeFragment extends Fragment
 
         @Override
         public void onClick(View view) {
-            Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
+            String id = mBreweryLocation.getBreweryId();
+            if(id == null)
+                id = mBreweryLocation.getId();
+            //Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
+            Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(id, API_KEY, "Y");
             callBreweryById.enqueue(new Callback<BreweryResponse>() {
                 @Override
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
@@ -368,6 +440,7 @@ public class BeerNavigationHomeFragment extends Fragment
 
                 @Override
                 public void onFailure(Call<BreweryResponse> call, Throwable t) {
+                    int m = 4;
 
                 }
             });
@@ -435,6 +508,7 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     public void updateUI() {
+        // set up our Adapters
         if(mBreweryLocationAdapter == null) {
             mBreweryLocationAdapter = new BreweryLocationAdapter(mBreweryLocations);
             mHomeBreweriesRecyclerView.setAdapter(mBreweryLocationAdapter);
@@ -452,6 +526,25 @@ public class BeerNavigationHomeFragment extends Fragment
             mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
             //mBreweryBeersAdapter.notifyDataSetChanged();
         }
+
+        if(mBreweryLocationFavoritesAdapter == null) {
+            mBreweryLocationFavoritesAdapter = new BreweryLocationAdapter(mBreweryLocationFavorites);
+            mHomeBreweriesFavoritesRecyclerView.setAdapter(mBreweryLocationFavoritesAdapter);
+        }
+        else {
+            mHomeBreweriesFavoritesRecyclerView.setAdapter(mBreweryLocationFavoritesAdapter);
+            //mBreweryLocationAdapter.notifyDataSetChanged();
+        }
+
+        if(mBreweryBeerFavoritesAdapter == null) {
+            mBreweryBeerFavoritesAdapter = new BeerAdapter(mBreweryBeerFavorites);
+            mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
+        }
+        else {
+            mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
+            //mBreweryBeersAdapter.notifyDataSetChanged();
+        }
+
         // switch out to an empty textview, if there's no data to display
         if(mBreweryLocations.isEmpty()) {
             mHomeBreweriesRecyclerView.setVisibility(View.GONE);
@@ -468,6 +561,23 @@ public class BeerNavigationHomeFragment extends Fragment
         else {
             mHomeBeersRecyclerView.setVisibility(View.VISIBLE);
             mHomeBeersNoneTextView.setVisibility(View.GONE);
+        }
+
+        if(mBreweryLocationFavorites.isEmpty()) {
+            mHomeBreweriesFavoritesRecyclerView.setVisibility(View.GONE);
+            mHomeBreweriesFavoritesNoneTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mHomeBreweriesFavoritesRecyclerView.setVisibility(View.VISIBLE);
+            mHomeBreweriesFavoritesNoneTextView.setVisibility(View.GONE);
+        }
+        if(mBreweryBeerFavorites.isEmpty()) {
+            mHomeBeersFavoritesRecyclerView.setVisibility(View.GONE);
+            mHomeBeersFavoritesNoneTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mHomeBeersFavoritesRecyclerView.setVisibility(View.VISIBLE);
+            mHomeBeersFavoritesNoneTextView.setVisibility(View.GONE);
         }
 
         if(mAddresses != null && mAddresses.size() > 0) {

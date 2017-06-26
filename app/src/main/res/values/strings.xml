@@ -16,6 +16,8 @@
     <string name="section_beers">Beers</string>
     <string name="section_brewery_beers">Beers at this Brewery</string>
     <string name="section_type">Type</string>
+    <string name="section_brewery_favorites">Favorite Breweries</string>
+    <string name="section_beer_favorites">Favorite Beers</string>
     <string name="info_none">None</string>
     <string name="info_none_specified">None specified</string>
     <string name="info_loading">Please wait...loading data</string>
