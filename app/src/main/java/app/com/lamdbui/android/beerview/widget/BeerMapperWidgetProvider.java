@@ -1,5 +1,6 @@
 package app.com.lamdbui.android.beerview.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.widget.RemoteViews;
 
+import app.com.lamdbui.android.beerview.BeerNavigationActivity;
 import app.com.lamdbui.android.beerview.R;
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 
@@ -53,6 +55,11 @@ public class BeerMapperWidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_favorites_counter);
             views.setTextViewText(R.id.widget_favorite_breweries_count, Integer.toString(mBreweryData.getCount()));
             views.setTextViewText(R.id.widget_favorite_beers_count, Integer.toString(mBeerData.getCount()));
+
+            // Launch our main Activity on click
+            Intent intent = new Intent(context, BeerNavigationActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

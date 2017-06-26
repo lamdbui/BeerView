@@ -238,14 +238,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        CursorLoader loader = new CursorLoader(
-//                getActivity(),
-//                BreweryContract.BreweryTable.CONTENT_URI,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
         CursorLoader loader = new CursorLoader(
                 getActivity(),
                 BreweryContract.BeerTable.CONTENT_URI,
@@ -262,19 +254,7 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data != null && data.getCount() > 0) {
             data.moveToFirst();
-//            List<BreweryLocation> cursorBreweries = new ArrayList<BreweryLocation>();
-//
-//            while(!data.isAfterLast()) {
-//
-//                cursorBreweries.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
-//
-//                data.moveToNext();
-//            }
-//
-//            mBreweryLocationFavorites = cursorBreweries;
-//            mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
-//            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
-//            mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
+
             List<Beer> cursorBeers = new ArrayList<>();
 
             while(!data.isAfterLast()) {
@@ -290,20 +270,16 @@ public class BeerNavigationHomeFragment extends Fragment
                 mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
             }
             else {
-                //mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
                 mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
-                //mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
+                mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
+                updateUI();
             }
-            //mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
-//            //mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocations);
-            //mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
-//            updateUI();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        int m = 4;
     }
 
     @Override
@@ -461,7 +437,6 @@ public class BeerNavigationHomeFragment extends Fragment
             String id = mBreweryLocation.getBreweryId();
             if(id == null)
                 id = mBreweryLocation.getId();
-            //Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
             Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(id, API_KEY, "Y");
             callBreweryById.enqueue(new Callback<BreweryResponse>() {
                 @Override
