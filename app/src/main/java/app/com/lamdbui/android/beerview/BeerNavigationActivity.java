@@ -56,6 +56,9 @@ public class BeerNavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_navigation);
 
+        mBreweryLocations = new ArrayList<>();
+        mAddresses = new ArrayList<>();
+
         mBreweryLocations = getIntent().getParcelableArrayListExtra(ARG_BREWERY_LOCATIONS);
         mAddresses = getIntent().getParcelableArrayListExtra(ARG_LOCATION_DATA);
 
@@ -120,75 +123,77 @@ public class BeerNavigationActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
                 break;
+            default:
+                break;
         }
 
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        }
-        else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+//            getSupportFragmentManager().popBackStack();
+//        }
+//        else {
+//            super.onBackPressed();
+//        }
+//    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-//            case PERMISSION_LOCATION_FINE:
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        switch (requestCode) {
+////            case PERMISSION_LOCATION_FINE:
+////                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+////                    //mMap.setMyLocationEnabled(true);
+////                    try {
+////                        mMap.setMyLocationEnabled(true);
+////                    }
+////                    catch(SecurityException e) {
+////                        // print error here
+////                    }
+////                }
+////                else {
+////                    // permission not granted
+////                }
+////                break;
+////            //}
+//            case PERMISSION_REQUEST_LOCATION:
 //                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    //mMap.setMyLocationEnabled(true);
-//                    try {
-//                        mMap.setMyLocationEnabled(true);
+//                    // permission granted
+//                    if(ContextCompat.checkSelfPermission(this,
+//                            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//
 //                    }
-//                    catch(SecurityException e) {
-//                        // print error here
+//                    else {
+//                        Toast.makeText(this, "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
 //                    }
-//                }
-//                else {
-//                    // permission not granted
 //                }
 //                break;
-//            //}
-            case PERMISSION_REQUEST_LOCATION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission granted
-                    if(ContextCompat.checkSelfPermission(this,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                    }
-                    else {
-                        Toast.makeText(this, "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
-        }
-    }
-
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            // explanation
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this,
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            } else {
-                // no explanation needed
-                ActivityCompat.requestPermissions(this,
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            }
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
+//        }
+//    }
+//
+//    public boolean checkLocationPermission() {
+//        if (ContextCompat.checkSelfPermission(this,
+//                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            // explanation
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+//                        PERMISSION_REQUEST_LOCATION);
+//            } else {
+//                // no explanation needed
+//                ActivityCompat.requestPermissions(this,
+//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+//                        PERMISSION_REQUEST_LOCATION);
+//            }
+//            return false;
+//        }
+//        else {
+//            return true;
+//        }
+//    }
 }
