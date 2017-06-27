@@ -59,7 +59,6 @@ public class BreweryResponse {
                 brewery.setImagesSquareMedium(mImages.getSquareMediumUrl());
                 brewery.setImagesSquareLarge(mImages.getSquareLargeUrl());
             }
-            // TODO: Need to convert the BreweryLocationData to BreweryLocation
 
             List<BreweryLocation> breweryLocations = new ArrayList<>();
 

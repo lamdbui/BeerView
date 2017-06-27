@@ -70,7 +70,7 @@ import retrofit2.Response;
 public class BeerViewMapsFragment extends Fragment
     implements OnMapReadyCallback, LocationDataHelper.LocationDataHelperCallbacks {
 
-    public static final String TAG = BeerViewActivityFragment.class.getSimpleName();
+    public static final String TAG = BeerViewMapsFragment.class.getSimpleName();
 
     public static final String ARG_BREWERIES = "breweries";
     public static final String ARG_LOCATION = "location";
@@ -549,7 +549,6 @@ public class BeerViewMapsFragment extends Fragment
         return null;
     }
 
-    // TODO: move to utility function
     private LatLng getLatLngFromAddresses() {
         if(mAddresses != null && mAddresses.size() > 0) {
             // assume the first is what we want
