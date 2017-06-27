@@ -11,7 +11,7 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="navigation_home_splashbar_height">140dp</dimen>
-    <dimen name="cardview_elevation">8dp</dimen>
+    <dimen name="cardview_elevation">2dp</dimen>
     <dimen name="cardview_item_margin">4dp</dimen>
     <dimen name="cardview_item_width">140dp</dimen>
     <dimen name="cardview_item_height">140dp</dimen>
