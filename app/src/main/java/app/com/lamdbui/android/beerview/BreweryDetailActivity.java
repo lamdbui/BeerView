@@ -54,10 +54,13 @@ public class BreweryDetailActivity extends AppCompatActivity
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String ARG_BREWERY = "brewery";
     private static final String ARG_BREWERY_BEERS = "brewery_beers";
+    private static final String ARG_BREWERY_LOCATION = "brewery_location";
     // use this if there's a particular LOCATION_ID that should be used for location
     private static final String ARG_BREWERY_PREFERRED_LOCATION_ID = "preferred_location_id";
 
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
+
+    private static final int DEFAULT_MAP_ZOOM_LEVEL = 13;
 
     @BindView(R.id.brewery_detail_map)
     MapView mBreweryMapView;
@@ -117,6 +120,18 @@ public class BreweryDetailActivity extends AppCompatActivity
         return intent;
     }
 
+    public static Intent newIntent(Context context, Brewery brewery, List<Beer> breweryBeers,
+                                   BreweryLocation breweryLocation, String preferredLocationId) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_BREWERY, brewery);
+        args.putParcelableArrayList(ARG_BREWERY_BEERS, (ArrayList<Beer>)breweryBeers);
+        args.putParcelable(ARG_BREWERY_LOCATION, breweryLocation);
+        args.putString(ARG_BREWERY_PREFERRED_LOCATION_ID, preferredLocationId);
+        Intent intent = new Intent(context, BreweryDetailActivity.class);
+        intent.putExtras(args);
+        return intent;
+    }
+
     // interface from FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener
     @Override
     public void completedFetchUrlImageTask(Bitmap bitmap) {
@@ -138,7 +153,7 @@ public class BreweryDetailActivity extends AppCompatActivity
 
         mPreferredLocationId = getIntent().getStringExtra(ARG_BREWERY_PREFERRED_LOCATION_ID);
 
-        mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
+        mBreweryLocation = getIntent().getParcelableExtra(ARG_BREWERY_LOCATION);
 
         mBreweryBeers = getIntent().getParcelableArrayListExtra(ARG_BREWERY_BEERS);
         if(mBreweryBeers == null) {
@@ -181,7 +196,6 @@ public class BreweryDetailActivity extends AppCompatActivity
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                         favoritesResponse = getString(R.string.favorites_removed);
                     } else {
-                        mBreweryLocation.setBreweryId(mBrewery.getId());
                         getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
                                 BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
@@ -240,16 +254,8 @@ public class BreweryDetailActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap map) {
-
-        // TODO: Remove the static location here and set zoom level
-        LatLng breweryLocation = new LatLng(38.4414632, -122.7117124);
-        if(mPreferredLocationId != null) {
-            //BreweryLocation preferredLocation = getBreweryLocationById(mPreferredLocationId);
-            mBreweryLocation = getBreweryLocationById(mPreferredLocationId);
-            if(mBreweryLocation != null)
-                breweryLocation = new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude());
-        }
-        CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, 13);
+        LatLng breweryLocation = new LatLng(mBreweryLocation.getLatitude(), mBreweryLocation.getLongitude());
+        CameraUpdate breweryMapPosition = CameraUpdateFactory.newLatLngZoom(breweryLocation, DEFAULT_MAP_ZOOM_LEVEL);
         map.moveCamera(breweryMapPosition);
         map.addMarker(new MarkerOptions().position(breweryLocation).title(mBrewery.getName()));
 

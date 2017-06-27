@@ -36,6 +36,7 @@
     <string name="beer_none_available">No Beer information available</string>
     <string name="beer_percent_abv">% ABV</string>
     <string name="beer_percent_abv_none">No ABV% information available</string>
+    <string name="beer_style_none">No beer style information available</string>
     <string name="permission_location_message">Request for location to determine nearest Breweries</string>
     <string name="error_fetching_beers">Error fetching beers from brewery</string>
     <string name="pref_location_postal_code">pref_location_postal_code</string>

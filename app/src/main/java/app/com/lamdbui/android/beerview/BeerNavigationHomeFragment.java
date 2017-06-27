@@ -197,6 +197,7 @@ public class BeerNavigationHomeFragment extends Fragment
 
         ButterKnife.bind(this, view);
 
+        getLoaderManager().initLoader(LOADER_BEERS, null, this);
         getLoaderManager().initLoader(LOADER_BREWERY, null, this);
 
         mHomeBreweriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -223,42 +224,91 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader loader = new CursorLoader(
-                getActivity(),
-                BreweryContract.BeerTable.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
+
+        CursorLoader loader = null;
+
+        switch(id) {
+            case LOADER_BEERS:
+                loader = new CursorLoader(
+                        getActivity(),
+                        BreweryContract.BeerTable.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                break;
+
+            case LOADER_BREWERY:
+                loader = new CursorLoader(
+                        getActivity(),
+                        BreweryContract.BreweryTable.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                break;
+            default:
+                break;
+        }
 
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data != null && data.getCount() > 0) {
-            data.moveToFirst();
 
-            List<Beer> cursorBeers = new ArrayList<>();
+        switch(loader.getId()) {
+            case LOADER_BEERS:
+                if(data != null && data.getCount() > 0) {
+                    data.moveToFirst();
 
-            while(!data.isAfterLast()) {
+                    List<Beer> cursorBeers = new ArrayList<>();
 
-                cursorBeers.add(BreweryDbUtils.convertCursorToBeer(data));
+                    while(!data.isAfterLast()) {
+                        cursorBeers.add(BreweryDbUtils.convertCursorToBeer(data));
+                        data.moveToNext();
+                    }
 
-                data.moveToNext();
-            }
+                    mBreweryBeerFavorites = cursorBeers;
+                    if(mBreweryBeerFavoritesAdapter == null) {
+                        mBreweryBeerFavoritesAdapter = new BeerAdapter(mBreweryBeerFavorites);
+                        mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
+                    }
+                    else {
+                        mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
+                        mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
+                        updateUI();
+                    }
+                }
+                break;
+            case LOADER_BREWERY:
+                if(data != null && data.getCount() > 0) {
+                    data.moveToFirst();
 
-            mBreweryBeerFavorites = cursorBeers;
-            if(mBreweryBeerFavoritesAdapter == null) {
-                mBreweryBeerFavoritesAdapter = new BeerAdapter(mBreweryBeerFavorites);
-                mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
-            }
-            else {
-                mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
-                mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
-                updateUI();
-            }
+                    List<BreweryLocation> cursorBreweryLocations = new ArrayList<>();
+
+                    while(!data.isAfterLast()) {
+                        cursorBreweryLocations.add(BreweryDbUtils.convertCursorToBreweryLocation(data));
+                        data.moveToNext();
+                    }
+
+                    mBreweryLocationFavorites = cursorBreweryLocations;
+                    if(mBreweryLocationFavoritesAdapter == null) {
+                        mBreweryLocationFavoritesAdapter = new BreweryLocationAdapter(mBreweryLocationFavorites);
+                        mHomeBreweriesFavoritesRecyclerView.setAdapter(mBreweryLocationFavoritesAdapter);
+                    }
+                    else {
+                        mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
+                        mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
+                        updateUI();
+                    }
+                }
+                break;
+            default:
+                break;
+
         }
     }
 
@@ -416,7 +466,9 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                     mBrewery = response.body().getBrewery();
-                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
+                    //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
+                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
+                            mBreweryLocation, mBreweryLocation.getId()));
                 }
 
                 @Override

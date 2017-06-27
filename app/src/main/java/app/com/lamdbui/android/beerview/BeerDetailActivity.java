@@ -137,17 +137,15 @@ public class BeerDetailActivity extends AppCompatActivity
 
     private void updateUI() {
         mBeerNameTextView.setText(mBeer.getNameDisplay());
-//        List<Brewery> breweries = mBeer.getBreweries();
-//        if(breweries != null && breweries.size() > 0) {
-//            Brewery brewery = mBeer.getBreweries().get(0);
-//            mBeerBreweryTextView.setText(brewery.getName());
-//        }
         mBeerBreweryTextView.setText(mBeer.getBreweryName());
         if(mBeer.getAbv() != 0.0)
             mBeerAbvTextView.setText(Double.toString(mBeer.getAbv()) + getString(R.string.beer_percent_abv));
         else
             mBeerAbvTextView.setText(getString(R.string.beer_percent_abv_none));
-        mBeerTypeTextView.setText(mBeer.getBeerStyleName());
+        if(mBeer.getBeerStyleName() == null || mBeer.getBeerStyleName().equals(""))
+            mBeerTypeTextView.setText(getString(R.string.beer_style_none));
+        else
+            mBeerTypeTextView.setText(mBeer.getBeerStyleName());
         mBeerIBUTextView.setVisibility(View.GONE);
 
         StringBuilder originalGravity = new StringBuilder();

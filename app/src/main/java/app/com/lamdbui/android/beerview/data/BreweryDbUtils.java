@@ -142,6 +142,7 @@ public class BreweryDbUtils {
         breweryValues.put(BreweryContract.BreweryTable.COLS.LOCATION_TYPE, breweryLocation.getLocationType());
         breweryValues.put(BreweryContract.BreweryTable.COLS.LOCATION_TYPE_DISPLAY, breweryLocation.getLocationTypeDisplay());
         breweryValues.put(BreweryContract.BreweryTable.COLS.COUNTRY_ISO_CODE, breweryLocation.getCountryIsoCode());
+        breweryValues.put(BreweryContract.BreweryTable.COLS.BREWERY_ID, breweryLocation.getBreweryId());
 
         return breweryValues;
     }
@@ -179,6 +180,7 @@ public class BreweryDbUtils {
         breweryLocation.setLocationType(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LOCATION_TYPE)));
         breweryLocation.setLocationTypeDisplay(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.LOCATION_TYPE_DISPLAY)));
         breweryLocation.setCountryIsoCode(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.COUNTRY_ISO_CODE)));
+        breweryLocation.setBreweryId(c.getString(c.getColumnIndex(BreweryContract.BreweryTable.COLS.BREWERY_ID)));
 
         return breweryLocation;
     }

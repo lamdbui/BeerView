@@ -54,6 +54,7 @@ public class BreweryDbHelper extends SQLiteOpenHelper {
                 + BreweryTable.COLS.LOCATION_TYPE + " TEXT, "
                 + BreweryTable.COLS.LOCATION_TYPE_DISPLAY + " TEXT, "
                 + BreweryTable.COLS.COUNTRY_ISO_CODE + " TEXT, "
+                + BreweryTable.COLS.BREWERY_ID + " TEXT, "
                 // additional association fields
                 + BreweryTable.COLS.FAVORITE + " TEXT "
                 + ");";
