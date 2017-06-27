@@ -670,7 +670,7 @@ public class BeerNavigationHomeFragment extends Fragment
                         .into(mBeerIconImageView);
             }
             else
-                mBeerIconImageView.setImageResource(R.drawable.beer_icon_32);
+                mBeerIconImageView.setImageResource(R.drawable.beer_mug_icon_256);
         }
 
         @Override

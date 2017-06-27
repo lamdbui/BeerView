@@ -18,7 +18,7 @@
             android:scaleType="centerCrop"
             android:background="@android:color/transparent"
             android:contentDescription="@string/content_image_brewery_logo"
-            android:src="@drawable/beer_icon_32"/>
+            android:src="@drawable/beer_mug_icon_256"/>
 
         <TextView
             android:id="@+id/list_item_brewery_location_name"

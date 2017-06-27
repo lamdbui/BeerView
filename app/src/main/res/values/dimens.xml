@@ -1,6 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_elevation">4dp</dimen>
+    <dimen name="text_item_margin">8dp</dimen>
     <dimen name="list_item_margin">16dp</dimen>
     <dimen name="text_fab_margin">70dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->

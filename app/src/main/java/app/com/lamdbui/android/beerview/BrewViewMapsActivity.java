@@ -116,7 +116,7 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(breweryLocation.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_mug_icon_256)));
             marker.setTag(breweryLocation);
         }
 
@@ -191,7 +191,7 @@ public class BrewViewMapsActivity extends FragmentActivity implements OnMapReady
             fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
 
             mBreweryName.setText(mBreweryLocation.getName());
-            mBreweryImage.setImageResource(R.drawable.beer_icon_32);
+            mBreweryImage.setImageResource(R.drawable.beer_mug_icon_256);
         }
 
         @Override

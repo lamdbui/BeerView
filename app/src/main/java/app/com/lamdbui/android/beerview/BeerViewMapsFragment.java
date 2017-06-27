@@ -309,7 +309,7 @@ public class BeerViewMapsFragment extends Fragment
             final Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(breweryLocation.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_icon_32)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_mug_icon_32)));
             marker.setTag(breweryLocation);
             if(breweryLocation.getImagesIcon() != null) {
                 Picasso.with(getActivity())
@@ -590,7 +590,7 @@ public class BeerViewMapsFragment extends Fragment
         public void bind(BreweryLocation brewery) {
             mBreweryLocation = brewery;
 
-            mBreweryImage.setImageResource(R.drawable.beer_icon_32);
+            mBreweryImage.setImageResource(R.drawable.beer_mug_icon_256);
 
             if(mBreweryLocation.getImagesMedium() != null) {
 //                FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);

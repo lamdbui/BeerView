@@ -42,6 +42,7 @@
     <string name="pref_location_none">None Specified. Please enter a valid postal code.</string>
     <string name="setting_saved">Setting Saved!</string>
     <string name="setting_postal_code">Postal Code</string>
+    <string name="setting_postal_code_description_short">Default Location Postal Code</string>
     <string name="setting_postal_code_description">Default postal code used for Location Services</string>
     <string name="setting_postal_code_hint">Please enter postal code here</string>
     <string name="setting_postal_code_error">Error! Please enter a valid postal code</string>
