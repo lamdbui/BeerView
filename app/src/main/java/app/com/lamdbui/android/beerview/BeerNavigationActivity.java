@@ -1,28 +1,19 @@
 package app.com.lamdbui.android.beerview;
 
-import android.*;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import app.com.lamdbui.android.beerview.model.Address;
-import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 
 public class BeerNavigationActivity extends AppCompatActivity

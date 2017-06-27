@@ -97,14 +97,6 @@ public class BreweryDetailActivity extends AppCompatActivity
     // data fetching
     private BreweryDbInterface mBreweryDbService;
 
-    public static Intent newIntent(Context context, Brewery brewery) {
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_BREWERY, brewery);
-        Intent intent = new Intent(context, BreweryDetailActivity.class);
-        intent.putExtras(args);
-        return intent;
-    }
-
     public static Intent newIntent(Context context, Brewery brewery, List<Beer> breweryBeers) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_BREWERY, brewery);
@@ -158,7 +150,6 @@ public class BreweryDetailActivity extends AppCompatActivity
         if(mBrewery != null && mBrewery.getImagesSquareMedium() != null) {
             FetchUrlImageTask urlImageTask = new FetchUrlImageTask(this);
             urlImageTask.execute(mBrewery.getImagesSquareMedium());
-            //urlImageTask.execute(mBrewery.getImagesMedium());
         }
 
         Bundle mapViewBundle = null;
@@ -318,9 +309,6 @@ public class BreweryDetailActivity extends AppCompatActivity
                 mBreweryAddressLine2TextView.setText(builder.toString());
             else
                 mBreweryAddressLine2TextView.setVisibility(View.GONE);
-            //        mBreweryAddressLine2TextView.setText(mainBreweryLocation.getLocality() + " "
-            //                + mainBreweryLocation.getRegion() + " "
-            //                + mainBreweryLocation.getPostalCode());
             if (mainBreweryLocation.getPhone() != null)
                 mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
             else

@@ -3,14 +3,11 @@ package app.com.lamdbui.android.beerview;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -47,7 +43,6 @@ import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
-import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
 import butterknife.BindView;
@@ -378,7 +373,7 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     private class BreweryLocationViewHolder extends RecyclerView.ViewHolder
-            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener, View.OnClickListener {
+            implements View.OnClickListener {
 
         private CardView mBreweryLocationCardView;
         private ImageView mBreweryImageView;
@@ -403,22 +398,12 @@ public class BeerNavigationHomeFragment extends Fragment
             mBreweryLocation = location;
             mBreweryNameTextView.setText(mBreweryLocation.getName());
 
-            // fetch the icon
-            //FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-            //if(mBreweryLocation.getImagesMedium() != null) {
+            // fetch the brewery image
             if(mBreweryLocation.getImagesSquareMedium() != null) {
-                //beerIconTask.execute(mBreweryLocation.getImagesIcon());
                 Picasso.with(getActivity())
                         .load(mBreweryLocation.getImagesSquareMedium())
-                        //.load(mBreweryLocation.getImagesMedium())
                         .into(mBreweryImageView);
             }
-        }
-
-        @Override
-        public void completedFetchUrlImageTask(Bitmap bitmap) {
-            if(bitmap != null)
-                mBreweryImageView.setImageBitmap(bitmap);
         }
 
         @Override
@@ -627,7 +612,7 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     private class BeerHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
+            implements View.OnClickListener {
 
         private CardView mBeerCardView;
         private TextView mBeerNameTextView;
@@ -650,22 +635,14 @@ public class BeerNavigationHomeFragment extends Fragment
             mBeer = beer;
             mBeerNameTextView.setText(mBeer.getName());
 
-            // fetch the icon
+            // fetch the beer label
             if(mBeer.getLabelsMedium() != null) {
-//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-//                beerIconTask.execute(mBeer.getLabelsIcon());
                 Picasso.with(getActivity())
                         .load(mBeer.getLabelsMedium())
                         .into(mBeerIconImageView);
             }
             else
                 mBeerIconImageView.setImageResource(R.drawable.beer_mug_icon_256);
-        }
-
-        @Override
-        public void completedFetchUrlImageTask(Bitmap bitmap) {
-            if(bitmap != null)
-                mBeerIconImageView.setImageBitmap(bitmap);
         }
 
         @Override

@@ -15,13 +15,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import app.com.lamdbui.android.beerview.data.BreweryContract;
 import app.com.lamdbui.android.beerview.data.BreweryDbUtils;
 import app.com.lamdbui.android.beerview.model.Beer;
-import app.com.lamdbui.android.beerview.model.Brewery;
-import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import app.com.lamdbui.android.beerview.widget.BeerMapperWidgetProvider;
 import butterknife.BindView;

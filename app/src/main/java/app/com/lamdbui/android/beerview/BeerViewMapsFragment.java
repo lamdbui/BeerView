@@ -49,14 +49,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.com.lamdbui.android.beerview.model.Address;
-import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.Brewery;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.AddressResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
-import app.com.lamdbui.android.beerview.network.FetchUrlImageTask;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
 import butterknife.BindView;
@@ -110,14 +108,12 @@ public class BeerViewMapsFragment extends Fragment
 
     private BreweryDbInterface mBreweryDbService;
 
-    // used to hold current Brewery and Beer details
+    // used to hold current Brewery details
     private Brewery mBrewery;
-    private List<Beer> mBreweryBeers;
 
     private SharedPreferences mSettings;
     private String mCurrPostalCode;
-    // track currently focused Marker to determine a second click used to launch Activity
-    private Marker mCurrMarker;
+    // track currently focused location to determine a second click used to launch Activity
     private BreweryLocation mCurrBreweryLocation;
 
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries, List<Address> addresses) {
@@ -138,7 +134,6 @@ public class BeerViewMapsFragment extends Fragment
         mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
 
         mBrewery = null;
-        mBreweryBeers = new ArrayList<>();
         mBreweryLocationMarkers = new ArrayList<>();
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION);
         if(mAddresses == null) {
@@ -176,14 +171,12 @@ public class BeerViewMapsFragment extends Fragment
 //                    }
 //                });
 
-        mCurrMarker = null;
         mCurrBreweryLocation = new BreweryLocation();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //setHasOptionsMenu(true);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {//setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.activity_brew_view_maps, container, false);
 
         ButterKnife.bind(this, view);
@@ -195,7 +188,6 @@ public class BeerViewMapsFragment extends Fragment
         mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         if(mCurrPostalCode != "") {
-            //mMapView.getMapAsync(this);
 
             mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,7 +335,6 @@ public class BeerViewMapsFragment extends Fragment
 
                 // check to see if this is the second click
                 if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
-                //if(marker == mCurrMarker) {
                     // TODO: Move this into a util function
                     Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
                     callBreweryById.enqueue(new Callback<BreweryResponse>() {
@@ -362,7 +353,6 @@ public class BeerViewMapsFragment extends Fragment
                 }
                 else {
                     mCurrBreweryLocation = breweryLocation;
-                    mCurrMarker = marker;
                 }
             }
         });
@@ -384,7 +374,6 @@ public class BeerViewMapsFragment extends Fragment
 
                 // check to see if this is the second click
                 if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
-                    //if(marker == mCurrMarker) {
                     // TODO: Move this into a util function
                     Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
                     callBreweryById.enqueue(new Callback<BreweryResponse>() {
@@ -403,7 +392,6 @@ public class BeerViewMapsFragment extends Fragment
                 }
                 else {
                     mCurrBreweryLocation = breweryLocation;
-                    mCurrMarker = marker;
                 }
 
                 return true;
@@ -571,7 +559,7 @@ public class BeerViewMapsFragment extends Fragment
     }
 
     private class BreweryLocationHolder extends RecyclerView.ViewHolder
-            implements FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener, View.OnClickListener {
+            implements View.OnClickListener {
 
         private CardView mBreweryCardView;
         private ImageView mBreweryImage;
@@ -594,20 +582,12 @@ public class BeerViewMapsFragment extends Fragment
             mBreweryImage.setImageResource(R.drawable.beer_mug_icon_256);
 
             if(mBreweryLocation.getImagesMedium() != null) {
-//                FetchUrlImageTask fetchBreweryImage = new FetchUrlImageTask(this);
-//                fetchBreweryImage.execute(mBreweryLocation.getImagesMedium());
                 Picasso.with(getActivity())
                         .load(mBreweryLocation.getImagesMedium())
                         .into(mBreweryImage);
             }
 
             mBreweryName.setText(mBreweryLocation.getName());
-        }
-
-        @Override
-        public void completedFetchUrlImageTask(Bitmap bitmap) {
-            if(bitmap != null)
-                mBreweryImage.setImageBitmap(bitmap);
         }
 
         @Override
@@ -619,7 +599,6 @@ public class BeerViewMapsFragment extends Fragment
                 marker.showInfoWindow();
 
                 // check to see if this is the second click
-                //if(marker == mCurrMarker) {
                 if(mBreweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
                     // TODO: Move this into a util function
                     Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
@@ -638,7 +617,6 @@ public class BeerViewMapsFragment extends Fragment
                     });
                 }
                 else {
-                    mCurrMarker = marker;
                     mCurrBreweryLocation = mBreweryLocation;
                 }
             }
