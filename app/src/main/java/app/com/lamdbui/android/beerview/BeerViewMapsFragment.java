@@ -382,7 +382,8 @@ public class BeerViewMapsFragment extends Fragment
                         public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                             mBrewery = response.body().getBrewery();
                             if(mBrewery != null)
-                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, breweryLocation.getId()));
+                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
+                                        breweryLocation, breweryLocation.getId()));
                         }
 
                         @Override

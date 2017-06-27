@@ -399,7 +399,7 @@ public class BreweryDetailActivity extends AppCompatActivity
     }
 
     private class BeerHolder extends RecyclerView.ViewHolder
-        implements View.OnClickListener, FetchUrlImageTask.OnCompletedFetchUrlImageTaskListener {
+        implements View.OnClickListener {
 
         private CardView mBeerCardView;
         private TextView mBeerNameTextView;
@@ -414,7 +414,6 @@ public class BreweryDetailActivity extends AppCompatActivity
             mBeerCardView.setOnClickListener(this);
 
             mBeerNameTextView = (TextView) itemView.findViewById(R.id.list_item_beer_name);
-            //mBeerNameTextView.setOnClickListener(this);
 
             mBeerIconImageView = (ImageView) itemView.findViewById(R.id.list_item_beer_icon);
         }
@@ -425,18 +424,10 @@ public class BreweryDetailActivity extends AppCompatActivity
 
             // fetch the icon
             if(mBeer.getLabelsMedium() != null) {
-//                FetchUrlImageTask beerIconTask = new FetchUrlImageTask(this);
-//                beerIconTask.execute(mBeer.getLabelsIcon());
                 Picasso.with(getApplicationContext())
                         .load(mBeer.getLabelsMedium())
                         .into(mBeerIconImageView);
             }
-        }
-
-        @Override
-        public void completedFetchUrlImageTask(Bitmap bitmap) {
-            if(bitmap != null)
-                mBeerIconImageView.setImageBitmap(bitmap);
         }
 
         @Override
