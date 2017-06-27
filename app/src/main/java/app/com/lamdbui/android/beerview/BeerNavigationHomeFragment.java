@@ -224,16 +224,6 @@ public class BeerNavigationHomeFragment extends Fragment
         // we make sure to update here in case something was changed in the SharedPreferences
         // in a separate Activity or Fragment
         refreshSettingsData();
-        //updateUI();
-//        String postalCode = "";
-//        if(mSettings != null) {
-//            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-//        }
-//        if(!mCurrPostalCode.equals(postalCode)) {
-//            refreshSettingsData();
-//            //refreshBreweryLocationData();
-//            mCurrPostalCode = postalCode;
-//        }
     }
 
     @Override
@@ -279,7 +269,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        int m = 4;
     }
 
     @Override

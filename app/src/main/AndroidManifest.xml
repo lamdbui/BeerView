@@ -49,6 +49,11 @@
             android:authorities="@string/content_authority"
             android:exported="false"/>
         <activity
+            android:name=".BeerDetailActivity"
+            android:label="@string/title_activity_beer_detail"
+            android:theme="@style/BeerMapper.Theme.NoActionBar">
+        </activity>
+        <activity
             android:name=".BreweryDetailActivity"
             android:label="@string/title_activity_brewery_detail"
             android:theme="@style/BeerMapper.Theme.NoActionBar">

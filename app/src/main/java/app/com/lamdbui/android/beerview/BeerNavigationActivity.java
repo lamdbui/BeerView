@@ -130,15 +130,23 @@ public class BeerNavigationActivity extends AppCompatActivity
         return true;
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
-//            getSupportFragmentManager().popBackStack();
-//        }
-//        else {
-//            super.onBackPressed();
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        // since we're replacing fragments, if we don't check for this, we can get a blank fragment area
+        // on the last back press
+        int fragments = getSupportFragmentManager().getBackStackEntryCount();
+        if(fragments == 1) {
+            finish();
+        }
+        else {
+            if(fragments > 1) {
+                getSupportFragmentManager().popBackStack();
+            }
+            else {
+                super.onBackPressed();
+            }
+        }
+    }
 
 //    @Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

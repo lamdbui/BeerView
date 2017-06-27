@@ -309,6 +309,7 @@ public class BeerViewMapsFragment extends Fragment
             final Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(breweryLocation.getName())
+                    .snippet(getString(R.string.map_marker_more_details))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_mug_icon_32)));
             marker.setTag(breweryLocation);
             if(breweryLocation.getImagesIcon() != null) {
