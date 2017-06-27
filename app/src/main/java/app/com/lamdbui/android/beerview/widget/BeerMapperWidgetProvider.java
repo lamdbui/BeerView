@@ -53,8 +53,17 @@ public class BeerMapperWidgetProvider extends AppWidgetProvider {
 
         for(int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_favorites_counter);
-            views.setTextViewText(R.id.widget_favorite_breweries_count, Integer.toString(mBreweryData.getCount()));
-            views.setTextViewText(R.id.widget_favorite_beers_count, Integer.toString(mBeerData.getCount()));
+
+            int favoriteBreweryCount = mBreweryData.getCount();
+            int favoriteBeerCount = mBeerData.getCount();
+            if(favoriteBeerCount > 0)
+                views.setTextViewText(R.id.widget_favorite_breweries_count, Integer.toString(favoriteBreweryCount));
+            else
+                views.setTextViewText(R.id.widget_favorite_breweries_count, context.getString(R.string.info_none));
+            if(favoriteBeerCount > 0)
+                views.setTextViewText(R.id.widget_favorite_beers_count, Integer.toString(favoriteBeerCount));
+            else
+                views.setTextViewText(R.id.widget_favorite_beers_count, context.getString(R.string.info_none));
 
             // Launch our main Activity on click
             Intent intent = new Intent(context, BeerNavigationActivity.class);

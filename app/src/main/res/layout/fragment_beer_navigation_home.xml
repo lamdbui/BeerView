@@ -36,6 +36,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             style="@android:style/TextAppearance.Large"
+            android:textStyle="bold"
             android:textColor="@android:color/white"
             android:background="@android:color/darker_gray"
             android:gravity="bottom|center_horizontal"/>
@@ -120,7 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_margin"
         android:visibility="gone"
-        android:text="@string/beer_none_available"/>
+        android:text="@string/favorites_breweries_none"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -144,7 +145,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_margin"
         android:visibility="gone"
-        android:text="@string/beer_none_available"/>
+        android:text="@string/favorites_beers_none"/>
 
 </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

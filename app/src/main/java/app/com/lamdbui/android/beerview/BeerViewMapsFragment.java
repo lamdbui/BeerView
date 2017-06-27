@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -106,6 +105,9 @@ public class BeerViewMapsFragment extends Fragment
     private List<Marker> mBreweryLocationMarkers;
     private List<Address> mAddresses;
 
+    // used to keep a hard reference for Picasso to avoid GC
+    private List<Target> mMarkerIconTargets;
+
     private BreweryDbInterface mBreweryDbService;
 
     // used to hold current Brewery details
@@ -135,6 +137,7 @@ public class BeerViewMapsFragment extends Fragment
 
         mBrewery = null;
         mBreweryLocationMarkers = new ArrayList<>();
+        mMarkerIconTargets = new ArrayList<>();
         mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION);
         if(mAddresses == null) {
             mAddresses = new ArrayList<>();
@@ -144,15 +147,13 @@ public class BeerViewMapsFragment extends Fragment
             mBreweryLocations = new ArrayList<>();
         }
 
-        refreshLocationData();
-
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            checkLocationPermission();
+//        }
 //        mFusedLocationProviderClient.getLastLocation()
 //                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
 //                    @Override
@@ -187,47 +188,44 @@ public class BeerViewMapsFragment extends Fragment
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mBreweryRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        if(mCurrPostalCode != "") {
-
-            mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final EditText input = new EditText(getActivity());
-                    final View innerView = view;
-                    input.setHint(getString(R.string.setting_postal_code_hint));
-                    input.setMaxLines(1);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    final AlertDialog postalCodeAlertDialog = new AlertDialog.Builder(getActivity())
-                            .setNegativeButton(getString(R.string.dialog_cancel), null)
-                            .setPositiveButton(getString(R.string.dialog_save), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    SharedPreferences.Editor editor = mSettings.edit();
-                                    String postalCode = input.getText().toString();
-                                    if(!postalCode.equals("")) {
-                                        editor.putString(getString(R.string.pref_location_postal_code), postalCode);
-                                        editor.apply();
-                                        Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
-                                                .setAction("SavedPostalCode", null).show();
-                                        mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-                                        refreshLocationData();
-                                        updateUI();
-                                    }
-                                    else {
-                                        Snackbar.make(innerView, getString(R.string.setting_postal_code_error), Snackbar.LENGTH_SHORT)
-                                                .setAction("SavedPostalCode", null).show();
-                                    }
+        mPostalcodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText input = new EditText(getActivity());
+                final View innerView = view;
+                input.setHint(getString(R.string.setting_postal_code_hint));
+                input.setMaxLines(1);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                final AlertDialog postalCodeAlertDialog = new AlertDialog.Builder(getActivity())
+                        .setNegativeButton(getString(R.string.dialog_cancel), null)
+                        .setPositiveButton(getString(R.string.dialog_save), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences.Editor editor = mSettings.edit();
+                                String postalCode = input.getText().toString();
+                                if(!postalCode.equals("")) {
+                                    editor.putString(getString(R.string.pref_location_postal_code), postalCode);
+                                    editor.apply();
+                                    Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
+                                            .setAction("SavedPostalCode", null).show();
+                                    mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+                                    refreshLocationData();
+                                    updateUI();
                                 }
-                            })
-                            .create();
+                                else {
+                                    Snackbar.make(innerView, getString(R.string.setting_postal_code_error), Snackbar.LENGTH_SHORT)
+                                            .setAction("SavedPostalCode", null).show();
+                                }
+                            }
+                        })
+                        .create();
 
-                    postalCodeAlertDialog.setTitle(R.string.setting_postal_code);
-                    postalCodeAlertDialog.setMessage(getString(R.string.setting_postal_code_description));
-                    postalCodeAlertDialog.setView(input);
-                    postalCodeAlertDialog.show();
-                }
-            });
-        }
+                postalCodeAlertDialog.setTitle(R.string.setting_postal_code);
+                postalCodeAlertDialog.setMessage(getString(R.string.setting_postal_code_description));
+                postalCodeAlertDialog.setView(input);
+                postalCodeAlertDialog.show();
+            }
+        });
 
         if (mBreweryAdapter == null) {
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
@@ -266,22 +264,25 @@ public class BeerViewMapsFragment extends Fragment
 
         // TODO: Fix issue with location only showing after reloading the Application
         // TODO: Move this info a separate function
-        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            //mMap.setMyLocationEnabled(true);
-            // show the explanation?
-            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(getActivity(), getString(R.string.permission_location_message), Toast.LENGTH_LONG).show();
-            }
+//        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            //mMap.setMyLocationEnabled(true);
+//            // show the explanation?
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                Toast.makeText(getActivity(), getString(R.string.permission_location_message), Toast.LENGTH_LONG).show();
+//            }
+//
+//            ActivityCompat.requestPermissions(getActivity(), new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_FINE);
+//        }
+//        else {
+//            mMap.setMyLocationEnabled(true);
+//        }
 
-            ActivityCompat.requestPermissions(getActivity(), new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION_FINE);
-        }
-        else {
-            mMap.setMyLocationEnabled(true);
-        }
+        refreshLocationData();
+        setBreweryLocationMapMarkers();
 
         if(mAddresses != null & mAddresses.size() > 0) {
-            setBreweryLocationMapMarkers();
+            //setBreweryLocationMapMarkers();
             moveMapCameraToAddress();
         }
 
@@ -298,30 +299,38 @@ public class BeerViewMapsFragment extends Fragment
     public void setBreweryLocationMapMarkers() {
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             LatLng location = new LatLng(breweryLocation.getLatitude(), breweryLocation.getLongitude());
+
+
             final Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(breweryLocation.getName())
                     .snippet(getString(R.string.map_marker_more_details))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.beer_mug_icon_32)));
             marker.setTag(breweryLocation);
+
+            Target target = new Target() {
+
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                    mBreweryLocationMarkers.add(marker);
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+            mMarkerIconTargets.add(target);
+
             if(breweryLocation.getImagesIcon() != null) {
                 Picasso.with(getActivity())
                         .load(breweryLocation.getImagesIcon())
-                        .into(new Target() {
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-                                mBreweryLocationMarkers.add(marker);
-                            }
-
-                            @Override
-                            public void onBitmapFailed(Drawable errorDrawable) {
-                            }
-
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                            }
-                        });
+                        .placeholder(R.drawable.beer_mug_icon_32)
+                        .into(target);
             }
             else
                 mBreweryLocationMarkers.add(marker);
@@ -458,8 +467,6 @@ public class BeerViewMapsFragment extends Fragment
         // check to see if postalCode change and move map, if it did
         String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
         if(!mCurrPostalCode.equals(postalCode)) {
-            refreshLocationData();
-            //moveMapCameraToAddress();
             mCurrPostalCode = postalCode;
         }
     }

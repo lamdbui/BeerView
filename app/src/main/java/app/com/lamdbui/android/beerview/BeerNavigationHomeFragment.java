@@ -555,7 +555,6 @@ public class BeerNavigationHomeFragment extends Fragment
         }
         else {
             mHomeBeersRecyclerView.setAdapter(mBreweryBeersAdapter);
-            //mBreweryBeersAdapter.notifyDataSetChanged();
         }
 
         if(mBreweryLocationFavoritesAdapter == null) {
@@ -564,7 +563,6 @@ public class BeerNavigationHomeFragment extends Fragment
         }
         else {
             mHomeBreweriesFavoritesRecyclerView.setAdapter(mBreweryLocationFavoritesAdapter);
-            //mBreweryLocationAdapter.notifyDataSetChanged();
         }
 
         if(mBreweryBeerFavoritesAdapter == null) {
@@ -573,7 +571,6 @@ public class BeerNavigationHomeFragment extends Fragment
         }
         else {
             mHomeBeersFavoritesRecyclerView.setAdapter(mBreweryBeerFavoritesAdapter);
-            //mBreweryBeersAdapter.notifyDataSetChanged();
         }
 
         // switch out to an empty textview, if there's no data to display

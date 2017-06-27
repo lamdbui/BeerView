@@ -49,9 +49,11 @@
     <string name="setting_postal_code_error">Error! Please enter a valid postal code</string>
     <string name="favorites_added">Added to your Favorites</string>
     <string name="favorites_removed">Removed from your Favorites</string>
+    <string name="favorites_beers_none">You have not favorited any Beers</string>
+    <string name="favorites_breweries_none">You have not favorited any Breweries</string>
     <string name="map_current_location">Current Location: </string>
     <string name="map_current_location_none">No location specified, please enter a location in Settings</string>
-    <string name="map_marker_more_details">More details...</string>
+    <string name="map_marker_more_details">Click For More Details...</string>
     <string name="widget_title">BeerMapper Favorites</string>
     <string name="widget_favorite_breweries">Breweries Favorited:</string>
     <string name="widget_favorite_beers">Beers Favorited:</string>
