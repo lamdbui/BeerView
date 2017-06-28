@@ -40,7 +40,7 @@ public class LocationDataHelper {
     private BreweryDbInterface mBreweryDbService;
 
     public interface LocationDataHelperCallbacks {
-        public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations);
+        void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations);
     }
 
     public static LocationDataHelper get(Context context, LocationDataHelperCallbacks callbacks) {
@@ -73,7 +73,6 @@ public class LocationDataHelper {
 
             @Override
             public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
-                //Log.e(LOG_TAG, t.toString());
             }
         });
 

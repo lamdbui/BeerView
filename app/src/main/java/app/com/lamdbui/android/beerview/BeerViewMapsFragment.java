@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -340,30 +339,8 @@ public class BeerViewMapsFragment extends Fragment
             @Override
             public void onInfoWindowClick(Marker marker) {
                 // get the BreweryLocation object back
-                final BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
-
-                // check to see if this is the second click
-                if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
-                    // TODO: Move this into a util function
-                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
-                        @Override
-                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                            mBrewery = response.body().getBrewery();
-                            if(mBrewery != null)
-                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
-                                        breweryLocation, breweryLocation.getId()));
-                        }
-
-                        @Override
-                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-                else {
-                    mCurrBreweryLocation = breweryLocation;
-                }
+                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+                checkAndHandleIfSecondBreweryClick(breweryLocation);
             }
         });
 
@@ -372,7 +349,7 @@ public class BeerViewMapsFragment extends Fragment
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
 
-                final BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
+                BreweryLocation breweryLocation = (BreweryLocation) marker.getTag();
 
                 int position = mBreweryAdapter.getAdapterItemPosition(breweryLocation.getId());
 
@@ -382,32 +359,35 @@ public class BeerViewMapsFragment extends Fragment
                 if(position > -1)
                     mLinearLayoutManager.scrollToPosition(position);
 
-                // check to see if this is the second click
-                if(breweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
-                    // TODO: Move this into a util function
-                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");
-                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
-                        @Override
-                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                            mBrewery = response.body().getBrewery();
-                            if(mBrewery != null)
-                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
-                                        breweryLocation, breweryLocation.getId()));
-                        }
-
-                        @Override
-                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-                else {
-                    mCurrBreweryLocation = breweryLocation;
-                }
+                checkAndHandleIfSecondBreweryClick(breweryLocation);
 
                 return true;
             }
         });
+    }
+
+    private void checkAndHandleIfSecondBreweryClick(BreweryLocation location) {
+        final BreweryLocation clickedLocation = location;
+        // check to see if this is the second click
+        if(clickedLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
+            Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(clickedLocation.getBreweryId(), API_KEY, "Y");
+            callBreweryById.enqueue(new Callback<BreweryResponse>() {
+                @Override
+                public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
+                    mBrewery = response.body().getBrewery();
+                    if(mBrewery != null)
+                        startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, clickedLocation));
+                }
+
+                @Override
+                public void onFailure(Call<BreweryResponse> call, Throwable t) {
+
+                }
+            });
+        }
+        else {
+            mCurrBreweryLocation = clickedLocation;
+        }
     }
 
     public void updateUI() {
@@ -532,15 +512,12 @@ public class BeerViewMapsFragment extends Fragment
                                     public void onSuccess(Location location) {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
-                                            // TODO: remove?
-                                            Toast.makeText(getActivity(), "Got a valid location!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
 
                     }
                     else {
-                        Toast.makeText(getActivity(), "LocationApi Permission NOT GRANTED!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -600,34 +577,10 @@ public class BeerViewMapsFragment extends Fragment
 
         @Override
         public void onClick(View view) {
-            // TODO: Move to marker on the Map
-
             Marker marker = getMarkerFromBreweryLocation(mBreweryLocation);
             if(marker != null) {
                 marker.showInfoWindow();
-
-                // check to see if this is the second click
-                if(mBreweryLocation.getBreweryId() == mCurrBreweryLocation.getBreweryId()) {
-                    // TODO: Move this into a util function
-                    Call<BreweryResponse> callBreweryById = mBreweryDbService.getBrewery(mBreweryLocation.getBreweryId(), API_KEY, "Y");
-                    callBreweryById.enqueue(new Callback<BreweryResponse>() {
-                        @Override
-                        public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
-                            mBrewery = response.body().getBrewery();
-                            if(mBrewery != null)
-                                startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
-                                        mBreweryLocation, mBreweryLocation.getId()));
-                        }
-
-                        @Override
-                        public void onFailure(Call<BreweryResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-                else {
-                    mCurrBreweryLocation = mBreweryLocation;
-                }
+                checkAndHandleIfSecondBreweryClick(mBreweryLocation);
             }
 
             mMap.animateCamera(CameraUpdateFactory

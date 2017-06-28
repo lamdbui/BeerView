@@ -467,8 +467,7 @@ public class BeerNavigationHomeFragment extends Fragment
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                     mBrewery = response.body().getBrewery();
                     //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
-                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null,
-                            mBreweryLocation, mBreweryLocation.getId()));
+                    startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation));
                 }
 
                 @Override
@@ -478,7 +477,6 @@ public class BeerNavigationHomeFragment extends Fragment
         }
     }
 
-    // TODO: Maybe rename this to fetchDataSet(or similar)
     public boolean refreshSettingsData() {
 
         boolean permission = checkLocationPermission();
@@ -502,7 +500,6 @@ public class BeerNavigationHomeFragment extends Fragment
                         public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
                             mAddresses = response.body().getAddressList();
                             refreshBreweryLocationData();
-                            //fetchAllBeersAtBreweryLocations();
                             updateUI();
                         }
 

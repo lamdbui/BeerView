@@ -36,8 +36,8 @@ public class BeerMapperWidgetProvider extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, BeerMapperWidgetProvider.class));
 
-        Cursor mBreweryData = null;
-        Cursor mBeerData = null;
+        Cursor mBreweryData;
+        Cursor mBeerData;
         mBreweryData = context.getContentResolver().query(
                 BreweryContract.BreweryTable.CONTENT_URI,
                 null,

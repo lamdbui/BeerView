@@ -16,7 +16,6 @@ public class BreweryLocation implements Parcelable {
     private String mNameShort;
     private String mDescription;
     private String mWebsite;
-    // TODO: Do some conversion that makes more sense than a String here
     private String mHoursOfOperation;
     private int mEstablished;
     private boolean mIsOrganic;

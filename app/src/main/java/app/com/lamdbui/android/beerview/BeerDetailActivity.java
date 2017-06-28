@@ -84,15 +84,7 @@ public class BeerDetailActivity extends AppCompatActivity
             urlImageTask.execute(mBeer.getLabelsMedium());
 
         // check to see if it is a Favorite
-        // TODO: Should we move this into a function?
-        String[] selectionArgs = {mBeer.getId()};
-        Cursor cursorResults = getContentResolver().query(
-                BreweryContract.BeerTable.CONTENT_URI,
-                null,
-                "ID=?",
-                selectionArgs,
-                null);
-         mIsFavorite = (cursorResults.getCount() > 0) ? true : false;
+         mIsFavorite = isFavorite(mBeer);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mBeer.getNameDisplay());
@@ -123,7 +115,6 @@ public class BeerDetailActivity extends AppCompatActivity
                 updateAppWidget();
             }
         });
-
         updateUI();
     }
 
@@ -133,6 +124,20 @@ public class BeerDetailActivity extends AppCompatActivity
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BeerMapperWidgetProvider.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         sendBroadcast(intent);
+    }
+
+    private boolean isFavorite(Beer beer) {
+        if(beer == null)
+            return false;
+
+        String[] selectionArgs = {beer.getId()};
+        Cursor cursorResults = getContentResolver().query(
+                BreweryContract.BeerTable.CONTENT_URI,
+                null,
+                "ID=?",
+                selectionArgs,
+                null);
+        return (cursorResults.getCount() > 0) ? true : false;
     }
 
     private void updateUI() {
