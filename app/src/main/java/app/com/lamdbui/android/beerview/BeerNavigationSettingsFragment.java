@@ -69,6 +69,8 @@ public class BeerNavigationSettingsFragment extends Fragment {
                                 String postalCode = input.getText().toString();
                                 if(!postalCode.equals("")) {
                                     editor.putString(getString(R.string.pref_location_postal_code), postalCode);
+                                    // update our current session as well
+                                    editor.putString(getString(R.string.pref_session_location_postal_code), postalCode);
                                     editor.apply();
                                     Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
                                             .setAction("SavedPostalCode", null).show();

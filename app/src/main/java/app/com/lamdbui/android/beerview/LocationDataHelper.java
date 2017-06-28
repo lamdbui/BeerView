@@ -3,14 +3,18 @@ package app.com.lamdbui.android.beerview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import app.com.lamdbui.android.beerview.model.Beer;
 import app.com.lamdbui.android.beerview.model.BreweryLocation;
@@ -37,7 +41,9 @@ public class LocationDataHelper {
     private Location mLocation;
     private List<BreweryLocation> mBreweryLocations;
     private List<Beer> mBeers;
+    private List<Address> mAddresses;
     private BreweryDbInterface mBreweryDbService;
+    private String mPostalCode;
 
     public interface LocationDataHelperCallbacks {
         void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations);
@@ -67,6 +73,7 @@ public class LocationDataHelper {
         mBreweryLocations = new ArrayList<>();
         mBeers = new ArrayList<>();
         mLocation = null;
+        mPostalCode = "";
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
     }
 
@@ -76,7 +83,22 @@ public class LocationDataHelper {
         mBreweryLocations = new ArrayList<>();
         mBeers = new ArrayList<>();
         mLocation = null;
+        mPostalCode = "";
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+    }
+
+    public String getPostalCodeFromLatLng() {
+        String postalCode = "";
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+        try {
+            List<android.location.Address> addresses = geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
+            postalCode = addresses.get(0).getPostalCode();
+
+        }
+        catch(IOException e) {
+            // log error
+        }
+        return postalCode;
     }
 
     public int findBreweryLocationsByLatLng(LatLng latlng) {
@@ -161,5 +183,21 @@ public class LocationDataHelper {
 
     public void setBeers(List<Beer> beers) {
         mBeers = beers;
+    }
+
+    public List<Address> getAddresses() {
+        return mAddresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        mAddresses = addresses;
+    }
+
+    public String getPostalCode() {
+        return mPostalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        mPostalCode = postalCode;
     }
 }
