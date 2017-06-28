@@ -33,7 +33,14 @@
             android:id="@+id/map_postalcode_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"/>
+            android:layout_gravity="left|top"/>
+
+        <Button
+            android:id="@+id/map_my_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:text="Move to My Location"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/map_brewery_recyclerview"

@@ -43,6 +43,15 @@ public class LocationDataHelper {
         void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations);
     }
 
+    public static LocationDataHelper get(Context context) {
+        if(sLocationDataHelper == null)
+            sLocationDataHelper = new LocationDataHelper(context);
+        sLocationDataHelper.setContext(context);
+        sLocationDataHelper.setCallbacks(null);
+
+        return sLocationDataHelper;
+    }
+
     public static LocationDataHelper get(Context context, LocationDataHelperCallbacks callbacks) {
         if(sLocationDataHelper == null)
             sLocationDataHelper = new LocationDataHelper(context, callbacks);
@@ -50,6 +59,15 @@ public class LocationDataHelper {
         sLocationDataHelper.setContext(context);
         sLocationDataHelper.setCallbacks(callbacks);
         return sLocationDataHelper;
+    }
+
+    private LocationDataHelper(Context context) {
+        mContext = context;
+        mCallbacks = null;
+        mBreweryLocations = new ArrayList<>();
+        mBeers = new ArrayList<>();
+        mLocation = null;
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
     }
 
     private LocationDataHelper(Context context, LocationDataHelperCallbacks callbacks) {
@@ -62,7 +80,6 @@ public class LocationDataHelper {
     }
 
     public int findBreweryLocationsByLatLng(LatLng latlng) {
-        //Call<BreweryLocationResponse> callBreweriesNearby = mBreweryDbService.getBreweriesNearby(API_KEY, 37.774929, -122.419416);
         Call<BreweryLocationResponse> callBreweriesNearby = mBreweryDbService.getBreweriesNearby(API_KEY, latlng.latitude, latlng.longitude);
         callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
             @Override
@@ -132,6 +149,10 @@ public class LocationDataHelper {
 
     public void setBreweryLocations(List<BreweryLocation> breweryLocations) {
         mBreweryLocations = breweryLocations;
+    }
+
+    public void clearBreweryLocations() {
+        mBreweryLocations.clear();
     }
 
     public List<Beer> getBeers() {

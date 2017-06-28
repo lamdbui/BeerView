@@ -2,11 +2,13 @@ package app.com.lamdbui.android.beerview;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,16 +32,24 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -66,7 +77,8 @@ import retrofit2.Response;
  */
 
 public class BeerViewMapsFragment extends Fragment
-    implements OnMapReadyCallback, LocationDataHelper.LocationDataHelperCallbacks {
+    implements OnMapReadyCallback, LocationDataHelper.LocationDataHelperCallbacks,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public static final String TAG = BeerViewMapsFragment.class.getSimpleName();
 
@@ -78,6 +90,12 @@ public class BeerViewMapsFragment extends Fragment
 
     private static final int MAP_DEFAULT_ZOOM_LEVEL = 12;
 
+    /*
+     * Define a request code to send to Google Play services
+     * This code is returned in Activity.onActivityResult
+     */
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
     private static final String API_KEY = BuildConfig.BREWERY_DB_API_KEY;
 
     @BindView(R.id.map_brewery_recyclerview)
@@ -86,6 +104,8 @@ public class BeerViewMapsFragment extends Fragment
     MapView mMapView;
     @BindView(R.id.map_postalcode_button)
     Button mPostalcodeButton;
+    @BindView(R.id.map_my_location_button)
+    Button mMyLocationButton;
     @BindView(R.id.map_location_none)
     TextView mMapLocationNone;
     @BindView(R.id.map_view_frame)
@@ -117,6 +137,10 @@ public class BeerViewMapsFragment extends Fragment
     // track currently focused location to determine a second click used to launch Activity
     private BreweryLocation mCurrBreweryLocation;
 
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private Location mSessionLocation;
+
     public static BeerViewMapsFragment newInstance(List<BreweryLocation> breweries, List<Address> addresses) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_BREWERIES, (ArrayList<BreweryLocation>)breweries);
@@ -143,7 +167,8 @@ public class BeerViewMapsFragment extends Fragment
         }
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
         if(mBreweryLocations == null) {
-            mBreweryLocations = new ArrayList<>();
+            mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
+            //mBreweryLocations = new ArrayList<>();
         }
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
@@ -169,9 +194,29 @@ public class BeerViewMapsFragment extends Fragment
 //                            }
 //                        }
 //                    }
-//                });
+//                })
+//        .addOnFailureListener(getActivity(), new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                int m = 3;
+//            }
+//        });
 
         mCurrBreweryLocation = new BreweryLocation();
+
+        mSessionLocation = null;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
     }
 
     @Nullable
@@ -226,6 +271,13 @@ public class BeerViewMapsFragment extends Fragment
             }
         });
 
+        mMyLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createLocationRequest();
+            }
+        });
+
         if (mBreweryAdapter == null) {
             mBreweryAdapter = new BeerViewMapsFragment.BreweryAdapter(mBreweryLocations);
             mBreweryRecyclerView.setAdapter(mBreweryAdapter);
@@ -241,9 +293,15 @@ public class BeerViewMapsFragment extends Fragment
 
     @Override
     public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
-        mBreweryLocations = breweryLocations;
+        //LocationDataHelper.get(getActivity()).clearBreweryLocations();
+        LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
+        mBreweryLocations = LocationDataHelper.get(getActivity(), this).getBreweryLocations();
+        //mBreweryLocations = breweryLocations;
         mBreweryAdapter.setBreweryLocations(mBreweryLocations);
         mBreweryAdapter.notifyDataSetChanged();
+//        mBreweryLocations = breweryLocations;
+//        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
+//        mBreweryAdapter.notifyDataSetChanged();
         setBreweryLocationMapMarkers();
     }
 
@@ -281,7 +339,6 @@ public class BeerViewMapsFragment extends Fragment
         setBreweryLocationMapMarkers();
 
         if(mAddresses != null & mAddresses.size() > 0) {
-            //setBreweryLocationMapMarkers();
             moveMapCameraToAddress();
         }
 
@@ -293,6 +350,73 @@ public class BeerViewMapsFragment extends Fragment
 //        mMap.setOnInfoWindowLongClickListener(this);
 
 //
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        handleNewLocation(location);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        if(checkLocationPermission()) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            }
+            else {
+                handleNewLocation(location);
+            }
+        }
+    }
+
+    public void handleNewLocation(Location location) {
+        mSessionLocation = location;
+        if(mSessionLocation != null) {
+            LatLng latlng = new LatLng(mSessionLocation.getLatitude(), mSessionLocation.getLongitude());
+            refreshBreweryLocationData(latlng);
+            moveMapCameraToLatLng(latlng);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        /*
+         * Google Play services can resolve some errors it detects.
+         * If the error has a resolution, try sending an Intent to
+         * start a Google Play services activity that can resolve
+         * error.
+         */
+        if(connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                /*
+                 * Thrown if Google Play services canceled the original
+                 * PendingIntent
+                 */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        }
+        else {
+            /*
+             * If no resolution is available, display a dialog to the
+             * user with the error.
+             */
+            Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    public void createLocationRequest() {
+        mGoogleApiClient.connect();
     }
 
     public void setBreweryLocationMapMarkers() {
@@ -402,14 +526,20 @@ public class BeerViewMapsFragment extends Fragment
         }
     }
 
-    public void moveMapCameraToAddress() {
+    public void moveMapCameraToLatLng(LatLng latlng) {
         if(mMap != null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromAddresses(), MAP_DEFAULT_ZOOM_LEVEL));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, MAP_DEFAULT_ZOOM_LEVEL));
     }
 
-    public void refreshBreweryLocationData() {
+    // TODO: Remove?
+    public void moveMapCameraToAddress() {
+        if(mMap != null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromAddresses(mAddresses), MAP_DEFAULT_ZOOM_LEVEL));
+    }
+
+    public void refreshBreweryLocationData(LatLng latlng) {
         LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
-        locationDataHelper.findBreweryLocationsByLatLng(getLatLngFromAddresses());
+        locationDataHelper.findBreweryLocationsByLatLng(latlng);
     }
 
     public void refreshLocationData() {
@@ -424,7 +554,7 @@ public class BeerViewMapsFragment extends Fragment
                 public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
                     mAddresses = response.body().getAddressList();
                     if(mAddresses != null)
-                        refreshBreweryLocationData();
+                        refreshBreweryLocationData(getLatLngFromAddresses(mAddresses));
                     moveMapCameraToAddress();
                     updateUI();
                 }
@@ -442,7 +572,7 @@ public class BeerViewMapsFragment extends Fragment
         super.onResume();
         mMapView.onResume();
 
-
+        //mGoogleApiClient.connect();
 
         // check to see if postalCode change and move map, if it did
         String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
@@ -467,6 +597,11 @@ public class BeerViewMapsFragment extends Fragment
     public void onPause() {
         mMapView.onPause();
         super.onPause();
+
+        if(mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -512,6 +647,7 @@ public class BeerViewMapsFragment extends Fragment
                                     public void onSuccess(Location location) {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
+                                            int m = 4;
                                         }
                                     }
                                 });
@@ -534,10 +670,10 @@ public class BeerViewMapsFragment extends Fragment
         return null;
     }
 
-    private LatLng getLatLngFromAddresses() {
-        if(mAddresses != null && mAddresses.size() > 0) {
+    private LatLng getLatLngFromAddresses(List<Address> addresses) {
+        if(addresses != null && addresses.size() > 0) {
             // assume the first is what we want
-            Address address = mAddresses.get(0);
+            Address address = addresses.get(0);
             return address.getLatLng();
         }
         return null;

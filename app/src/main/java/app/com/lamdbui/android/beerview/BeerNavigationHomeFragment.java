@@ -4,10 +4,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -155,6 +158,9 @@ public class BeerNavigationHomeFragment extends Fragment
             if (mBreweryLocations == null) {
                 mBreweryLocations = new ArrayList<>();
             }
+
+            mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
+
             mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
             if (mAddresses == null) {
                 mAddresses = new ArrayList<>();
@@ -167,10 +173,11 @@ public class BeerNavigationHomeFragment extends Fragment
             Bundle bundle = new Bundle();
             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                checkLocationPermission();
-//            }
-//            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            // test
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                checkLocationPermission();
+            }
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 //            mFusedLocationProviderClient.getLastLocation()
 //                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
 //                        @Override
@@ -347,7 +354,9 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
-        mBreweryLocations = breweryLocations;
+        LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
+        mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
+        //mBreweryLocations = breweryLocations;
         mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
         mBreweryLocationAdapter.notifyDataSetChanged();
         fetchAllBeersAtBreweryLocations();
@@ -399,27 +408,27 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     public boolean checkLocationPermission() {
-        return true;
-//        if (ContextCompat.checkSelfPermission(getActivity(),
-//                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//            // explanation
-//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-//                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                ActivityCompat.requestPermissions(getActivity(),
-//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-//                        PERMISSION_REQUEST_LOCATION);
-//            } else {
-//                // no explanation needed
-//                ActivityCompat.requestPermissions(getActivity(),
-//                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-//                        PERMISSION_REQUEST_LOCATION);
-//            }
-//            return false;
-//        }
-//        else {
-//            return true;
-//        }
+        //return true;
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // explanation
+            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            } else {
+                // no explanation needed
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        PERMISSION_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     private class BreweryLocationViewHolder extends RecyclerView.ViewHolder
