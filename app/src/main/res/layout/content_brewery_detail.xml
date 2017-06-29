@@ -87,6 +87,7 @@
                     android:layout_marginRight="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginEnd="@dimen/text_margin"
+                    android:textColor="@color/colorSecondaryAccent"
                     style="?android:textAppearanceSmall"
                     android:autoLink="phone"/>
 
@@ -98,6 +99,7 @@
                     android:layout_marginRight="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginEnd="@dimen/text_margin"
+                    android:textColor="@color/colorSecondaryAccent"
                     android:autoLink="web"
                     style="?android:textAppearanceSmall"/>
 
