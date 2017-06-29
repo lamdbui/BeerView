@@ -220,7 +220,7 @@ public class BeerViewMapsFragment extends Fragment
                                 if(!postalCode.equals("")) {
                                     editor.putString(getString(R.string.pref_session_location_postal_code), postalCode);
                                     editor.apply();
-                                    Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
+                                    Snackbar.make(innerView, getString(R.string.map_new_location_set), Snackbar.LENGTH_SHORT)
                                             .setAction("SavedPostalCode", null).show();
 
                                     refreshLocationData();
@@ -235,7 +235,7 @@ public class BeerViewMapsFragment extends Fragment
                         .create();
 
                 postalCodeAlertDialog.setTitle(R.string.setting_postal_code);
-                postalCodeAlertDialog.setMessage(getString(R.string.setting_postal_code_description));
+                postalCodeAlertDialog.setMessage(getString(R.string.map_session_current_location_message));
                 postalCodeAlertDialog.setView(input);
                 postalCodeAlertDialog.show();
             }
@@ -518,6 +518,7 @@ public class BeerViewMapsFragment extends Fragment
     public void refreshLocationData() {
         String newPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
 
+        //if(!mCurrPostalCode.equals(newPostalCode) && !newPostalCode.isEmpty()) {
         if(!newPostalCode.isEmpty()) {
 
             mCurrPostalCode = newPostalCode;
@@ -551,7 +552,9 @@ public class BeerViewMapsFragment extends Fragment
 
         mGoogleApiClient.connect();
 
-        refreshLocationData();
+        String newPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
+        if(!mCurrPostalCode.equals(newPostalCode) && !newPostalCode.isEmpty())
+            refreshLocationData();
     }
 
     @Override

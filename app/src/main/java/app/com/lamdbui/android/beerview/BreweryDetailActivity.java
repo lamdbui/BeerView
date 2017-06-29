@@ -271,26 +271,25 @@ public class BreweryDetailActivity extends AppCompatActivity
             else
                 mBreweryEstablishedTextView.setVisibility(View.GONE);
 
-            BreweryLocation mainBreweryLocation = getMainBreweryLocation();
-            if (mainBreweryLocation.getStreetAddress() != null)
-                mBreweryAddressLine1TextView.setText(mainBreweryLocation.getStreetAddress());
+            if (mBreweryLocation.getStreetAddress() != null)
+                mBreweryAddressLine1TextView.setText(mBreweryLocation.getStreetAddress());
             else
                 mBreweryAddressLine1TextView.setVisibility(View.GONE);
 
             StringBuilder builder = new StringBuilder();
-            if (mainBreweryLocation.getLocality() != null)
-                builder.append(mainBreweryLocation.getLocality() + ", ");
-            if (mainBreweryLocation.getRegion() != null)
-                builder.append(mainBreweryLocation.getRegion() + " ");
-            if (mainBreweryLocation.getPostalCode() != null)
-                builder.append(mainBreweryLocation.getPostalCode());
+            if (mBreweryLocation.getLocality() != null)
+                builder.append(mBreweryLocation.getLocality() + ", ");
+            if (mBreweryLocation.getRegion() != null)
+                builder.append(mBreweryLocation.getRegion() + " ");
+            if (mBreweryLocation.getPostalCode() != null)
+                builder.append(mBreweryLocation.getPostalCode());
             String addressLine2String = builder.toString();
             if (!addressLine2String.isEmpty())
                 mBreweryAddressLine2TextView.setText(builder.toString());
             else
                 mBreweryAddressLine2TextView.setVisibility(View.GONE);
-            if (mainBreweryLocation.getPhone() != null)
-                mBreweryPhoneTextView.setText(mainBreweryLocation.getPhone());
+            if (mBreweryLocation.getPhone() != null)
+                mBreweryPhoneTextView.setText(mBreweryLocation.getPhone());
             else
                 mBreweryPhoneTextView.setVisibility(View.GONE);
             if (mBrewery.getWebsite() != null)
@@ -322,19 +321,6 @@ public class BreweryDetailActivity extends AppCompatActivity
             else
                 mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
         }
-    }
-
-    public BreweryLocation getMainBreweryLocation() {
-        if(mBrewery != null) {
-
-            List<BreweryLocation> breweryLocations = mBrewery.getLocations();
-
-            // we assume that the first location is the main location for the Brewery
-            if(breweryLocations.size() > 0) {
-                return breweryLocations.get(0);
-            }
-        }
-        return null;
     }
 
     public void getBeersAtBrewery() {
