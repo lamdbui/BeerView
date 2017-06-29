@@ -268,7 +268,7 @@ public class BeerViewMapsFragment extends Fragment
                                     Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
                                             .setAction("SavedPostalCode", null).show();
                                     //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
-                                    mLocationDataHelper.setPostalCode(mSettings.getString(getString(R.string.pref_location_postal_code), ""));
+                                    //mLocationDataHelper.setPostalCode(mSettings.getString(getString(R.string.pref_location_postal_code), ""));
                                     refreshLocationData();
                                     updateUI();
                                 }
@@ -317,17 +317,17 @@ public class BeerViewMapsFragment extends Fragment
 //        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
 //        mBreweryAdapter.notifyDataSetChanged();
 
-        mLocationDataHelper.setBreweryLocations(breweryLocations);
-        mBreweryLocations = mLocationDataHelper.getBreweryLocations();
-        //mBreweryLocations = breweryLocations;
-        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
-        mBreweryAdapter.notifyDataSetChanged();
+//        mLocationDataHelper.setBreweryLocations(breweryLocations);
+//        mBreweryLocations = mLocationDataHelper.getBreweryLocations();
+//        //mBreweryLocations = breweryLocations;
+//        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
+//        mBreweryAdapter.notifyDataSetChanged();
 
 
         // og
-//        mBreweryLocations = breweryLocations;
-//        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
-//        mBreweryAdapter.notifyDataSetChanged();
+        mBreweryLocations = breweryLocations;
+        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
+        mBreweryAdapter.notifyDataSetChanged();
         setBreweryLocationMapMarkers();
     }
 
@@ -362,11 +362,10 @@ public class BeerViewMapsFragment extends Fragment
 //        }
 
         refreshLocationData();
-        setBreweryLocationMapMarkers();
-
         if(mAddresses != null & mAddresses.size() > 0) {
             moveMapCameraToAddress();
         }
+        setBreweryLocationMapMarkers();
 
         // Set listeners for marker events
 //        mMap.setOnMarkerClickListener(this);
@@ -391,9 +390,9 @@ public class BeerViewMapsFragment extends Fragment
             if (location == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             }
-            else {
-                handleNewLocation(location);
-            }
+//            else {
+//                handleNewLocation(location);
+//            }
         }
     }
 
@@ -418,8 +417,10 @@ public class BeerViewMapsFragment extends Fragment
                 String postalCode = addresses.get(0).getPostalCode();
 
                 // test
+                mCurrPostalCode = postalCode;
                 updateSessionCurrPostalCode(postalCode);
                 mLocationDataHelper.setPostalCode(postalCode);
+                updateUI();
             }
             catch(IOException e) {
                 // log error
@@ -606,8 +607,8 @@ public class BeerViewMapsFragment extends Fragment
 
         String newPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
 
-        if(!mCurrPostalCode.equals(newPostalCode) && !newPostalCode.isEmpty()) {
-        //if(!newPostalCode.isEmpty()) {
+        //if(!mCurrPostalCode.equals(newPostalCode) && !newPostalCode.isEmpty()) {
+        if(!newPostalCode.isEmpty()) {
 
 
             //mCurrPostalCode = mLocationDataHelper.getPostalCode();
@@ -648,13 +649,13 @@ public class BeerViewMapsFragment extends Fragment
 //            mCurrPostalCode = postalCode;
 //        }
 
-        // get our updated postal code
-        String sessionPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
-        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
-        if(!mCurrPostalCode.equals(sessionPostalCode)) {
-            mCurrPostalCode = sessionPostalCode;
-            //refreshLocationData();
-        }
+//        // get our updated postal code
+//        String sessionPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
+//        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
+//        if(!mCurrPostalCode.equals(sessionPostalCode)) {
+//            mCurrPostalCode = sessionPostalCode;
+//            //refreshLocationData();
+//        }
 
         // refresh our data in case it changed somewhere else
         //mBreweryLocations = mLocationDataHelper.getBreweryLocations();
