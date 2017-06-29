@@ -150,7 +150,6 @@ public class BreweryDetailActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         // check to see if it is a Favorite
-        // TODO: Should we move this into a function?
         if(mBreweryLocation != null) {
             String[] selectionArgs = {mBreweryLocation.getId()};
             Cursor cursorResults = getContentResolver().query(

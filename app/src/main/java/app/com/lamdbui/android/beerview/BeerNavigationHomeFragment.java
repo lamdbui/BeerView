@@ -1,18 +1,13 @@
 package app.com.lamdbui.android.beerview;
 
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
@@ -26,9 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
 
@@ -60,8 +53,7 @@ import retrofit2.Response;
  */
 
 public class BeerNavigationHomeFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<Cursor>,
-        LocationDataHelper.LocationDataHelperCallbacks {
+    implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
@@ -142,7 +134,7 @@ public class BeerNavigationHomeFragment extends Fragment
         mBreweryLocationFavorites = new ArrayList<>();
         mBreweryBeerFavorites = new ArrayList<>();
         mAddresses = new ArrayList<>();
-        mCurrPostalCode = "0";
+        mCurrPostalCode = "";
 
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
         if (mBreweryLocations == null) {
@@ -291,17 +283,6 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    @Override
-    public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
-        //LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
-        //mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
-        mBreweryLocations = breweryLocations;
-        mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
-        mBreweryLocationAdapter.notifyDataSetChanged();
-        fetchAllBeersAtBreweryLocations();
-        updateUI();
-    }
-
     // keeps track of pending AsyncTasks
     private boolean batchAsyncTaskComplete() {
         mAsyncTaskCount--;
@@ -415,7 +396,7 @@ public class BeerNavigationHomeFragment extends Fragment
         if(!mCurrPostalCode.equals(postalCode)) {
             mCurrPostalCode = postalCode;
 
-            // TODO: possibly move this to a util function
+            // update our address data
             if (!postalCode.isEmpty()) {
                 GoogleGeocodeInterface geocacheService =
                         GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
@@ -467,12 +448,14 @@ public class BeerNavigationHomeFragment extends Fragment
         callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
             @Override
             public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
-                mBreweryLocations = response.body().getBreweries();
-                //mCallbacks.onFindBreweryLocationsCallback(mBreweryLocations);
-                //mBreweryLocations = breweryLocations;
-                mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
-                mBreweryLocationAdapter.notifyDataSetChanged();
-                fetchAllBeersAtBreweryLocations();
+                if(response.body() != null) {
+                    mBreweryLocations = response.body().getBreweries();
+                    //mCallbacks.onFindBreweryLocationsCallback(mBreweryLocations);
+                    //mBreweryLocations = breweryLocations;
+                    mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
+                    mBreweryLocationAdapter.notifyDataSetChanged();
+                    fetchAllBeersAtBreweryLocations();
+                }
                 updateUI();
             }
 
