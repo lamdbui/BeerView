@@ -357,9 +357,9 @@ public class BeerNavigationHomeFragment extends Fragment
 
     @Override
     public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
-        LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
-        mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
-        //mBreweryLocations = breweryLocations;
+        //LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
+        //mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
+        mBreweryLocations = breweryLocations;
         mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
         mBreweryLocationAdapter.notifyDataSetChanged();
         fetchAllBeersAtBreweryLocations();
@@ -379,6 +379,9 @@ public class BeerNavigationHomeFragment extends Fragment
 
         // delete our old list of Beers
         mBreweryBeers.clear();
+
+        if(mBreweryDbService == null)
+            mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
 
         for(BreweryLocation breweryLocation : mBreweryLocations) {
             Call<BeerListResponse> callBeersAtBrewery = mBreweryDbService.getBeersAtBrewery(breweryLocation.getBreweryId(), API_KEY, "Y");

@@ -261,8 +261,6 @@ public class BeerViewMapsFragment extends Fragment
                                 SharedPreferences.Editor editor = mSettings.edit();
                                 String postalCode = input.getText().toString();
                                 if(!postalCode.equals("")) {
-                                    // test
-                                    //editor.putString(getString(R.string.pref_location_postal_code), postalCode);
                                     editor.putString(getString(R.string.pref_session_location_postal_code), postalCode);
                                     editor.apply();
                                     Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
@@ -343,7 +341,6 @@ public class BeerViewMapsFragment extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //mMap.setMyLocationEnabled(true);
 
         // TODO: Fix issue with location only showing after reloading the Application
         // TODO: Move this info a separate function
@@ -384,15 +381,11 @@ public class BeerViewMapsFragment extends Fragment
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         if(checkLocationPermission()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             }
-//            else {
-//                handleNewLocation(location);
-//            }
         }
     }
 
@@ -410,13 +403,12 @@ public class BeerViewMapsFragment extends Fragment
             refreshBreweryLocationData(latlng);
             moveMapCameraToLatLng(latlng);
 
-            // test postal code
             Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
             try {
                 List<android.location.Address> addresses = geocoder.getFromLocation(mSessionLocation.getLatitude(), mSessionLocation.getLongitude(), 1);
                 String postalCode = addresses.get(0).getPostalCode();
 
-                // test
+                // update our local session data
                 mCurrPostalCode = postalCode;
                 updateSessionCurrPostalCode(postalCode);
                 mLocationDataHelper.setPostalCode(postalCode);
@@ -602,16 +594,10 @@ public class BeerViewMapsFragment extends Fragment
     }
 
     public void refreshLocationData() {
-        //String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-        //String newPostalCode = mLocationDataHelper.getPostalCode();
-
         String newPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
 
-        //if(!mCurrPostalCode.equals(newPostalCode) && !newPostalCode.isEmpty()) {
         if(!newPostalCode.isEmpty()) {
 
-
-            //mCurrPostalCode = mLocationDataHelper.getPostalCode();
             mCurrPostalCode = newPostalCode;
 
             GoogleGeocodeInterface geocacheService =
@@ -643,22 +629,6 @@ public class BeerViewMapsFragment extends Fragment
 
         mGoogleApiClient.connect();
 
-//        // check to see if postalCode change and move map, if it did
-//        String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-//        if(!mCurrPostalCode.equals(postalCode)) {
-//            mCurrPostalCode = postalCode;
-//        }
-
-//        // get our updated postal code
-//        String sessionPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
-//        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
-//        if(!mCurrPostalCode.equals(sessionPostalCode)) {
-//            mCurrPostalCode = sessionPostalCode;
-//            //refreshLocationData();
-//        }
-
-        // refresh our data in case it changed somewhere else
-        //mBreweryLocations = mLocationDataHelper.getBreweryLocations();
         refreshLocationData();
     }
 
@@ -684,7 +654,7 @@ public class BeerViewMapsFragment extends Fragment
             mGoogleApiClient.disconnect();
         }
 
-        mLocationDataHelper.setBreweryLocations(mBreweryLocations);
+        //mLocationDataHelper.setBreweryLocations(mBreweryLocations);
         //mLocationDataHelper.setAddresses(mAddresses);
 
         // stash our session data
@@ -711,7 +681,6 @@ public class BeerViewMapsFragment extends Fragment
         switch (requestCode) {
             case PERMISSION_LOCATION_FINE:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //mMap.setMyLocationEnabled(true);
                     try {
                         mMap.setMyLocationEnabled(true);
                     }
