@@ -135,12 +135,16 @@ public class BeerNavigationHomeFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         mBreweryBeers = new ArrayList<>();
         mBreweryLocations = new ArrayList<>();
         mBreweryLocationFavorites = new ArrayList<>();
         mBreweryBeerFavorites = new ArrayList<>();
         mAddresses = new ArrayList<>();
         mCurrPostalCode = "0";
+        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
 
         boolean permission = checkLocationPermission();
 
@@ -150,7 +154,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
         if(permission) {
 
-            mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
             //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
             refreshSettingsData();
 
@@ -492,7 +495,8 @@ public class BeerNavigationHomeFragment extends Fragment
 
         String postalCode = "";
         if(mSettings != null) {
-            postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+            //postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+            postalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
         }
 
         if(!mCurrPostalCode.equals(postalCode)) {

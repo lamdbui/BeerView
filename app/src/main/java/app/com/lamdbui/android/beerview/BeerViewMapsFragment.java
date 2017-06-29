@@ -180,8 +180,8 @@ public class BeerViewMapsFragment extends Fragment
         mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERIES);
         if(mBreweryLocations == null) {
             //mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
-            mBreweryLocations = mLocationDataHelper.getBreweryLocations();
-            //mBreweryLocations = new ArrayList<>();
+            //mBreweryLocations = mLocationDataHelper.getBreweryLocations();
+            mBreweryLocations = new ArrayList<>();
         }
 
         mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
@@ -267,7 +267,7 @@ public class BeerViewMapsFragment extends Fragment
                                     editor.apply();
                                     Snackbar.make(innerView, getString(R.string.setting_saved), Snackbar.LENGTH_SHORT)
                                             .setAction("SavedPostalCode", null).show();
-                                    //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+                                    //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
                                     mLocationDataHelper.setPostalCode(mSettings.getString(getString(R.string.pref_location_postal_code), ""));
                                     refreshLocationData();
                                     updateUI();
@@ -418,7 +418,7 @@ public class BeerViewMapsFragment extends Fragment
                 String postalCode = addresses.get(0).getPostalCode();
 
                 // test
-                //updateSessionCurrPostalCode(postalCode);
+                updateSessionCurrPostalCode(postalCode);
                 mLocationDataHelper.setPostalCode(postalCode);
             }
             catch(IOException e) {
@@ -463,7 +463,7 @@ public class BeerViewMapsFragment extends Fragment
     }
 
     public void createLocationRequest() {
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
         if(checkLocationPermission()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location == null) {
@@ -594,10 +594,10 @@ public class BeerViewMapsFragment extends Fragment
     }
 
     public void refreshBreweryLocationData(LatLng latlng) {
-//        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
-//        locationDataHelper.findBreweryLocationsByLatLng(latlng);
+        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
+        locationDataHelper.findBreweryLocationsByLatLng(latlng);
 
-        mLocationDataHelper.findBreweryLocationsByLatLng(latlng);
+        //mLocationDataHelper.findBreweryLocationsByLatLng(latlng);
     }
 
     public void refreshLocationData() {
@@ -610,7 +610,8 @@ public class BeerViewMapsFragment extends Fragment
         //if(!newPostalCode.isEmpty()) {
 
 
-            mCurrPostalCode = mLocationDataHelper.getPostalCode();
+            //mCurrPostalCode = mLocationDataHelper.getPostalCode();
+            mCurrPostalCode = newPostalCode;
 
             GoogleGeocodeInterface geocacheService =
                     GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
@@ -639,7 +640,7 @@ public class BeerViewMapsFragment extends Fragment
         super.onResume();
         mMapView.onResume();
 
-        //mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
 
 //        // check to see if postalCode change and move map, if it did
 //        String postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
@@ -648,10 +649,16 @@ public class BeerViewMapsFragment extends Fragment
 //        }
 
         // get our updated postal code
-        mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
+        String sessionPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
+        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), mCurrPostalCode);
+        if(!mCurrPostalCode.equals(sessionPostalCode)) {
+            mCurrPostalCode = sessionPostalCode;
+            //refreshLocationData();
+        }
 
         // refresh our data in case it changed somewhere else
-        mBreweryLocations = mLocationDataHelper.getBreweryLocations();
+        //mBreweryLocations = mLocationDataHelper.getBreweryLocations();
+        refreshLocationData();
     }
 
     @Override
