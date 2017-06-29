@@ -35,12 +35,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left|top"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/map_my_location_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|top"
-            android:text="Move to My Location"/>
+            android:src="@drawable/ic_location_searching_black_24dp"
+            android:contentDescription="@string/map_search_my_location_description"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/map_brewery_recyclerview"

@@ -55,6 +55,7 @@
     <string name="map_current_location">Current Location: </string>
     <string name="map_current_location_none">No location specified, please enter a location in Settings</string>
     <string name="map_marker_more_details">Click For More Details...</string>
+    <string name="map_search_my_location_description">Search with My current Location</string>
     <string name="widget_title">BeerMapper Favorites</string>
     <string name="widget_favorite_breweries">Breweries Favorited:</string>
     <string name="widget_favorite_beers">Beers Favorited:</string>

@@ -45,6 +45,7 @@ import app.com.lamdbui.android.beerview.network.AddressResponse;
 import app.com.lamdbui.android.beerview.network.BeerListResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
+import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
@@ -66,7 +67,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
     private static final String LOG_TAG = BeerNavigationHomeFragment.class.getSimpleName();
 
-    public static final int PERMISSION_REQUEST_LOCATION = 2;
     private static final int LOADER_BREWERY = 0;
     private static final int LOADER_BEERS = 1;
 
@@ -143,61 +143,26 @@ public class BeerNavigationHomeFragment extends Fragment
         mBreweryBeerFavorites = new ArrayList<>();
         mAddresses = new ArrayList<>();
         mCurrPostalCode = "0";
-        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-        //mCurrPostalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
 
-        boolean permission = checkLocationPermission();
-
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            permission = checkLocationPermission();
-//        }
-
-        if(permission) {
-
-            //mCurrPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
-            refreshSettingsData();
-
-            mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
-            if (mBreweryLocations == null) {
-                mBreweryLocations = new ArrayList<>();
-            }
-
-            mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
-
-            mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
-            if (mAddresses == null) {
-                mAddresses = new ArrayList<>();
-            }
-
-            mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
-
-            mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
-
-            Bundle bundle = new Bundle();
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
-
-            // test
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                checkLocationPermission();
-            }
-            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-//            mFusedLocationProviderClient.getLastLocation()
-//                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            // Got last known location. In some rare situations this can be null.
-//                            if (location != null) {
-//                                mLocation = location;
-//                                //updateUI();
-//                            }
-//                        }
-//                    });
-
-            //updateUI();
-            fetchAllBeersAtBreweryLocations();
+        mBreweryLocations = getArguments().getParcelableArrayList(ARG_BREWERY_LOCATIONS);
+        if (mBreweryLocations == null) {
+            mBreweryLocations = new ArrayList<>();
         }
 
-        //getLoaderManager().initLoader(LOADER_BREWERY, null, this);
+        mAddresses = getArguments().getParcelableArrayList(ARG_LOCATION_DATA);
+        if (mAddresses == null) {
+            mAddresses = new ArrayList<>();
+        }
+
+        mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+
+        refreshSettingsData();
+        fetchAllBeersAtBreweryLocations();
     }
 
     @Nullable
@@ -215,11 +180,8 @@ public class BeerNavigationHomeFragment extends Fragment
         mHomeBreweriesFavoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mHomeBeersFavoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
-        boolean permission = checkLocationPermission();
-        if(permission) {
-            refreshSettingsData();
-            updateUI();
-        }
+        updateUI();
+        refreshSettingsData();
 
         return view;
     }
@@ -289,8 +251,9 @@ public class BeerNavigationHomeFragment extends Fragment
                     else {
                         mBreweryBeerFavoritesAdapter.setBeers(mBreweryBeerFavorites);
                         mBreweryBeerFavoritesAdapter.notifyDataSetChanged();
-                        updateUI();
+                        //updateUI();
                     }
+                    updateUI();
                 }
                 break;
             case LOADER_BREWERY:
@@ -308,12 +271,14 @@ public class BeerNavigationHomeFragment extends Fragment
                     if(mBreweryLocationFavoritesAdapter == null) {
                         mBreweryLocationFavoritesAdapter = new BreweryLocationAdapter(mBreweryLocationFavorites);
                         mHomeBreweriesFavoritesRecyclerView.setAdapter(mBreweryLocationFavoritesAdapter);
+                        //updateUI();
                     }
                     else {
                         mBreweryLocationFavoritesAdapter.setBreweryLocations(mBreweryLocationFavorites);
                         mBreweryLocationFavoritesAdapter.notifyDataSetChanged();
-                        updateUI();
+                        //updateUI();
                     }
+                    updateUI();
                 }
                 break;
             default:
@@ -327,35 +292,6 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_LOCATION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission granted
-                    if(ContextCompat.checkSelfPermission(getActivity(),
-                            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                        mFusedLocationProviderClient.getLastLocation()
-                                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                                    @Override
-                                    public void onSuccess(Location location) {
-                                        // Got last known location. In some rare situations this can be null.
-                                        if (location != null) {
-                                            mLocation = location;
-                                        }
-                                    }
-                                });
-                        refreshSettingsData();
-
-                    }
-                    else {
-                    }
-                }
-                break;
-        }
-    }
-
-    @Override
     public void onFindBreweryLocationsCallback(List<BreweryLocation> breweryLocations) {
         //LocationDataHelper.get(getActivity()).setBreweryLocations(breweryLocations);
         //mBreweryLocations = LocationDataHelper.get(getActivity()).getBreweryLocations();
@@ -363,6 +299,7 @@ public class BeerNavigationHomeFragment extends Fragment
         mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
         mBreweryLocationAdapter.notifyDataSetChanged();
         fetchAllBeersAtBreweryLocations();
+        updateUI();
     }
 
     // keeps track of pending AsyncTasks
@@ -395,6 +332,7 @@ public class BeerNavigationHomeFragment extends Fragment
                         mBreweryBeers.addAll(beersAtBrewery);
                         mBreweryBeersAdapter.setBeers(mBreweryBeers);
                         mBreweryBeersAdapter.notifyDataSetChanged();
+                        updateUI();
                     }
                     batchAsyncTaskComplete();
                     if(batchAsyncTaskComplete())
@@ -410,30 +348,6 @@ public class BeerNavigationHomeFragment extends Fragment
                         updateUI();
                 }
             });
-        }
-    }
-
-    public boolean checkLocationPermission() {
-        //return true;
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            // explanation
-            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            } else {
-                // no explanation needed
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_REQUEST_LOCATION);
-            }
-            return false;
-        }
-        else {
-            return true;
         }
     }
 
@@ -481,7 +395,6 @@ public class BeerNavigationHomeFragment extends Fragment
                 @Override
                 public void onResponse(Call<BreweryResponse> call, Response<BreweryResponse> response) {
                     mBrewery = response.body().getBrewery();
-                    //startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation.getId()));
                     startActivity(BreweryDetailActivity.newIntent(getActivity(), mBrewery, null, mBreweryLocation));
                 }
 
@@ -494,37 +407,33 @@ public class BeerNavigationHomeFragment extends Fragment
 
     public boolean refreshSettingsData() {
 
-        boolean permission = checkLocationPermission();
-
         String postalCode = "";
         if(mSettings != null) {
-            //postalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
             postalCode = mSettings.getString(getString(R.string.pref_session_location_postal_code), "");
         }
 
         if(!mCurrPostalCode.equals(postalCode)) {
             mCurrPostalCode = postalCode;
-            if(permission) {
-                // TODO: possibly move this to a util function
-                if (!postalCode.isEmpty()) {
-                    GoogleGeocodeInterface geocacheService =
-                            GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
 
-                    Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
-                    callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
-                        @Override
-                        public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                            mAddresses = response.body().getAddressList();
-                            refreshBreweryLocationData();
-                            updateUI();
-                        }
+            // TODO: possibly move this to a util function
+            if (!postalCode.isEmpty()) {
+                GoogleGeocodeInterface geocacheService =
+                        GoogleGeocodeClient.getClient().create(GoogleGeocodeInterface.class);
 
-                        @Override
-                        public void onFailure(Call<AddressResponse> call, Throwable t) {
+                Call<AddressResponse> callAddressDataByPostalCode = geocacheService.getLocationData(postalCode);
+                callAddressDataByPostalCode.enqueue(new Callback<AddressResponse>() {
+                    @Override
+                    public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
+                        mAddresses = response.body().getAddressList();
+                        refreshBreweryLocationData();
+                        updateUI();
+                    }
 
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<AddressResponse> call, Throwable t) {
+
+                    }
+                });
             }
             return true;
         }
@@ -543,12 +452,34 @@ public class BeerNavigationHomeFragment extends Fragment
     }
 
     public void refreshBreweryLocationData() {
-        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
-        locationDataHelper.findBreweryLocationsByLatLng(getLatLngFromAddresses());
+        findBreweryLocationsByLatLng(getLatLngFromAddresses());
 
         // set loading message
         mHomeBreweriesNoneTextView.setText(getString(R.string.info_loading));
         mHomeBeersNoneTextView.setText(getString(R.string.info_loading));
+    }
+
+    public void findBreweryLocationsByLatLng(LatLng latlng) {
+        if(mBreweryDbService == null)
+            mBreweryDbService = BreweryDbClient.getClient().create(BreweryDbInterface.class);
+
+        Call<BreweryLocationResponse> callBreweriesNearby = mBreweryDbService.getBreweriesNearby(API_KEY, latlng.latitude, latlng.longitude);
+        callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
+            @Override
+            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
+                mBreweryLocations = response.body().getBreweries();
+                //mCallbacks.onFindBreweryLocationsCallback(mBreweryLocations);
+                //mBreweryLocations = breweryLocations;
+                mBreweryLocationAdapter.setBreweryLocations(mBreweryLocations);
+                mBreweryLocationAdapter.notifyDataSetChanged();
+                fetchAllBeersAtBreweryLocations();
+                updateUI();
+            }
+
+            @Override
+            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
+            }
+        });
     }
 
     public void updateUI() {

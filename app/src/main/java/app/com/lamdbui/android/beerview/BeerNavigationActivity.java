@@ -2,7 +2,9 @@ package app.com.lamdbui.android.beerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -31,6 +33,8 @@ public class BeerNavigationActivity extends AppCompatActivity
     private Fragment mMapsFragment;
     private Fragment mSettingsFragment;
 
+    private SharedPreferences mSettings;
+
     public static Intent newIntent(Context context, List<BreweryLocation> breweryLocations, List<Address> addresses) {
         Intent intent = new Intent(context, BeerNavigationActivity.class);
         Bundle bundle = new Bundle();
@@ -47,6 +51,8 @@ public class BeerNavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_navigation);
 
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+
         mBreweryLocations = new ArrayList<>();
         mAddresses = new ArrayList<>();
 
@@ -61,12 +67,17 @@ public class BeerNavigationActivity extends AppCompatActivity
 
         if(mHomeFragment == null) {
             mHomeFragment = BeerNavigationHomeFragment.newInstance(null, mAddresses);
-            //mHomeFragment = BeerNavigationHomeFragment.newInstance(mBreweryLocations, mAddresses);
         }
             fm.beginTransaction()
                     .replace(R.id.content, mHomeFragment, BeerNavigationHomeFragment.TAG)
                     .addToBackStack(null)
                     .commit();
+
+        // initialize our session postal code to the default
+        SharedPreferences.Editor editor = mSettings.edit();
+        String defaultPostalCode = mSettings.getString(getString(R.string.pref_location_postal_code), "");
+        editor.putString(getString(R.string.pref_session_location_postal_code), defaultPostalCode);
+        editor.apply();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

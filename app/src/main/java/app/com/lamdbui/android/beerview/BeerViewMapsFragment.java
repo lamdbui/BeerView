@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ import app.com.lamdbui.android.beerview.model.BreweryLocation;
 import app.com.lamdbui.android.beerview.network.AddressResponse;
 import app.com.lamdbui.android.beerview.network.BreweryDbClient;
 import app.com.lamdbui.android.beerview.network.BreweryDbInterface;
+import app.com.lamdbui.android.beerview.network.BreweryLocationResponse;
 import app.com.lamdbui.android.beerview.network.BreweryResponse;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeClient;
 import app.com.lamdbui.android.beerview.network.GoogleGeocodeInterface;
@@ -108,7 +110,7 @@ public class BeerViewMapsFragment extends Fragment
     @BindView(R.id.map_postalcode_button)
     Button mPostalcodeButton;
     @BindView(R.id.map_my_location_button)
-    Button mMyLocationButton;
+    ImageButton mMyLocationButton;
     @BindView(R.id.map_location_none)
     TextView mMapLocationNone;
     @BindView(R.id.map_view_frame)
@@ -586,11 +588,39 @@ public class BeerViewMapsFragment extends Fragment
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromAddresses(mAddresses), MAP_DEFAULT_ZOOM_LEVEL));
     }
 
+    public void findBreweryLocationsByLatLng(LatLng latlng) {
+        Call<BreweryLocationResponse> callBreweriesNearby = mBreweryDbService.getBreweriesNearby(API_KEY, latlng.latitude, latlng.longitude);
+        callBreweriesNearby.enqueue(new Callback<BreweryLocationResponse>() {
+            @Override
+            public void onResponse(Call<BreweryLocationResponse> call, Response<BreweryLocationResponse> response) {
+                mBreweryLocations = response.body().getBreweries();
+                //mCallbacks.onFindBreweryLocationsCallback(mBreweryLocations);
+                //mBreweryLocations = breweryLocations;
+                mBreweryAdapter.setBreweryLocations(mBreweryLocations);
+                mBreweryAdapter.notifyDataSetChanged();
+                //fetchAllBeersAtBreweryLocations();
+                setBreweryLocationMapMarkers();
+            }
+
+            @Override
+            public void onFailure(Call<BreweryLocationResponse> call, Throwable t) {
+            }
+        });
+    }
+
     public void refreshBreweryLocationData(LatLng latlng) {
-        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
-        locationDataHelper.findBreweryLocationsByLatLng(latlng);
+//        LocationDataHelper locationDataHelper = LocationDataHelper.get(getActivity(), this);
+//        locationDataHelper.findBreweryLocationsByLatLng(latlng);
 
         //mLocationDataHelper.findBreweryLocationsByLatLng(latlng);
+
+        findBreweryLocationsByLatLng(latlng);
+
+//        //mBreweryLocations = breweryLocations;
+//        mBreweryLocations = findBreweryLocationsByLatLng(latlng);
+//        mBreweryAdapter.setBreweryLocations(mBreweryLocations);
+//        mBreweryAdapter.notifyDataSetChanged();
+        setBreweryLocationMapMarkers();
     }
 
     public void refreshLocationData() {
