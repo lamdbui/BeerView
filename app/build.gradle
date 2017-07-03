@@ -2,10 +2,16 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        debug {
+            keyAlias 'BeerViewKey'
+            keyPassword 'gobberflap'
+            storeFile file('../keystore.jks')
+            storePassword 'gobberflap'
+        }
         config {
             keyAlias 'BeerViewKey'
             keyPassword 'gobberflap'
-            storeFile file('/Users/lamdbui/AndroidStudioProjects/lamdbui/BeerView/keystore.jks')
+            storeFile file('../keystore.jks')
             storePassword 'gobberflap'
         }
     }

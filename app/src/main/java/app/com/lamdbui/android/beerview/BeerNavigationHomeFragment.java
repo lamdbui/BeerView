@@ -322,7 +322,6 @@ public class BeerNavigationHomeFragment extends Fragment
 
                 @Override
                 public void onFailure(Call<BeerListResponse> call, Throwable t) {
-                    //TODO: maybe log this with Analytics?
                     Log.e(LOG_TAG, getString(R.string.error_fetching_beers));
                     batchAsyncTaskComplete();
                     if(batchAsyncTaskComplete())
