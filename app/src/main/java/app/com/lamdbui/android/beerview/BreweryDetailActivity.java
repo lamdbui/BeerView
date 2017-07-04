@@ -267,7 +267,7 @@ public class BreweryDetailActivity extends AppCompatActivity
         if(mBrewery != null) {
             mBreweryNameTextView.setText(mBrewery.getName());
             if (mBrewery.getEstablished() != 0)
-                mBreweryEstablishedTextView.setText("Established: " + Integer.toString(mBrewery.getEstablished()));
+                mBreweryEstablishedTextView.setText(getString(R.string.brewery_established) + " " + Integer.toString(mBrewery.getEstablished()));
             else
                 mBreweryEstablishedTextView.setVisibility(View.GONE);
 

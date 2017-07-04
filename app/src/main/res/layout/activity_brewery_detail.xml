@@ -46,9 +46,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/content_fab_brewery_favorite"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        android:backgroundTint="@color/colorSecondaryAccent"
+        app:backgroundTint="@color/colorSecondaryAccent"
         app:srcCompat="@drawable/ic_favorite_black_24dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

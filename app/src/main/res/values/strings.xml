@@ -33,6 +33,7 @@
     <string name="home_default_line1">Welcome to BrewMapper!</string>
     <string name="home_default_line2">Discover great local Beers and Breweries</string>
     <string name="brewery_none_available">No Brewery information available</string>
+    <string name="brewery_established">Established: </string>
     <string name="beer_none_available">No Beer information available</string>
     <string name="beer_percent_abv">% ABV</string>
     <string name="beer_percent_abv_none">No ABV% information available</string>
@@ -63,4 +64,6 @@
     <string name="widget_favorite_beers">Beers Favorited:</string>
     <string name="content_image_beer_label">Label of selected Beer</string>
     <string name="content_image_brewery_logo">Logo of selected Brewery</string>
+    <string name="content_fab_beer_favorite">Toggle favorite for current Beer</string>
+    <string name="content_fab_brewery_favorite">Toggle favorite for current Brewery</string>
 </resources>

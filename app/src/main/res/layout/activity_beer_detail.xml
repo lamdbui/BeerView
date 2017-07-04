@@ -59,8 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/colorSecondaryAccent"
         android:src="@drawable/ic_favorite_black_24dp"
+        android:contentDescription="@string/content_fab_beer_favorite"
+        app:backgroundTint="@color/colorSecondaryAccent"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"/>
 
