@@ -65,5 +65,9 @@
     <string name="content_image_beer_label">Label of selected Beer</string>
     <string name="content_image_brewery_logo">Logo of selected Brewery</string>
     <string name="content_fab_beer_favorite">Toggle favorite for current Beer</string>
+    <string name="content_fab_beer_toggle_favorite_on">Favorite the current Beer</string>
+    <string name="content_fab_beer_toggle_favorite_off">Un-favorite the current Beer</string>
     <string name="content_fab_brewery_favorite">Toggle favorite for current Brewery</string>
+    <string name="content_fab_brewery_toggle_favorite_on">Favorite the current Brewery</string>
+    <string name="content_fab_brewery_toggle_favorite_off">Un-favorite the current Brewery</string>
 </resources>

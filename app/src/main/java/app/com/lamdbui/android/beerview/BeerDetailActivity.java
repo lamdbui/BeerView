@@ -99,12 +99,14 @@ public class BeerDetailActivity extends AppCompatActivity
                     String[] selectionArgs = { mBeer.getId() };
                     getContentResolver().delete(BreweryContract.BeerTable.CONTENT_URI, "ID=?", selectionArgs);
                     mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    mFavoriteFab.setContentDescription(getString(R.string.content_fab_beer_toggle_favorite_off));
                     favoritesResponse = getString(R.string.favorites_removed);
                 }
                 else {
                     getContentResolver().insert(BreweryContract.BeerTable.CONTENT_URI,
                             BreweryDbUtils.convertBeerToContentValues(mBeer));
                     mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    mFavoriteFab.setContentDescription(getString(R.string.content_fab_beer_toggle_favorite_on));
                     favoritesResponse = getString(R.string.favorites_added);
                 }
                 Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
@@ -163,9 +165,13 @@ public class BeerDetailActivity extends AppCompatActivity
         mBeerOriginalGravityTextView.setText(originalGravity.toString());
         mBeerDescriptionTextView.setText(
                 (mBeer.getDescription() == null) ? getString(R.string.info_none) : mBeer.getDescription());
-        if(mIsFavorite)
+        if(mIsFavorite) {
             mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
-        else
+            mFavoriteFab.setContentDescription(getString(R.string.content_fab_beer_toggle_favorite_off));
+        }
+        else {
             mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            mFavoriteFab.setContentDescription(getString(R.string.content_fab_beer_toggle_favorite_on));
+        }
     }
 }

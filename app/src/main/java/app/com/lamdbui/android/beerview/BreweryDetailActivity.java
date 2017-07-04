@@ -168,11 +168,13 @@ public class BreweryDetailActivity extends AppCompatActivity
                         String[] selectionArgs = {mBreweryLocation.getId()};
                         getContentResolver().delete(BreweryContract.BreweryTable.CONTENT_URI, "ID=?", selectionArgs);
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        mFavoriteFab.setContentDescription(getString(R.string.content_fab_brewery_toggle_favorite_off));
                         favoritesResponse = getString(R.string.favorites_removed);
                     } else {
                         getContentResolver().insert(BreweryContract.BreweryTable.CONTENT_URI,
                                 BreweryDbUtils.convertBreweryLocationToContentValues(mBreweryLocation));
                         mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                        mFavoriteFab.setContentDescription(getString(R.string.content_fab_brewery_toggle_favorite_on));
                         favoritesResponse = getString(R.string.favorites_added);
                     }
                     Snackbar.make(view, favoritesResponse, Snackbar.LENGTH_LONG)
@@ -316,10 +318,14 @@ public class BreweryDetailActivity extends AppCompatActivity
                 mBreweryBeersRecyclerView.setVisibility(View.GONE);
                 mBreweryBeersNoneTextView.setVisibility(View.VISIBLE);
             }
-            if (mIsFavorite)
+            if (mIsFavorite) {
                 mFavoriteFab.setImageResource(R.drawable.ic_favorite_black_24dp);
-            else
+                mFavoriteFab.setContentDescription(getString(R.string.content_fab_brewery_toggle_favorite_off));
+            }
+            else {
                 mFavoriteFab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                mFavoriteFab.setContentDescription(getString(R.string.content_fab_brewery_toggle_favorite_on));
+            }
         }
     }
 
