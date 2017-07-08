@@ -5,6 +5,15 @@ BrewMapper simplifies how you can find, discover, and track beers and breweries 
 
 Data is leveraged from [BreweryDb](http://www.brewerydb.com/).
 
+## Features
+
+* Overview Screen showing Breweries and Beers from local or predefined locations
+* Map able to determine current location and find local information
+* Brewery locations shown on Google Maps
+* Detailed Brewery and Beer information available
+* Ability to "favorite" Breweries and Beers
+* Companion Home Screen Widget tracking number of "favorite" Breweries and Beers
+
 ## Configuration
 
 Please get your API Key from [BreweryDb](http://www.brewerydb.com/) and create the following entry in your $HOME/.gradle/gradle.properties file:
